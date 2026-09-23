@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block title %}Vessel analysis · MCI Marine Risk{% endblock %}
+{% block content %}
+{% if analysis and analysis.is_synthetic %}
+<div class="demo-banner"><strong>Demonstration result</strong><span>Synthetic data — not for underwriting use</span></div>
+{% elif provider == 'real' %}
+<div class="demo-banner"><strong>Real-data mode</strong><span>MarineCadastre AIS vessel tracks matched to NOAA NHC HURDAT2 best tracks</span></div>
+{% else %}
+<div class="demo-banner"><strong>Demonstration mode</strong><span>Synthetic data — not for underwriting use</span></div>
+{% endif %}
+
+<section class="page-heading">
+  <span class="eyebrow">Vessel assessment</span>
+  <h1>Exposure analysis</h1>
+  <p>Assess recorded vessel activity against named tropical cyclone tracks.</p>
+</section>
+
+<section class="analysis-form-card">
+  <form method="post" action="/analysis" class="analysis-form" data-analysis-form>
+    <input type="hidden" name="csrf" value="{{ csrfToken }}">
+    <label>
+      <span>Identifier type</span>
+      <select name="identifierType">
+        <option value="MMSI" {% if defaults.identifierType == 'MMSI' %}selected{% endif %}>MMSI</option>
+        <option value="IMO" {% if defaults.identifierType == 'IMO' %}selected{% endif %}>IMO</option>
+      </select>
+    </label>
+    <label class="analysis-form__identifier">
+      <span>Vessel identifier</span>
+      <input name="identifier" value="{{ defaults.identifier }}" inputmode="numeric" placeholder="Enter 9-digit MMSI or 7-digit IMO" required>
+    </label>
+    <label>
+      <span>From</span>
+      <input type="date" name="fromDate" value="{{ defaults.fromDate }}" required>
+    </label>
+    <label>
+      <span>To</span>
+      <input type="date" name="toDate" value="{{ defaults.toDate }}" required>
+    </label>
+    <details class="advanced-settings">
+      <summary>Analysis settings</summary>
+      <div class="advanced-settings__fields">
+        <label><span>Coastal limit</span><div class="unit-input"><input type="number" name="coastalLimitNm" value="{{ defaults.coastalLimitNm }}" min="1" max="200" step="1"><b>nm</b></div></label>
+        <label><span>Storm proximity</span><div class="unit-input"><input type="number" name="stormProximityNm" value="{{ defaults.stormProximityNm }}" min="1" max="500" step="1"><b>nm</b></div></label>
+      </div>
+    </details>
+    <button class="button button--primary analysis-form__submit" type="submit">Run analysis <span aria-hidden="true">→</span></button>
+  </form>
+  {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
+</section>
+
+<section class="processing-panel" hidden data-processing-panel aria-live="polite">
+  <div class="spinner"></div>
+  <div><strong>Building vessel assessment</strong><span data-processing-message>Resolving vessel identity…</span></div>
+</section>
+
+{% if analysis %}
+<section class="result-heading">
+  <div class="result-heading__identity">
+    <figure class="vessel-photo">
+      <img src="{{ vesselImage.src }}" alt="{{ vesselImage.alt }}" width="280" height="158">
+      <figcaption>
+        {% if vesselImage.source %}<a href="{{ vesselImage.source }}" target="_blank" rel="noopener noreferrer">Photo: {{ vesselImage.credit }}</a>{% if vesselImage.license_url %} · <a href="{{ vesselImage.license_url }}" target="_blank" rel="noopener noreferrer">Licence</a>{% endif %}
+        {% else %}{{ vesselImage.credit }}{% endif %}
+      </figcaption>
+    </figure>
+    <div>
+      <span class="eyebrow">Completed assessment</span>
+      <h2>{{ analysis.vessel.name }}</h2>
+      <div class="identity-line">
+        {% if analysis.vessel.imo %}<span>IMO {{ analysis.vessel.imo }}</span>{% endif %}
+        {% if analysis.vessel.mmsi %}<span>MMSI {{ analysis.vessel.mmsi | join(', ') }}</span>{% endif %}
+        <span>{{ analysis.vessel.vessel_type }}</span>
+        <span>{{ analysis.vessel.flag or 'Flag unknown' }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="result-actions">
+    <a class="button button--secondary" href="/analysis/{{ analysis.analysis_id }}/json">Download JSON</a>
+    <button class="button button--ghost" type="button" onclick="window.print()">Print report</button>
+  </div>
+</section>
+
+<section class="risk-hero risk-hero--{{ analysis.risk.band | lower }}">
+  <div class="score-gauge" style="--score: {{ analysis.risk.score }}">
+    <div><strong>{{ analysis.risk.score }}</strong><span>out of 100</span></div>
+  </div>
+  <div class="risk-hero__summary">
+    <span class="eyebrow eyebrow--light">Tropical Cyclone Exposure Score</span>
+    <h2>{{ analysis.risk.band | title }} exposure</h2>
+    <p>
+      {% if analysis.risk.underwriter_referral %}
+      This assessment meets the current threshold for underwriter referral.
+      {% else %}
+      This assessment does not meet the current automatic referral threshold.
+      {% endif %}
+    </p>
+    <div class="risk-meta">
+      <span>Confidence <strong>{{ analysis.risk.confidence | title }}</strong></span>
+      <span>Model <strong>{{ analysis.risk.model_version }}</strong></span>
+      <span>Period <strong>{{ analysis.input.period.from_date.year }}–{{ analysis.input.period.to_date.year }}</strong></span>
+    </div>
+  </div>
+  <div class="risk-hero__notice">
+    <span>Model status</span>
+    <strong>Not actuarially calibrated</strong>
+    <p>Decision-support indicator only. Not a price, acceptance or declinature recommendation.</p>
+  </div>
+</section>
+
+<section class="metric-grid metric-grid--results">
+  <article class="metric-card"><span class="metric-card__label">Named storms</span><strong>{{ analysis.statistics.named_storm_encounters }}</strong><span class="metric-card__context">Distinct exposure events</span></article>
+  <article class="metric-card"><span class="metric-card__label">Closest approach</span><strong>{% if analysis.statistics.minimum_distance_nm is not none %}{{ '%.1f' | format(analysis.statistics.minimum_distance_nm) }}<small> nm</small>{% else %}—{% endif %}</strong><span class="metric-card__context">Storm centre distance</span></article>
+  <article class="metric-card"><span class="metric-card__label">Exposure duration</span><strong>{{ '%.1f' | format(analysis.statistics.hours_within_200_nm) }}<small> h</small></strong><span class="metric-card__context">Within configured threshold</span></article>
+  <article class="metric-card">
+    <span class="metric-card__label">Tropical-storm-force winds</span>
+    {% if analysis.statistics.hours_within_34_kt_wind_field > 0 %}
+    <strong>{{ '%.1f' | format(analysis.statistics.hours_within_34_kt_wind_field) }}<small> h</small></strong>
+    <span class="metric-card__context">AIS time inside reported 34 kt radii</span>
+    {% else %}
+    <strong class="metric-card__none">None</strong>
+    <span class="metric-card__context">No AIS positions inside reported 34 kt radii</span>
+    {% endif %}
+  </article>
+</section>
+
+<section class="analysis-grid">
+  <article class="panel map-panel">
+    <div class="panel__heading"><div><span class="eyebrow">Geospatial review</span><h2>Encounter map</h2></div><span class="panel__note">Illustrative positions</span></div>
+    {% if encounters %}
+    <div id="encounter-map" class="encounter-map" aria-label="Map of vessel and storm encounters"></div>
+    <script id="map-data" type="application/json">{{ mapData | tojson }}</script>
+    {% else %}
+    <div class="empty-state"><span>○</span><strong>No recorded encounters</strong><p>No matching storm exposures were found for this assessment.</p></div>
+    {% endif %}
+  </article>
+
+  <article class="panel score-panel">
+    <div class="panel__heading"><div><span class="eyebrow">Explainability</span><h2>Score composition</h2></div></div>
+    <div class="component-list">
+      <div><span>Worst encounter</span><div class="bar-track"><span class="bar-fill" style="width: {{ analysis.risk.components.worst_encounter }}%"></span></div><strong>{{ analysis.risk.components.worst_encounter }}</strong></div>
+      <div><span>Top-three average</span><div class="bar-track"><span class="bar-fill" style="width: {{ analysis.risk.components.top_three_average }}%"></span></div><strong>{{ analysis.risk.components.top_three_average }}</strong></div>
+      <div><span>Recurrence</span><div class="bar-track"><span class="bar-fill" style="width: {{ analysis.risk.components.recurrence }}%"></span></div><strong>{{ analysis.risk.components.recurrence }}</strong></div>
+    </div>
+    <div class="formula-card"><code>50% worst + 30% top-three + 20% recurrence</code><p>Each encounter considers proximity, storm intensity, reported wind field and exposure duration.</p></div>
+  </article>
+</section>
+
+<section class="panel encounter-panel">
+  <div class="panel__heading"><div><span class="eyebrow">Event history</span><h2>Storm encounters</h2></div><span class="panel__note">{{ encounters | length }} records</span></div>
+  {% if encounters %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Storm</th><th>Closest approach</th><th>Distance</th><th>Intensity</th><th>Wind field</th><th>Duration</th><th>Event score</th></tr></thead>
+      <tbody>
+      {% for event in encounters %}
+        <tr>
+          <td><strong>{{ event.storm.name }}</strong><small>{{ event.storm.id }}</small></td>
+          <td>{{ event.closest_approach.timestamp.strftime('%d %b %Y %H:%M UTC') }}</td>
+          <td>{{ '%.1f' | format(event.closest_approach.distance_nm) }} nm</td>
+          <td>{% if event.storm.category %}Category {{ event.storm.category }}{% else %}{% set storm_labels = {'TD': 'Tropical depression', 'TS': 'Tropical storm', 'SS': 'Subtropical storm', 'SD': 'Subtropical depression', 'EX': 'Extratropical', 'LO': 'Low', 'DB': 'Disturbance', 'WV': 'Tropical wave'} %}{{ storm_labels.get(event.storm.classification, event.storm.classification) }}{% endif %}<small>{{ event.exposure.maximum_storm_wind_kt }} kt</small></td>
+          <td>{{ event.exposure.strongest_wind_field }}</td>
+          <td>{{ '%.1f' | format(event.exposure.duration_within_200_nm_hours) }} h</td>
+          <td><span class="event-score">{{ event.risk.event_score }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-inline">No storm encounters were found in the available source data for this vessel and period.</div>
+  {% endif %}
+</section>
+
+<section class="breakdown-grid">
+  <article class="panel">
+    <div class="panel__heading"><div><span class="eyebrow">Vessel profile</span><h2>Statistical breakdown</h2></div></div>
+    <dl class="detail-grid">
+      <div><dt>Vessel type</dt><dd>{{ analysis.vessel.vessel_type }}</dd></div>
+      <div><dt>Flag</dt><dd>{{ analysis.vessel.flag or '—' }}</dd></div>
+      <div><dt>Length</dt><dd>{{ analysis.vessel.length_m or '—' }} m</dd></div>
+      <div><dt>Width</dt><dd>{{ analysis.vessel.width_m or '—' }} m</dd></div>
+      <div><dt>Draught</dt><dd>{{ analysis.vessel.draft_m or '—' }} m</dd></div>
+      <div><dt>Observed days</dt><dd>{{ analysis.statistics.observed_days }}</dd></div>
+      <div><dt>AIS observations</dt><dd>{{ '{:,}'.format(analysis.statistics.ais_observation_count) }}</dd></div>
+      <div><dt>Track distance</dt><dd>{{ '{:,.0f}'.format(analysis.statistics.distance_travelled_nm) }} nm</dd></div>
+      <div><dt>Average speed</dt><dd>{{ analysis.statistics.average_speed_kt }} kt</dd></div>
+      <div><dt>Maximum speed</dt><dd>{{ analysis.statistics.maximum_speed_kt }} kt</dd></div>
+    </dl>
+  </article>
+
+  <article class="panel quality-panel">
+    <div class="panel__heading"><div><span class="eyebrow">Evidence quality</span><h2>Data confidence</h2></div><span class="quality-badge quality-badge--{{ analysis.data_quality.rating | lower }}">{{ analysis.data_quality.rating | title }}</span></div>
+    <dl class="quality-list">
+      <div><dt>Identity confidence</dt><dd>{{ analysis.data_quality.identity_confidence | title }}</dd></div>
+      <div><dt>Years covered</dt><dd>{{ analysis.data_quality.years_covered | join(', ') }}</dd></div>
+      <div><dt>Material storm-period gaps</dt><dd>{{ analysis.data_quality.significant_storm_period_gaps }}</dd></div>
+      <div><dt>Calculation hash</dt><dd><code>{{ analysis.audit.calculation_hash[:12] }}…</code></dd></div>
+    </dl>
+    {% if analysis.data_quality.warnings %}
+    <div class="warning-list">{% for warning in analysis.data_quality.warnings %}<p>{{ warning }}</p>{% endfor %}</div>
+    {% else %}<p class="quality-ok">No material data-quality warnings were recorded.</p>{% endif %}
+  </article>
+</section>
+
+<footer class="method-note">
+  <strong>Assessment limitation</strong>
+  {% if analysis.is_synthetic %}
+  <p>This synthetic result is for interface evaluation only.</p>
+  {% else %}
+  <p>MarineCadastre AIS is derived from land-based U.S. Coast Guard receivers. Missing observations do not prove a vessel's absence, particularly outside coastal receiver coverage. HURDAT2 represents NOAA's post-analysis best track.</p>
+  {% endif %}
+</footer>
+{% endif %}
+{% endblock %}

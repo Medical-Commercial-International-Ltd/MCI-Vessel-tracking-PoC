@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · MCI Marine Risk{% endblock %}
+{% block content %}
+{% if provider == 'real' %}
+<div class="demo-banner"><strong>Real-data mode</strong><span>MarineCadastre AIS vessel tracks and NOAA NHC HURDAT2 best tracks</span></div>
+{% else %}
+<div class="demo-banner"><strong>Demonstration data</strong><span>Synthetic portfolio — not for underwriting use</span></div>
+{% endif %}
+
+<section class="page-heading page-heading--action">
+  <div>
+    <span class="eyebrow">Portfolio overview</span>
+    <h1>Marine exposure dashboard</h1>
+    <p>{% if provider == 'real' %}Historical tropical cyclone exposure; 2021–2025 AIS source data is available for new assessments.{% else %}Tropical cyclone exposure across the assessed portfolio.{% endif %}</p>
+  </div>
+  <a class="button button--primary" href="/analysis">Run vessel analysis <span aria-hidden="true">→</span></a>
+</section>
+
+<section class="metric-grid" aria-label="Portfolio metrics">
+  <article class="metric-card">
+    <span class="metric-card__label">Vessels assessed</span>
+    <strong>{{ summary.total }}</strong>
+    <span class="metric-card__context">{{ 'Real-data assessments' if provider == 'real' else 'Synthetic portfolio' }}</span>
+  </article>
+  <article class="metric-card">
+    <span class="metric-card__label">Average exposure</span>
+    <strong>{{ summary.averageScore }}<small>/100</small></strong>
+    <span class="metric-card__context">Across all assessments</span>
+  </article>
+  <article class="metric-card metric-card--attention">
+    <span class="metric-card__label">High or severe</span>
+    <strong>{{ headlineMetrics.highOrSevere }}</strong>
+    <span class="metric-card__context">{% if headlineMetrics.isIllustrative %}Illustrative sample · {% endif %}Require underwriter review</span>
+  </article>
+  <article class="metric-card">
+    <span class="metric-card__label">Storm encounters</span>
+    <strong>{{ summary.encounters }}</strong>
+    <span class="metric-card__context">Recorded in analysis windows</span>
+  </article>
+  <article class="metric-card">
+    <span class="metric-card__label">High confidence</span>
+    <strong>{{ headlineMetrics.highConfidencePercent }}<small>%</small></strong>
+    <span class="metric-card__context">{% if headlineMetrics.isIllustrative %}Illustrative sample · {% endif %}Identity and AIS quality</span>
+  </article>
+</section>
+
+<div class="risk-scale" aria-label="Risk colour scale from low to severe">
+  <strong>Risk colour scale</strong>
+  <span class="risk-scale__low"><i></i>Low</span>
+  <span class="risk-scale__moderate"><i></i>Moderate</span>
+  <span class="risk-scale__elevated"><i></i>Elevated</span>
+  <span class="risk-scale__high"><i></i>High</span>
+  <span class="risk-scale__severe"><i></i>Severe</span>
+</div>
+
+<section class="dashboard-grid">
+  <article class="panel panel--wide">
+    <div class="panel__heading">
+      <div><span class="eyebrow">Portfolio</span><h2>Risk distribution</h2></div>
+      <span class="panel__note">Exposure score</span>
+    </div>
+    <div class="risk-distribution">
+      {% set max_band = summary.bands | map(attribute='count') | max %}
+      {% for band in summary.bands %}
+      <div class="distribution-row">
+        <span class="risk-dot risk-dot--{{ band.name | lower }}"></span>
+        <span class="distribution-row__name">{{ band.name | title }}</span>
+        <div class="bar-track"><span class="bar-fill bar-fill--{{ band.name | lower }}" style="width: {{ (band.count / max_band * 100) if max_band else 0 }}%"></span></div>
+        <strong>{{ band.count }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel__heading"><div><span class="eyebrow">Activity</span><h2>Assessments</h2></div><span class="panel__note">Last 6 months{% if activityIsIllustrative %} · illustrative{% endif %}</span></div>
+    {% set max_month = activityMonths | map(attribute='count') | max if activityMonths else 1 %}
+    <div class="column-chart" aria-label="{% if activityIsIllustrative %}Illustrative {% endif %}assessments per month">
+      {% for month in activityMonths %}
+      <div class="column-chart__item" title="{{ month.count }} assessments">
+        <strong class="column-chart__value">{{ month.count }}</strong>
+        <span class="column-chart__bar" style="height: {{ (month.count / max_month * 100) if max_month else 0 }}%"></span>
+        <small>{{ month.label }}</small>
+      </div>
+      {% endfor %}
+    </div>
+    {% if activityIsIllustrative %}<p class="chart-note">Chart-only sample data. Portfolio totals and assessment results remain real.</p>{% endif %}
+  </article>
+
+  <article class="panel">
+    <div class="panel__heading"><div><span class="eyebrow">Portfolio</span><h2>Vessel mix</h2></div></div>
+    <div class="stat-list">
+      {% for item in summary.vesselTypes %}
+      <div><span>{{ item.name }}</span><strong>{{ item.count }}</strong></div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+
+<section class="panel recent-panel">
+  <div class="panel__heading"><div><span class="eyebrow">Underwriting activity</span><h2>Recent assessments</h2></div><a href="/analysis">New analysis</a></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Entered identifier</th><th>Vessel</th><th>Period</th><th>Type</th><th>Score</th><th>Confidence</th><th>Analysed</th><th></th></tr></thead>
+      <tbody>
+        {% for item in recent %}
+        <tr>
+          <td><strong>{{ item.input.identifier_type }} {{ item.input.identifier }}</strong><small>{{ 'Submitted by you' if item.created_by == user.email else 'Demo portfolio' }}</small></td>
+          <td><strong>{{ item.vessel.name }}</strong><small>{{ item.vessel.flag or '—' }}</small></td>
+          <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
+          <td>{{ item.vessel.vessel_type }}</td>
+          <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }} · {{ item.risk.band | title }}</span></td>
+          <td><span class="confidence">{{ item.risk.confidence | title }}</span></td>
+          <td>{{ item.created_at.strftime('%d %b %Y') }}<small>{{ item.created_at.strftime('%H:%M UTC') }}</small></td>
+          <td><a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">View</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8"><div class="empty-inline">No real-data assessments yet. Run a new analysis to add one.</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

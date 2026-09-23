@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Sign in · MCI Marine Risk{% endblock %}
+{% block body_class %}login-page{% endblock %}
+{% block content %}
+<section class="login-layout">
+  <div class="login-brand-panel">
+    <div class="login-brand-content">
+      <div class="brand brand--login">
+        <span class="brand__mark">MCI</span>
+        <span class="brand__strapline">Specialist insight.<br>Evidence-led decisions.</span>
+      </div>
+      <div class="login-intro">
+        <span class="eyebrow eyebrow--light">Syndicate 1902</span>
+        <h1>Marine risk,<br>made visible.</h1>
+        <p>Historical vessel movement and tropical cyclone exposure in one underwriting view.</p>
+      </div>
+      <div class="login-brand-footer">Marine Risk Intelligence · Proof of Concept</div>
+    </div>
+  </div>
+
+  <div class="login-form-panel">
+    <div class="login-form-wrap">
+      <span class="eyebrow">Secure access</span>
+      <h2>Welcome back</h2>
+      <p class="muted">Sign in to access the underwriting dashboard.</p>
+      {% if error %}<div class="alert alert--error" role="alert">{{ error }}</div>{% endif %}
+      <form method="post" action="/login" class="stack-form">
+        <input type="hidden" name="csrf" value="{{ csrfToken }}">
+        <label>
+          <span>Email address</span>
+          <input type="email" name="email" value="{{ email }}" autocomplete="username" required autofocus>
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button class="button button--primary button--wide" type="submit">Sign in</button>
+      </form>
+      <p class="security-note">Authorised MCI users only. Activity may be monitored for security and audit purposes.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

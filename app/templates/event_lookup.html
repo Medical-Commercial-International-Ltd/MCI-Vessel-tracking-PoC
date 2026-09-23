@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}Event Look up · MCI Marine Risk{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <span class="eyebrow">AIS discovery</span>
+  <h1>Event Look up</h1>
+  <p>Find vessels recorded near a named storm, a U.S. principal port, or both.</p>
+</section>
+
+<section class="panel lookup-card">
+  <form method="post" action="/event-lookup" class="lookup-form" data-lookup-form>
+    <input type="hidden" name="csrf" value="{{ csrfToken }}">
+    <div class="lookup-combo" data-lookup-combo="storm">
+      <label for="storm-query">Storm name</label>
+      <div class="lookup-combo__control">
+        <input id="storm-query" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="storm-options" placeholder="Type or select a storm" autocomplete="off" data-combo-input>
+        <button type="button" class="lookup-combo__toggle" aria-label="Show storm names" data-combo-toggle>⌄</button>
+      </div>
+      <input type="hidden" name="stormId" value="{{ values.stormId }}" data-combo-value>
+      <div id="storm-options" class="lookup-combo__list" role="listbox" hidden data-combo-list>
+        {% for storm in storms %}
+        <button type="button" role="option" data-value="{{ storm.storm_id }}" data-label="{{ storm.name }} · {{ storm.start.year }} · {{ storm.basin }} ({{ storm.storm_id }})">{{ storm.name }} · {{ storm.start.year }} · {{ storm.basin }} ({{ storm.storm_id }})</button>
+        {% endfor %}
+        <span class="lookup-combo__empty" hidden data-combo-empty>No matching storms</span>
+      </div>
+    </div>
+    <div class="lookup-combo" data-lookup-combo="port">
+      <label for="port-query">U.S. principal port</label>
+      <div class="lookup-combo__control">
+        <input id="port-query" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="port-options" placeholder="Type or select a port" autocomplete="off" data-combo-input>
+        <button type="button" class="lookup-combo__toggle" aria-label="Show ports" data-combo-toggle>⌄</button>
+      </div>
+      <input type="hidden" name="portId" value="{{ values.portId }}" data-combo-value>
+      <div id="port-options" class="lookup-combo__list" role="listbox" hidden data-combo-list>
+        {% for port in ports %}
+        <button type="button" role="option" data-value="{{ port.id }}" data-label="{{ port.name }}">{{ port.name }}</button>
+        {% endfor %}
+        <span class="lookup-combo__empty" hidden data-combo-empty>No matching ports</span>
+      </div>
+    </div>
+    <label><span>Date <small data-lookup-date-hint></small></span>
+      <input type="date" name="dateValue" data-lookup-date value="{{ values.date }}" {% if years %}min="{{ years[0] }}-01-01" max="{{ years[-1] }}-12-31"{% endif %}>
+    </label>
+    <label><span>Maximum distance from each selected location</span>
+      <span class="unit-input"><input type="number" name="distanceNm" min="1" max="500" step="0.1" value="{{ values.distanceNm }}" required><b>nm</b></span>
+    </label>
+    <div class="lookup-combo" data-lookup-combo="type">
+      <label for="type-query">AIS vessel type</label>
+      <div class="lookup-combo__control">
+        <input id="type-query" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="type-options" placeholder="All available types" autocomplete="off" data-combo-input>
+        <button type="button" class="lookup-combo__toggle" aria-label="Show vessel types" data-combo-toggle>⌄</button>
+      </div>
+      <input type="hidden" name="vesselGroup" value="{{ values.vesselGroup }}" data-combo-value>
+      <div id="type-options" class="lookup-combo__list" role="listbox" hidden data-combo-list>
+        {% for group in vesselGroups %}<button type="button" role="option" data-value="{{ group }}" data-label="{{ group }}">{{ group }}</button>{% endfor %}
+        <span class="lookup-combo__empty" hidden data-combo-empty>No matching vessel types</span>
+      </div>
+    </div>
+    <label><span>Minimum recorded length</span>
+      <span class="unit-input"><input type="number" name="minLengthM" min="0" max="500" step="0.1" value="{{ values.minLengthM }}"><b>m</b></span>
+    </label>
+    <label class="lookup-check"><input type="checkbox" name="yachtCandidates" value="1" {% if values.yachtCandidates %}checked{% endif %}><span>Yacht candidates: pleasure/sailing AIS type and at least 24 m</span></label>
+    <button type="submit" class="button button--primary">Find vessels</button>
+  </form>
+  <div class="lookup-progress" role="status" aria-live="polite" hidden data-lookup-progress>Searching recorded AIS tracks. Annual storm searches may take a minute or more…</div>
+  {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
+  <p class="lookup-note">Select a storm, port, or both. With both selected, a vessel must be within the stated distance of each at the same recorded time. Date is optional with a storm and required for a port-only search. Length and type are AIS-reported; this does not verify vessel identity, yacht status or market value. Port distance uses the published port polygon's reference point. AIS gaps can hide vessels.</p>
+</section>
+
+{% if lookupResponse %}
+<section class="panel lookup-results">
+  <div class="lookup-results__heading"><div><span class="eyebrow">Search results</span><h2>{{ lookupResponse.results | length }} vessels</h2></div><span class="muted">{{ lookupResponse.inspected_segments }} candidate track segments checked</span></div>
+  {% if lookupResponse.truncated %}<div class="alert alert--error" role="alert">Search stopped after 100,000 candidate segments. Results are incomplete; narrow the date, distance or vessel type.</div>{% endif %}
+  {% if lookupResponse.results %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Vessel / MMSI</th><th>AIS type</th><th>Length</th><th>Closest recorded time</th><th>Storm distance</th><th>Port distance</th><th></th></tr></thead>
+    <tbody>{% for item in lookupResponse.results %}
+      <tr>
+        <td><a class="table-link" href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}">{{ item.name }}</a><br><span class="muted">MMSI {{ item.mmsi }}</span></td>
+        <td>{{ item.vessel_group }}{% if item.vessel_type_code is not none %} · {{ item.vessel_type_code }}{% endif %}</td>
+        <td>{% if item.length_m is not none %}{{ '%.1f' | format(item.length_m) }} m{% else %}Unknown{% endif %}</td>
+        <td>{{ item.timestamp.strftime('%d %b %Y %H:%M') }} UTC</td>
+        <td>{% if item.storm_distance_nm is not none %}{{ '%.1f' | format(item.storm_distance_nm) }} nm{% else %}—{% endif %}</td>
+        <td>{% if item.port_distance_nm is not none %}{{ '%.1f' | format(item.port_distance_nm) }} nm{% else %}—{% endif %}</td>
+        <td><a href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}">Analyse →</a></td>
+      </tr>
+    {% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="empty-inline">No matching AIS tracks were found. Try a broader distance or date, or remove the yacht filter. This does not prove that no vessel was present.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+  const lookupForm = document.querySelector('[data-lookup-form]');
+  const stormValue = lookupForm.querySelector('[data-lookup-combo="storm"] [data-combo-value]');
+  const portValue = lookupForm.querySelector('[data-lookup-combo="port"] [data-combo-value]');
+  function updateDateRequirement() {
+    const portOnly = Boolean(portValue.value && !stormValue.value);
+    lookupForm.querySelector('[data-lookup-date]').required = portOnly;
+    lookupForm.querySelector('[data-lookup-date-hint]').textContent = portOnly ? '(required for port only)' : '(optional with a storm)';
+  }
+  function installCombo(combo) {
+    const input = combo.querySelector('[data-combo-input]');
+    const value = combo.querySelector('[data-combo-value]');
+    const list = combo.querySelector('[data-combo-list]');
+    const options = Array.from(list.querySelectorAll('[role="option"]'));
+    const empty = combo.querySelector('[data-combo-empty]');
+    let active = -1;
+    options.forEach((option, index) => { option.tabIndex = -1; option.id = `${input.id}-option-${index}`; });
+    const selected = options.find(option => option.dataset.value === value.value);
+    if (selected && value.value) input.value = selected.dataset.label;
+    options.forEach(option => option.setAttribute('aria-selected', String(option === selected && Boolean(value.value))));
+
+    function visibleOptions() { return options.filter(option => !option.hidden); }
+    function setActive(index) {
+      const shown = visibleOptions();
+      options.forEach(option => option.classList.remove('is-active'));
+      active = shown.length ? (index + shown.length) % shown.length : -1;
+      if (active >= 0) {
+        shown[active].classList.add('is-active');
+        input.setAttribute('aria-activedescendant', shown[active].id);
+        shown[active].scrollIntoView({ block: 'nearest' });
+      } else input.removeAttribute('aria-activedescendant');
+    }
+    function filter() {
+      const selectedOption = options.find(option => option.dataset.value === value.value && value.value);
+      const query = selectedOption && input.value === selectedOption.dataset.label ? '' : input.value.trim().toLocaleLowerCase();
+      options.forEach(option => { option.hidden = Boolean(query) && !option.textContent.toLocaleLowerCase().includes(query); });
+      empty.hidden = visibleOptions().length > 0;
+      options.forEach(option => option.classList.remove('is-active'));
+      input.removeAttribute('aria-activedescendant');
+      active = -1;
+      if (selectedOption && !selectedOption.hidden) setActive(visibleOptions().indexOf(selectedOption));
+    }
+    function open() {
+      filter();
+      list.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function close() {
+      list.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+      options.forEach(option => option.classList.remove('is-active'));
+      input.removeAttribute('aria-activedescendant');
+      active = -1;
+    }
+    function choose(option) {
+      input.value = option.dataset.label;
+      value.value = option.dataset.value;
+      input.setCustomValidity('');
+      options.forEach(item => item.setAttribute('aria-selected', String(item === option)));
+      input.focus({ preventScroll: true });
+      close();
+      updateDateRequirement();
+    }
+    input.addEventListener('focus', open);
+    input.addEventListener('input', () => {
+      const exact = options.find(option => option.dataset.label && option.dataset.label.toLocaleLowerCase() === input.value.trim().toLocaleLowerCase());
+      value.value = exact ? exact.dataset.value : '';
+      input.setCustomValidity(input.value && !exact ? 'Choose a listed option from the dropdown.' : '');
+      open();
+      updateDateRequirement();
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (list.hidden) open();
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        setActive(active < 0 && direction < 0 ? visibleOptions().length - 1 : active + direction);
+      } else if (event.key === 'Enter' && !list.hidden) {
+        const shown = visibleOptions();
+        if (shown.length) {
+          event.preventDefault();
+          choose(shown[active >= 0 ? active : 0]);
+        }
+      } else if (event.key === 'Escape') {
+        close();
+      }
+    });
+    combo.querySelector('[data-combo-toggle]').addEventListener('click', () => {
+      if (list.hidden) { input.focus(); open(); }
+      else close();
+    });
+    options.forEach(option => option.addEventListener('click', () => choose(option)));
+    combo.addEventListener('focusout', () => {
+      setTimeout(() => { if (!combo.contains(document.activeElement)) close(); }, 0);
+    });
+    document.addEventListener('pointerdown', event => { if (!combo.contains(event.target)) close(); });
+  }
+  lookupForm.querySelectorAll('[data-lookup-combo]').forEach(installCombo);
+  lookupForm.addEventListener('submit', () => { document.querySelector('[data-lookup-progress]').hidden = false; });
+  updateDateRequirement();
+</script>
+{% endblock %}

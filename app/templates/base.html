@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MCI Marine Risk Intelligence proof of concept">
+  <title>{% block title %}MCI Marine Risk{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% if user %}
+  <header class="app-header">
+    <a class="brand brand--header" href="/dashboard" aria-label="MCI dashboard">
+      <span class="brand__mark">MCI</span>
+      <span class="brand__product">Marine Risk Intelligence</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="/dashboard" class="{% if request.url.path == '/dashboard' %}is-active{% endif %}">Dashboard</a>
+      <a href="/analysis" class="{% if request.url.path == '/analysis' %}is-active{% endif %}">New analysis</a>
+      <a href="/event-lookup" class="{% if request.url.path == '/event-lookup' %}is-active{% endif %}">Event Look up</a>
+    </nav>
+    <div class="user-menu">
+      <span>{{ user.displayName }}</span>
+      <form method="post" action="/logout">
+        <input type="hidden" name="csrf" value="{{ csrfToken }}">
+        <button class="button button--ghost button--small" type="submit">Sign out</button>
+      </form>
+    </div>
+  </header>
+  {% endif %}
+
+  <main class="{% if user %}app-shell{% endif %}">
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

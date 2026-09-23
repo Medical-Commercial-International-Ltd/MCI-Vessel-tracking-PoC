@@ -1,0 +1,1206 @@
+{
+  "source": "https://services7.arcgis.com/n1YM8pTrFmm7L4hs/arcgis/rest/services/Principal_Ports/FeatureServer/0/query?where=1%3D1&outFields=OBJECTID%2CPORTNAME&returnGeometry=true&outSR=4326&f=geojson",
+  "distanceBasis": "polygon centroid",
+  "ports": [
+    {
+      "id": "53",
+      "name": "Albany Port District, NY",
+      "coordinates": [
+        -73.789213,
+        42.662948
+      ]
+    },
+    {
+      "id": "145",
+      "name": "Alexandria-Cairo Port, IL",
+      "coordinates": [
+        -89.337648,
+        37.191606
+      ]
+    },
+    {
+      "id": "68",
+      "name": "Alpena, MI",
+      "coordinates": [
+        -83.439936,
+        45.074025
+      ]
+    },
+    {
+      "id": "75",
+      "name": "America's Central Port, IL",
+      "coordinates": [
+        -90.164459,
+        38.846429
+      ]
+    },
+    {
+      "id": "137",
+      "name": "Anacortes, WA",
+      "coordinates": [
+        -122.598431,
+        48.517213
+      ]
+    },
+    {
+      "id": "18",
+      "name": "Baltimore, MD",
+      "coordinates": [
+        -76.604061,
+        39.39857
+      ]
+    },
+    {
+      "id": "140",
+      "name": "Beaumont, TX",
+      "coordinates": [
+        -94.137909,
+        30.056094
+      ]
+    },
+    {
+      "id": "55",
+      "name": "Boston, MA",
+      "coordinates": [
+        -70.971781,
+        42.333283
+      ]
+    },
+    {
+      "id": "88",
+      "name": "Bridgeport, CT",
+      "coordinates": [
+        -73.195496,
+        41.187236
+      ]
+    },
+    {
+      "id": "34",
+      "name": "Brownsville, TX",
+      "coordinates": [
+        -97.416546,
+        26.023588
+      ]
+    },
+    {
+      "id": "11",
+      "name": "Calhoun Port Authority, TX",
+      "coordinates": [
+        -96.550724,
+        28.595051
+      ]
+    },
+    {
+      "id": "45",
+      "name": "Canaveral Port District, FL",
+      "coordinates": [
+        -80.727229,
+        28.528149
+      ]
+    },
+    {
+      "id": "38",
+      "name": "Central Louisiana Regional, LA",
+      "coordinates": [
+        -92.533206,
+        31.198626
+      ]
+    },
+    {
+      "id": "105",
+      "name": "Chattanooga, TN",
+      "coordinates": [
+        -85.252344,
+        35.069422
+      ]
+    },
+    {
+      "id": "93",
+      "name": "Cincinnati, OH",
+      "coordinates": [
+        -84.503649,
+        39.142911
+      ]
+    },
+    {
+      "id": "109",
+      "name": "Clark Township, MI",
+      "coordinates": [
+        -84.355297,
+        46.020328
+      ]
+    },
+    {
+      "id": "28",
+      "name": "Cleveland-Cuyahoga Port, OH",
+      "coordinates": [
+        -81.7002,
+        41.635067
+      ]
+    },
+    {
+      "id": "85",
+      "name": "Conneaut, OH",
+      "coordinates": [
+        -80.568534,
+        41.927796
+      ]
+    },
+    {
+      "id": "126",
+      "name": "Coos Bay OR, Port of",
+      "coordinates": [
+        -124.041556,
+        43.394495
+      ]
+    },
+    {
+      "id": "133",
+      "name": "Corpus Christi, TX",
+      "coordinates": [
+        -97.517026,
+        27.838647
+      ]
+    },
+    {
+      "id": "118",
+      "name": "Detroit-Wayne County Port, MI",
+      "coordinates": [
+        -83.261137,
+        42.284754
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Duluth-Superior, MN and WI",
+      "coordinates": [
+        -92.118421,
+        46.746099
+      ]
+    },
+    {
+      "id": "1",
+      "name": "Galveston, TX",
+      "coordinates": [
+        -94.857,
+        29.243721
+      ]
+    },
+    {
+      "id": "83",
+      "name": "Grays Harbor Port District, WA",
+      "coordinates": [
+        -123.828635,
+        47.144414
+      ]
+    },
+    {
+      "id": "63",
+      "name": "Greater Lafourche Port, LA",
+      "coordinates": [
+        -90.239668,
+        29.329508
+      ]
+    },
+    {
+      "id": "31",
+      "name": "Green Bay, WI",
+      "coordinates": [
+        -87.992865,
+        44.474337
+      ]
+    },
+    {
+      "id": "97",
+      "name": "Guayama, PR",
+      "coordinates": [
+        -66.136341,
+        17.973391
+      ]
+    },
+    {
+      "id": "138",
+      "name": "Guaynabo, PR",
+      "coordinates": [
+        -66.114049,
+        18.343829
+      ]
+    },
+    {
+      "id": "44",
+      "name": "Guntersville, AL",
+      "coordinates": [
+        -86.263597,
+        34.367244
+      ]
+    },
+    {
+      "id": "49",
+      "name": "Havana Regional Port, IL",
+      "coordinates": [
+        -90.010883,
+        40.277763
+      ]
+    },
+    {
+      "id": "91",
+      "name": "Heart of Illinois Port, IL",
+      "coordinates": [
+        -89.720508,
+        40.605535
+      ]
+    },
+    {
+      "id": "74",
+      "name": "Heartland Port Authority, MO",
+      "coordinates": [
+        -92.039493,
+        38.73019
+      ]
+    },
+    {
+      "id": "58",
+      "name": "Helena-West Helena Port, AR",
+      "coordinates": [
+        -90.848028,
+        34.428298
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Henderson County Riverport, KY",
+      "coordinates": [
+        -87.572916,
+        37.795562
+      ]
+    },
+    {
+      "id": "96",
+      "name": "Hickman-Fulton County Port, KY",
+      "coordinates": [
+        -89.187602,
+        36.554079
+      ]
+    },
+    {
+      "id": "23",
+      "name": "Hilo, Hawai'i, HI",
+      "coordinates": [
+        -155.069847,
+        19.735882
+      ]
+    },
+    {
+      "id": "92",
+      "name": "Honolulu, O'ahu, HI",
+      "coordinates": [
+        -157.876178,
+        21.310358
+      ]
+    },
+    {
+      "id": "99",
+      "name": "Houston Port Authority, TX",
+      "coordinates": [
+        -95.392347,
+        29.857283
+      ]
+    },
+    {
+      "id": "37",
+      "name": "Illinois International Port, IL",
+      "coordinates": [
+        -87.686599,
+        41.83863
+      ]
+    },
+    {
+      "id": "95",
+      "name": "Illinois Valley Port, IL",
+      "coordinates": [
+        -89.223666,
+        41.278088
+      ]
+    },
+    {
+      "id": "70",
+      "name": "Jackson-Union Port District, IL",
+      "coordinates": [
+        -89.329909,
+        37.656118
+      ]
+    },
+    {
+      "id": "39",
+      "name": "Jacksonville, FL",
+      "coordinates": [
+        -81.660904,
+        30.33692
+      ]
+    },
+    {
+      "id": "79",
+      "name": "Jefferson County Port, MO",
+      "coordinates": [
+        -90.537695,
+        38.261078
+      ]
+    },
+    {
+      "id": "122",
+      "name": "Joliet Regional Port, IL",
+      "coordinates": [
+        -88.12827,
+        41.544636
+      ]
+    },
+    {
+      "id": "24",
+      "name": "Kahului, Maui, HI",
+      "coordinates": [
+        -156.471318,
+        20.901944
+      ]
+    },
+    {
+      "id": "43",
+      "name": "Kalaeloa Barbers Point, HI",
+      "coordinates": [
+        -158.106186,
+        21.304694
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Kaskaskia Regional Port, IL",
+      "coordinates": [
+        -89.940015,
+        38.216489
+      ]
+    },
+    {
+      "id": "25",
+      "name": "Kawaihae, Hawai'i, HI",
+      "coordinates": [
+        -155.830081,
+        20.035071
+      ]
+    },
+    {
+      "id": "106",
+      "name": "Lake Charles Harbor District, LA",
+      "coordinates": [
+        -93.306378,
+        29.94098
+      ]
+    },
+    {
+      "id": "94",
+      "name": "Lake Providence Port, LA",
+      "coordinates": [
+        -91.235071,
+        32.732559
+      ]
+    },
+    {
+      "id": "134",
+      "name": "Louisville-Jefferson Port, KY",
+      "coordinates": [
+        -85.659163,
+        38.187198
+      ]
+    },
+    {
+      "id": "86",
+      "name": "Manatee County Port, FL",
+      "coordinates": [
+        -82.357543,
+        27.477528
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Marblehead, OH",
+      "coordinates": [
+        -82.726313,
+        41.523544
+      ]
+    },
+    {
+      "id": "111",
+      "name": "Marine City, MI",
+      "coordinates": [
+        -82.501346,
+        42.713566
+      ]
+    },
+    {
+      "id": "116",
+      "name": "Marquette, MI",
+      "coordinates": [
+        -87.395924,
+        46.550781
+      ]
+    },
+    {
+      "id": "108",
+      "name": "Massac-Metropolis Port, IL",
+      "coordinates": [
+        -88.707568,
+        37.216467
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Memphis-Shelby County Port, TN",
+      "coordinates": [
+        -89.911713,
+        35.197463
+      ]
+    },
+    {
+      "id": "90",
+      "name": "Mid-America Port, IA, IL and MO",
+      "coordinates": [
+        -91.329733,
+        40.228282
+      ]
+    },
+    {
+      "id": "21",
+      "name": "Milwaukee, WI",
+      "coordinates": [
+        -87.96728,
+        43.063504
+      ]
+    },
+    {
+      "id": "115",
+      "name": "Mobile, AL",
+      "coordinates": [
+        -88.101403,
+        30.667434
+      ]
+    },
+    {
+      "id": "72",
+      "name": "Monroe, MI",
+      "coordinates": [
+        -83.494291,
+        41.921385
+      ]
+    },
+    {
+      "id": "47",
+      "name": "Morehead City, NC",
+      "coordinates": [
+        -76.736713,
+        34.729188
+      ]
+    },
+    {
+      "id": "67",
+      "name": "Mueller Township, MI",
+      "coordinates": [
+        -85.929418,
+        46.052706
+      ]
+    },
+    {
+      "id": "73",
+      "name": "Muskegon, MI",
+      "coordinates": [
+        -86.256257,
+        43.228127
+      ]
+    },
+    {
+      "id": "60",
+      "name": "Nashville, TN",
+      "coordinates": [
+        -86.786965,
+        36.164072
+      ]
+    },
+    {
+      "id": "26",
+      "name": "Nawiliwili, Kaua'i, HI",
+      "coordinates": [
+        -159.353354,
+        21.952867
+      ]
+    },
+    {
+      "id": "146",
+      "name": "New Bourbon Port Authority, MO",
+      "coordinates": [
+        -90.013844,
+        37.802943
+      ]
+    },
+    {
+      "id": "81",
+      "name": "New Haven, CT",
+      "coordinates": [
+        -72.92429,
+        41.310393
+      ]
+    },
+    {
+      "id": "14",
+      "name": "New Madrid County Port, MO",
+      "coordinates": [
+        -89.651839,
+        36.594652
+      ]
+    },
+    {
+      "id": "66",
+      "name": "New Orleans, LA",
+      "coordinates": [
+        -90.010916,
+        30.061632
+      ]
+    },
+    {
+      "id": "149",
+      "name": "New York, NY & NJ",
+      "coordinates": [
+        -74.035208,
+        40.703351
+      ]
+    },
+    {
+      "id": "61",
+      "name": "Nikiski, AK",
+      "coordinates": [
+        -151.231866,
+        60.715037
+      ]
+    },
+    {
+      "id": "132",
+      "name": "Northern Indiana District, IN",
+      "coordinates": [
+        -87.06579,
+        41.509822
+      ]
+    },
+    {
+      "id": "69",
+      "name": "Orange County Nav District, TX",
+      "coordinates": [
+        -93.895065,
+        30.125429
+      ]
+    },
+    {
+      "id": "64",
+      "name": "Owensboro Riverport, KY",
+      "coordinates": [
+        -87.116363,
+        37.754374
+      ]
+    },
+    {
+      "id": "124",
+      "name": "Oxnard Harbor District, CA",
+      "coordinates": [
+        -119.213407,
+        34.196587
+      ]
+    },
+    {
+      "id": "119",
+      "name": "Paducah-McCracken Riverport, KY",
+      "coordinates": [
+        -88.711959,
+        37.051389
+      ]
+    },
+    {
+      "id": "87",
+      "name": "Panama City Port Authority, FL",
+      "coordinates": [
+        -85.632627,
+        30.237652
+      ]
+    },
+    {
+      "id": "29",
+      "name": "Pemiscot County Port, MO",
+      "coordinates": [
+        -89.785385,
+        36.211457
+      ]
+    },
+    {
+      "id": "100",
+      "name": "Philadelphia Regional Port, PA",
+      "coordinates": [
+        -75.015635,
+        40.041654
+      ]
+    },
+    {
+      "id": "33",
+      "name": "Pittsburgh, PA Port of",
+      "coordinates": [
+        -79.853547,
+        40.487033
+      ]
+    },
+    {
+      "id": "50",
+      "name": "Plaquemines Port District, LA",
+      "coordinates": [
+        -89.48192,
+        29.380667
+      ]
+    },
+    {
+      "id": "150",
+      "name": "Port Arthur, TX",
+      "coordinates": [
+        -93.932245,
+        29.897128
+      ]
+    },
+    {
+      "id": "36",
+      "name": "Port Everglades, FL",
+      "coordinates": [
+        -80.455888,
+        26.151861
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Port Freeport, TX",
+      "coordinates": [
+        -95.496029,
+        29.136159
+      ]
+    },
+    {
+      "id": "128",
+      "name": "Port Jefferson, NY",
+      "coordinates": [
+        -73.092666,
+        40.962754
+      ]
+    },
+    {
+      "id": "41",
+      "name": "Port of Alaska, AK",
+      "coordinates": [
+        -149.188597,
+        61.148265
+      ]
+    },
+    {
+      "id": "135",
+      "name": "Port of Brunswick, GA",
+      "coordinates": [
+        -81.488828,
+        31.147477
+      ]
+    },
+    {
+      "id": "113",
+      "name": "Port of Charleston, SC",
+      "coordinates": [
+        -80.036205,
+        33.022283
+      ]
+    },
+    {
+      "id": "89",
+      "name": "Port of Columbia County, OR",
+      "coordinates": [
+        -123.018563,
+        45.986337
+      ]
+    },
+    {
+      "id": "107",
+      "name": "Port of Greater Baton Rouge, LA",
+      "coordinates": [
+        -91.299695,
+        30.44941
+      ]
+    },
+    {
+      "id": "103",
+      "name": "Port of Greenville, MS",
+      "coordinates": [
+        -91.051422,
+        33.385033
+      ]
+    },
+    {
+      "id": "104",
+      "name": "Port of Gulfport, MS",
+      "coordinates": [
+        -89.06921,
+        30.421148
+      ]
+    },
+    {
+      "id": "19",
+      "name": "Port of Harlingen Authority, TX",
+      "coordinates": [
+        -97.528294,
+        26.276898
+      ]
+    },
+    {
+      "id": "54",
+      "name": "Port of Iberia District, LA",
+      "coordinates": [
+        -91.78404,
+        29.727035
+      ]
+    },
+    {
+      "id": "17",
+      "name": "Port of Kalama, WA",
+      "coordinates": [
+        -122.559492,
+        46.068097
+      ]
+    },
+    {
+      "id": "101",
+      "name": "Port of Long Beach, CA",
+      "coordinates": [
+        -118.215527,
+        33.746938
+      ]
+    },
+    {
+      "id": "12",
+      "name": "Port of Longview, WA",
+      "coordinates": [
+        -122.731324,
+        46.255391
+      ]
+    },
+    {
+      "id": "56",
+      "name": "Port of Los Angeles, CA",
+      "coordinates": [
+        -118.405877,
+        34.108933
+      ]
+    },
+    {
+      "id": "148",
+      "name": "Port of Oakland, CA",
+      "coordinates": [
+        -122.249702,
+        37.726781
+      ]
+    },
+    {
+      "id": "82",
+      "name": "Port of Palm Beach District, FL",
+      "coordinates": [
+        -80.492993,
+        26.69064
+      ]
+    },
+    {
+      "id": "112",
+      "name": "Port of Pascagoula, MS",
+      "coordinates": [
+        -88.622847,
+        30.462893
+      ]
+    },
+    {
+      "id": "98",
+      "name": "Port of Portland, OR",
+      "coordinates": [
+        -122.458544,
+        45.330803
+      ]
+    },
+    {
+      "id": "125",
+      "name": "Port of Providence, RI",
+      "coordinates": [
+        -71.390789,
+        41.799022
+      ]
+    },
+    {
+      "id": "136",
+      "name": "Port of Rosedale, MS",
+      "coordinates": [
+        -90.880407,
+        33.795545
+      ]
+    },
+    {
+      "id": "117",
+      "name": "Port of Savannah, GA",
+      "coordinates": [
+        -81.123116,
+        32.098014
+      ]
+    },
+    {
+      "id": "130",
+      "name": "Port of Vancouver USA, WA",
+      "coordinates": [
+        -122.528876,
+        45.681754
+      ]
+    },
+    {
+      "id": "141",
+      "name": "Port of Vicksburg, MS",
+      "coordinates": [
+        -90.852017,
+        32.357236
+      ]
+    },
+    {
+      "id": "46",
+      "name": "Portland, ME",
+      "coordinates": [
+        -70.188031,
+        43.644525
+      ]
+    },
+    {
+      "id": "27",
+      "name": "PortMiami, FL",
+      "coordinates": [
+        -80.49867,
+        25.608973
+      ]
+    },
+    {
+      "id": "71",
+      "name": "Portsmouth, NH",
+      "coordinates": [
+        -70.782561,
+        43.058095
+      ]
+    },
+    {
+      "id": "121",
+      "name": "Presque Isle Township, MI",
+      "coordinates": [
+        -83.464774,
+        45.266301
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Redwood City, CA",
+      "coordinates": [
+        -122.211381,
+        37.517342
+      ]
+    },
+    {
+      "id": "110",
+      "name": "Richmond, CA",
+      "coordinates": [
+        -122.358275,
+        37.952894
+      ]
+    },
+    {
+      "id": "59",
+      "name": "Rogers City, MI",
+      "coordinates": [
+        -83.807935,
+        45.419506
+      ]
+    },
+    {
+      "id": "52",
+      "name": "Sabine Pass Port Authority, TX",
+      "coordinates": [
+        -94.116452,
+        29.709389
+      ]
+    },
+    {
+      "id": "40",
+      "name": "Sacramento-Yolo Port, CA",
+      "coordinates": [
+        -121.579056,
+        38.431033
+      ]
+    },
+    {
+      "id": "123",
+      "name": "San Diego Unified Port, CA",
+      "coordinates": [
+        -117.109913,
+        32.792882
+      ]
+    },
+    {
+      "id": "20",
+      "name": "San Francisco Port, CA",
+      "coordinates": [
+        -122.442509,
+        37.77823
+      ]
+    },
+    {
+      "id": "143",
+      "name": "San Juan, PR",
+      "coordinates": [
+        -66.068324,
+        18.422261
+      ]
+    },
+    {
+      "id": "139",
+      "name": "Sandusky, OH",
+      "coordinates": [
+        -82.714135,
+        41.4564
+      ]
+    },
+    {
+      "id": "84",
+      "name": "Searsport, ME",
+      "coordinates": [
+        -68.92484,
+        44.472867
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Seattle, WA",
+      "coordinates": [
+        -121.835963,
+        47.491036
+      ]
+    },
+    {
+      "id": "57",
+      "name": "Shawneetown Regional Port, IL",
+      "coordinates": [
+        -88.207694,
+        37.690254
+      ]
+    },
+    {
+      "id": "32",
+      "name": "Silver Bay, MN",
+      "coordinates": [
+        -91.277542,
+        47.293245
+      ]
+    },
+    {
+      "id": "147",
+      "name": "South Jersey Port Corp, NJ",
+      "coordinates": [
+        -74.946479,
+        39.588796
+      ]
+    },
+    {
+      "id": "16",
+      "name": "South Louisiana, LA, Port of",
+      "coordinates": [
+        -90.50775,
+        30.019929
+      ]
+    },
+    {
+      "id": "144",
+      "name": "Southeast Missouri Port, MO",
+      "coordinates": [
+        -89.635802,
+        37.245136
+      ]
+    },
+    {
+      "id": "65",
+      "name": "Southern Indiana District, IN",
+      "coordinates": [
+        -86.371088,
+        38.341372
+      ]
+    },
+    {
+      "id": "76",
+      "name": "Southwest Regional Port, IL",
+      "coordinates": [
+        -90.147823,
+        38.569168
+      ]
+    },
+    {
+      "id": "77",
+      "name": "St. Louis City Port, MO",
+      "coordinates": [
+        -90.207974,
+        38.654113
+      ]
+    },
+    {
+      "id": "78",
+      "name": "St. Louis County, MO",
+      "coordinates": [
+        -90.443404,
+        38.640696
+      ]
+    },
+    {
+      "id": "129",
+      "name": "St. Paul Port Authority, MN",
+      "coordinates": [
+        -93.104012,
+        44.947748
+      ]
+    },
+    {
+      "id": "35",
+      "name": "Stockton, CA",
+      "coordinates": [
+        -121.312145,
+        37.976723
+      ]
+    },
+    {
+      "id": "114",
+      "name": "Tacoma, WA",
+      "coordinates": [
+        -122.137237,
+        47.037611
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Tampa Port Authority, FL",
+      "coordinates": [
+        -82.346924,
+        27.906237
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Terrebonne Parish Port, LA",
+      "coordinates": [
+        -90.837568,
+        29.337254
+      ]
+    },
+    {
+      "id": "15",
+      "name": "Texas City, TX",
+      "coordinates": [
+        -94.894828,
+        29.447804
+      ]
+    },
+    {
+      "id": "120",
+      "name": "Toledo-Lucas County Port, OH",
+      "coordinates": [
+        -83.468279,
+        41.684199
+      ]
+    },
+    {
+      "id": "131",
+      "name": "Tulsa-Rogers County Port, OK",
+      "coordinates": [
+        -95.678882,
+        36.313217
+      ]
+    },
+    {
+      "id": "22",
+      "name": "Two Harbors, MN",
+      "coordinates": [
+        -91.675225,
+        47.029583
+      ]
+    },
+    {
+      "id": "48",
+      "name": "Unalaska Island, AK",
+      "coordinates": [
+        -166.542418,
+        53.937174
+      ]
+    },
+    {
+      "id": "30",
+      "name": "Valdez, AK",
+      "coordinates": [
+        -146.298132,
+        61.096747
+      ]
+    },
+    {
+      "id": "51",
+      "name": "Victoria, TX",
+      "coordinates": [
+        -96.971533,
+        28.796356
+      ]
+    },
+    {
+      "id": "62",
+      "name": "Virgin Islands - St. Croix, VI",
+      "coordinates": [
+        -64.747934,
+        17.735616
+      ]
+    },
+    {
+      "id": "42",
+      "name": "Virginia, VA, Port of",
+      "coordinates": [
+        -76.32874,
+        36.891114
+      ]
+    },
+    {
+      "id": "127",
+      "name": "West St. Mary Parish Port, LA",
+      "coordinates": [
+        -91.567152,
+        29.681776
+      ]
+    },
+    {
+      "id": "80",
+      "name": "Wilmington, DE",
+      "coordinates": [
+        -75.528089,
+        39.735046
+      ]
+    },
+    {
+      "id": "102",
+      "name": "Wilmington, NC",
+      "coordinates": [
+        -77.887025,
+        34.209826
+      ]
+    },
+    {
+      "id": "142",
+      "name": "Winona Port Authority, MN",
+      "coordinates": [
+        -91.668336,
+        44.050579
+      ]
+    }
+  ]
+}
