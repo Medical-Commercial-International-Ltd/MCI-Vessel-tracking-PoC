@@ -16,6 +16,7 @@
 - **Check loss history:** Search the vessel against available international casualty and incident records, and separately against any accessible insurance claims history. Show the matched event, date, source and uncertainty; flag significant or possible matches for review. A blank search result must not be presented as proof of a claims-free vessel.
 - **Review movement and route:** Show historical AIS tracks, common routes, last known position and significant coverage gaps.
 - **Assess specialist yachts:** Combine location and itinerary with historical/forecast weather and relevant crew complement, qualifications and experience.
+- **Receive crew documents:** Integrate with the separate MCI Document Intake application so a broker or yacht managing agent can email CVs and qualification certificates to a shared address and each clean attachment appears as a controlled reference on the correct case and crew member after human confirmation.
 - **Assess cargo:** Show cargo type/value, carrying vessel, ports, voyage legs, storage and transshipment where known.
 - **Assess war and security exposure:** Highlight proposed routes through listed or otherwise high-risk areas and explain the source and date of the area definition.
 - **Screen possible compliance issues:** Surface possible sanctions connections, ownership/flag changes, AIS outages and ship-to-ship activity for human review.
@@ -76,6 +77,7 @@ These are opportunities to test, not proposed automatic underwriting decisions. 
 6. Which sources are trusted today, and what data is most often missing or slow to obtain?
 7. What would count as success: time saved, fewer missed referrals, better selection, clearer accumulation or something else?
 8. When you say “international claims list”, is the intended source IUMI's major-claims data, IMO's casualty/incident records, another named list, or more than one? Is the decision a vessel casualty check, a check of actual insurance claims, or both?
+9. Which central team will own the separate Document Intake application and its exception queue, what CAT intake reference should senders quote, and who may approve sending personal documents to Crewdentials or another provider?
 
 **Meeting notes / additional requirements:**
 
