@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='/vendor/leaflet/leaflet.css') }}">
+{% endblock %}
 {% block title %}Vessel analysis · MCI Marine Risk{% endblock %}
 {% block content %}
 {% if analysis and analysis.is_synthetic %}
@@ -135,8 +138,39 @@
   <article class="panel map-panel">
     <div class="panel__heading"><div><span class="eyebrow">Geospatial review</span><h2>Encounter map</h2></div><span class="panel__note">{% if analysis.is_synthetic %}Illustrative positions{% else %}Estimated closest-approach positions{% endif %}</span></div>
     {% if encounters %}
+    <fieldset class="encounter-map-controls" data-map-controls disabled>
+      <legend class="sr-only">Encounter map controls</legend>
+      <label>Storm encounter <select data-map-event aria-label="Choose storm encounter"></select></label>
+      <button class="button button--secondary button--small" type="button" data-map-fit>Fit encounter</button>
+      <button class="button button--ghost button--small" type="button" data-map-all>Full storm track</button>
+      <label>Background <select data-map-imagery aria-label="Map background">
+        <option value="street">OpenStreetMap</option>
+        <option value="goes">GOES infrared (10 min, on demand)</option>
+      </select></label>
+      <button class="button button--ghost button--small" type="button" data-map-satellite-retry hidden>Retry imagery</button>
+      <div class="encounter-map-layers">
+        <label><input type="checkbox" data-map-layer="vessel" checked> Vessel track</label>
+        <label><input type="checkbox" data-map-layer="gaps" checked> Interpolate gaps (estimated)</label>
+        <label><input type="checkbox" data-map-layer="storm" checked> Storm track</label>
+        <label><input type="checkbox" data-map-layer="samples"> Track samples</label>
+        <label><input type="checkbox" data-map-layer="34" checked> 34 kt</label>
+        <label><input type="checkbox" data-map-layer="50" checked> 50 kt</label>
+        <label><input type="checkbox" data-map-layer="64" checked> 64 kt</label>
+      </div>
+    </fieldset>
     <div id="encounter-map" class="encounter-map" aria-label="Map of vessel and storm encounters"></div>
-    <script id="map-data" type="application/json">{{ mapData | tojson }}</script>
+    <p class="panel__note" data-map-basemap hidden>Background map tiles are unavailable. Check your internet connection; vessel and storm overlays remain interactive.</p>
+    <div class="encounter-map-timeline" data-map-timeline hidden>
+      <button class="button button--secondary button--small" type="button" data-map-play aria-pressed="false">Play</button>
+      <label>Encounter timeline · 5-minute steps <input type="range" min="0" max="0" value="0" step="1" data-map-time aria-label="Change encounter time"></label>
+      <label>Playback <select data-map-speed aria-label="Playback speed"><option value="10">10 min/s</option><option value="30" selected>30 min/s</option><option value="60">1 hour/s</option></select></label>
+      <button class="button button--ghost button--small" type="button" data-map-closest>Closest approach</button>
+    </div>
+    <p class="panel__note" data-map-imagery-note hidden></p>
+    <dl class="map-position-details" data-map-details aria-label="Tracking details"></dl>
+    <p class="panel__note" data-map-status role="status" aria-live="polite">Loading encounter map…</p>
+    <p class="panel__note">Solid vessel lines follow cached tracks. Dashed gap links are playback estimates and do not contribute to exposure statistics. GOES infrared frames are fetched on demand at ten-minute steps; actual scan times are shown, and playback buffers images before advancing. No vessel position is projected beyond known points.</p>
+    <script id="map-data" type="application/json">{{ {'events': mapData, 'tileUrl': mapTileUrl, 'attribution': mapTileAttribution} | tojson }}</script>
     {% else %}
     <div class="empty-state"><span>○</span><strong>No recorded encounters</strong><p>No matching storm exposures were found for this assessment.</p></div>
     {% endif %}
@@ -219,4 +253,9 @@
   {% endif %}
 </footer>
 {% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', path='/vendor/leaflet/leaflet.js') }}" defer></script>
+<script src="{{ url_for('static', path='/satellite-playback.js') }}" defer></script>
+<script src="{{ url_for('static', path='/encounter-map.js') }}" defer></script>
 {% endblock %}

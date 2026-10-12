@@ -1,4 +1,6 @@
 .venv/
+.venv-satellite/
+data/satellite/
 *.egg-info/
 *.code-workspace
 __pycache__/

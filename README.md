@@ -141,6 +141,99 @@ to stop the server.
 
 Open <http://127.0.0.1:8000>.
 
+### Encounter map
+
+The encounter view uses locally bundled Leaflet 1.9.4 with OpenStreetMap background
+tiles. No account, API key, payment method or npm dependency installation is needed.
+Use the zoom buttons, drag to pan, choose a storm encounter, toggle vessel/storm
+tracks and 34/50/64 kt wind areas, or move the timeline to inspect historical storm
+positions. Fit encounter and Full storm track buttons reset the view.
+
+The timeline now provides five-minute steps and smooth Play/Pause playback at
+10, 30 or 60 historical minutes per real-time second. Scrubbing pauses playback.
+Vessel and storm markers and wind areas move together. Vessel playback follows
+the timed track geometry, including straight-line interpolation between known
+positions where source data has gaps. These bridges are dashed and labelled as
+display-only estimates; they never contribute to exposure scores or statistics.
+Uncheck Interpolate gaps to hide these estimates. Positions are not projected
+before the first or after the last known point. Missing storm intervals remain
+unknown. Coordinates, estimated speed/heading and centre
+separation update beside the map. Enable Track samples to inspect timestamped
+geometry vertices; a maximum of 3,000 sample markers are shown per encounter,
+with the displayed/available count reported. No new original AIS messages are
+created by interpolation.
+
+#### On-demand historical GOES imagery
+
+Choose **GOES infrared (10 min, on demand)** under Background for animated historical
+satellite imagery. The application requests each image through its own authenticated
+API, looks up the nearest archived GOES scan, downloads that single source file,
+and prepares a 640 × 512 Web Mercator crop covering the encounter. It never
+downloads the whole satellite archive or substitutes today's image for a historical
+request. Actual acquisition start/end times are displayed; the scan start must be
+within ten minutes of the requested slot.
+
+This is ABI C13 clean infrared imagery, with approximately 2 km source resolution.
+The fixed grayscale uses 180–330 K: cold cloud tops are brighter. It works by day
+and night and is not a true-colour photograph.
+
+For the installed application, the isolated satellite worker is already configured.
+For a new checkout, install Python 3.13 and run:
+
+```powershell
+.\scripts\setup_satellite.ps1
+# If needed: .\scripts\setup_satellite.ps1 -PythonPath C:\path\to\python.exe
+```
+
+The worker's numpy/h5py/Pillow/pyproj dependencies are kept in `.venv-satellite`,
+separate from the main application's Python environment. Optional `.env` settings:
+
+```text
+SATELLITE_PYTHON=.venv-satellite/Scripts/python.exe
+SATELLITE_CACHE_DIR=./data/satellite
+SATELLITE_CACHE_LIMIT_MB=512
+```
+
+Image crops are cached within that limit; raw downloads are removed after rendering.
+The browser buffers the current and next three images, with two requests in flight
+and a twelve-image memory cache. Playback waits while the next frame is loading.
+Selecting GOES sets playback to 10 historical minutes/second; faster speeds can
+require more buffering. Missing images are labelled, and **Retry imagery** retries
+failed requests. Leaving the source or encounter cancels browser requests and
+prevents stale images from appearing in another encounter.
+
+The `ImageryProvider` interface in `app/satellite.py` isolates source lookup and
+rendering so a future imagery API can replace the archive adapter. It has no
+dependency on scoring; AIS tracking and storm/exposure calculations remain NOAA
+based. Free public source access requires no API key, cloud account or payment.
+Internet access is required on the server for first-time frames; cached crops
+can be reused without fetching their source again.
+
+Checks:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+.\.venv-satellite\Scripts\python.exe tests/satellite_renderer_checks.py
+node --test tests/encounter-map.test.cjs tests/satellite-playback.test.cjs
+```
+
+Vessel tracks show up to 24 hours either side of closest approach within the
+assessment dates. Storm tracks show the full NOAA lifecycle. Missing vessel
+positions and wind radii remain unknown. Wind polygons represent reported maximum
+quadrant extents at the selected time, not a forecast cone or measured shipboard winds.
+
+Background tiles need internet access. If tiles cannot load, the local NOAA overlays
+remain interactive and a message identifies the missing background. Tile requests
+use HTTPS, visible OpenStreetMap attribution and the browser's normal tile caching.
+Only tiles for the visible map are requested; no bulk downloading or prefetching.
+The default tile service is intended for light use and has no availability guarantee.
+See the [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
+
+An alternative tile service can be configured with `MAP_TILE_URL` and
+`MAP_TILE_ATTRIBUTION` in `.env`, then restart `npm run dev`. These settings are
+optional; the OpenStreetMap defaults work immediately. Google Maps settings are
+no longer used. Leaflet's license is included under `app/static/vendor/leaflet/`.
+
 For an initial real-data test, download the official hurricane records and
 one year of AIS tracks before downloading the full cache:
 

@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     ais_cache_dir: Path = Path("C:/MCI-AIS-Cache")
     ais_cache_limit_gb: int = Field(default=100, ge=5, le=500)
+    map_tile_url: str = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    map_tile_attribution: str = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    satellite_python: Path = Path(".venv-satellite/Scripts/python.exe")
+    satellite_cache_dir: Path = Path("data/satellite")
+    satellite_cache_limit_mb: int = Field(default=512, ge=64, le=4096)
 
     @property
     def analyses_dir(self) -> Path:

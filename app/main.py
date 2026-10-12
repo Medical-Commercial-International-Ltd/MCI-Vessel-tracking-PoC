@@ -5,8 +5,10 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 import re
+import logging
+import subprocess
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Request, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
@@ -14,6 +16,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
 
 from app.config import Settings, get_settings
+from app.encounter_map import build_map_data
 from app.event_lookup import EventLookupService
 from app.models import AnalysisInput, DatePeriod
 from app.repositories import FileAnalysisRepository
@@ -26,6 +29,7 @@ from app.services import (
     validate_identifier,
 )
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
+from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -82,6 +86,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = configuration
     app.state.repository = repository
     app.state.photo_catalog = photo_catalog
+    satellite = SatelliteService(configuration.satellite_cache_dir, configuration.satellite_cache_limit_mb,
+                                 GoesArchiveProvider(configuration.satellite_python))
+    app.state.satellite_service = satellite
     app.state.event_lookup = EventLookupService(
         configuration.ais_cache_dir,
         configuration.data_dir / "lookups" / "us_principal_ports.json",
@@ -98,7 +105,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
-        response.headers["Referrer-Policy"] = "same-origin"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
         response.headers["Cache-Control"] = "no-store"
         return response
@@ -117,6 +124,46 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if not user:
             return None, RedirectResponse("/login", status_code=303)
         return user, None
+
+    def satellite_context(request, analysis_id, encounter_id):
+        if not request.session.get("user"):
+            raise HTTPException(401, "Sign in to request satellite imagery")
+        try:
+            analysis = repository.get_analysis("mci", analysis_id)
+            encounters = repository.list_encounters("mci", analysis_id)
+        except ValueError:
+            raise HTTPException(404, "Assessment not found")
+        encounter = next((item for item in encounters if item.id == encounter_id), None)
+        if analysis is None or encounter is None:
+            raise HTTPException(404, "Storm encounter not found")
+        return analysis, encounter
+
+    @app.get("/api/satellite/{analysis_id}/{encounter_id}/manifest")
+    async def satellite_manifest(request: Request, analysis_id: str, encounter_id: str):
+        analysis, encounter = satellite_context(request, analysis_id, encounter_id)
+        try:
+            return await run_in_threadpool(satellite.manifest, analysis, encounter, configuration.ais_cache_dir)
+        except ImageryUnavailable as exc:
+            raise HTTPException(404, str(exc))
+        except (OSError, ValueError):
+            logging.getLogger(__name__).exception("Satellite manifest failed")
+            raise HTTPException(503, "Satellite imagery is temporarily unavailable")
+
+    @app.get("/api/satellite/{analysis_id}/{encounter_id}/image")
+    async def satellite_image(request: Request, analysis_id: str, encounter_id: str, time: datetime):
+        analysis, encounter = satellite_context(request, analysis_id, encounter_id)
+        try:
+            manifest = await run_in_threadpool(satellite.manifest, analysis, encounter, configuration.ais_cache_dir)
+            image_bytes, metadata, cached = await run_in_threadpool(satellite.image, manifest, time)
+        except ImageryUnavailable as exc:
+            raise HTTPException(404, str(exc))
+        except (OSError, ValueError, subprocess.SubprocessError):
+            logging.getLogger(__name__).exception("Satellite frame failed")
+            raise HTTPException(503, "Satellite frame could not load; try again shortly", headers={"Retry-After": "10"})
+        return Response(image_bytes, media_type="image/png", headers={
+            "X-Satellite-Acquired-At": metadata["acquiredAt"], "X-Satellite-Acquisition-End": metadata["acquisitionEnd"],
+            "X-Satellite-Name": metadata["satellite"], "X-Satellite-Cache": "hit" if cached else "miss",
+        })
 
     @app.get("/", include_in_schema=False)
     async def root(request: Request):
@@ -248,15 +295,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             else vessel_image(analysis.vessel) if analysis else None
         )
         encounters = repository.list_encounters("mci", analysisId) if analysis else []
-        map_data = [
-            {
-                "name": encounter.storm.name,
-                "vessel": list(encounter.closest_approach.vessel_position.coordinates),
-                "storm": list(encounter.closest_approach.storm_position.coordinates),
-                "distanceNm": encounter.closest_approach.distance_nm,
-            }
-            for encounter in encounters
-        ]
+        map_data = await run_in_threadpool(build_map_data, analysis, encounters, configuration.ais_cache_dir) if analysis and encounters else []
+        for event in map_data:
+            event["satelliteManifestUrl"] = f"/api/satellite/{analysis.analysis_id}/{event['id']}/manifest"
         return templates.TemplateResponse(
             request=request,
             name="analysis.html",
@@ -266,6 +307,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 vesselImage=vessel_photo,
                 encounters=encounters,
                 mapData=map_data,
+                mapTileUrl=configuration.map_tile_url,
+                mapTileAttribution=configuration.map_tile_attribution,
                 error=None,
                 defaults={
                     "identifierType": "MMSI",
