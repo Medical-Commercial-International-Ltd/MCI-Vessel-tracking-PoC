@@ -9,14 +9,21 @@ from __future__ import annotations
 import argparse
 import shutil
 import sqlite3
+import subprocess
+import zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
-import zipfile64.zipfile as zipfile
+try:
+    import zipfile64.zipfile as archive_reader
+except ImportError:
+    archive_reader = zipfile
+
+from app.config import get_settings
 
 
 SOURCE_BASE = "https://ocmgeodatastor1.blob.core.windows.net/marinecadastre/ais/aistrack"
-CACHE_DIR = Path(r"C:\MCI-AIS-Cache\tracks")
+CACHE_DIR = get_settings().ais_cache_dir / "tracks"
 CHUNK_BYTES = 8 * 1024 * 1024
 GIB = 1024 ** 3
 
@@ -132,7 +139,7 @@ def fetch(year: int, *, index_only: bool = False) -> None:
     if not archive.exists():
         _download(f"{SOURCE_BASE}/{archive.name}", archive)
 
-    with zipfile.ZipFile(archive) as package:
+    with archive_reader.ZipFile(archive) as package:
         candidates = [
             item for item in package.infolist()
             if not item.is_dir() and item.filename.lower().endswith(".gpkg")
@@ -144,8 +151,18 @@ def fetch(year: int, *, index_only: bool = False) -> None:
             raise OSError("Insufficient free disk space to extract GeoPackage")
         partial_target = target.with_name(target.name + ".extracting")
         print(f"Extracting {member.filename}: {member.file_size / GIB:.2f} GiB", flush=True)
-        with package.open(member) as source, partial_target.open("wb") as output:
-            shutil.copyfileobj(source, output, CHUNK_BYTES)
+        if archive_reader is zipfile and member.compress_type == 9:
+            executable = shutil.which("7z") or shutil.which("7zz")
+            if not executable:
+                installed = Path(r"C:\Program Files\7-Zip\7z.exe")
+                executable = str(installed) if installed.exists() else None
+            if not executable:
+                raise RuntimeError("This NOAA archive requires Deflate64 support. Install 7-Zip or zipfile64 and rerun; the download is retained.")
+            with partial_target.open("wb") as output:
+                subprocess.run([executable, "x", "-so", str(archive), member.filename], stdout=output, check=True)
+        else:
+            with package.open(member) as source, partial_target.open("wb") as output:
+                shutil.copyfileobj(source, output, CHUNK_BYTES)
         if partial_target.stat().st_size != member.file_size:
             raise ValueError("Extracted GeoPackage size does not match archive metadata")
 

@@ -29,7 +29,8 @@ def test_real_encounter_uses_hurdat_storm_identity():
     assert encounters[0].storm.id == "AL052025"
     assert encounters[0].storm.name == "Erin"
     assert encounters[0].exposure.maximum_storm_wind_kt == 82
-    assert encounters[0].exposure.duration_within_34_kt_wind_field_hours > 0
+    # One position establishes proximity, but cannot establish elapsed exposure.
+    assert encounters[0].exposure.duration_within_34_kt_wind_field_hours == 0
 
 
 def test_saffir_simpson_category_boundaries():

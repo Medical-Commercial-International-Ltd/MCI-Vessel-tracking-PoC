@@ -103,6 +103,21 @@ def test_health_is_available_without_login(tmp_path):
         assert response.json()["status"] == "ok"
 
 
+def test_real_analysis_form_discloses_unavailable_coastal_filter(tmp_path):
+    settings = Settings(data_dir=tmp_path / "data", analysis_provider="real",
+                        ais_cache_dir=tmp_path / "cache", admin_email="tester@mciuw.com",
+                        admin_password="TestPassword123!")
+    with TestClient(create_app(settings)) as client:
+        login = client.get("/login")
+        client.post("/login", data={"email": "tester@mciuw.com", "password": "TestPassword123!",
+                                    "csrf": _csrf(login.text)})
+        page = client.get("/analysis")
+        assert page.status_code == 200
+        assert 'name="coastalLimitNm"' not in page.text
+        assert "coastline-distance filter is not available" in page.text
+        assert 'name="stormProximityNm"' in page.text
+
+
 def test_event_lookup_lists_source_options_and_links_mmsi(tmp_path):
     settings = Settings(
         data_dir=tmp_path / "data",

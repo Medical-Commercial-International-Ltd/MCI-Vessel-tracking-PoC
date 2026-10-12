@@ -110,7 +110,7 @@ def aggregate_risk(
                 top_three_average=0,
                 recurrence=0,
             ),
-            underwriter_referral=confidence == "INSUFFICIENT",
+            underwriter_referral=confidence in {"LOW", "INSUFFICIENT"},
         )
 
     ordered = sorted(event_scores, reverse=True)

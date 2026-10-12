@@ -141,6 +141,22 @@ to stop the server.
 
 Open <http://127.0.0.1:8000>.
 
+For an initial real-data test, download the official hurricane records and
+one year of AIS tracks before downloading the full cache:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\fetch_hurdat.py
+.\.venv\Scripts\python.exe scripts\fetch_ais_track_year.py 2025
+```
+
+Both downloaders use `AIS_CACHE_DIR` from `.env`. The hurricane downloader
+records its official source URLs in `storms/sources.json`. AIS extraction
+requires either the `zipfile64` Python package or 7-Zip installed at its
+standard Windows location when an archive uses Deflate64 compression.
+Keep `ANALYSIS_PROVIDER=real` and select dates within the downloaded year.
+MMSI searches work without a vessel registry; IMO searches need a matching
+entry in `vessels/registry.json`.
+
 To populate or rebuild the full five-year MarineCadastre vessel-track cache, run this in PowerShell. The importer resumes interrupted downloads, validates each annual GeoPackage, and removes its temporary ZIP only after validation:
 
 ```powershell

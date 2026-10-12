@@ -40,7 +40,11 @@
     <details class="advanced-settings">
       <summary>Analysis settings</summary>
       <div class="advanced-settings__fields">
+        {% if provider == 'real' %}
+        <p>Coverage: cached MarineCadastre vessel tracks. A coastline-distance filter is not available.</p>
+        {% else %}
         <label><span>Coastal limit</span><div class="unit-input"><input type="number" name="coastalLimitNm" value="{{ defaults.coastalLimitNm }}" min="1" max="200" step="1"><b>nm</b></div></label>
+        {% endif %}
         <label><span>Storm proximity</span><div class="unit-input"><input type="number" name="stormProximityNm" value="{{ defaults.stormProximityNm }}" min="1" max="500" step="1"><b>nm</b></div></label>
       </div>
     </details>
@@ -55,6 +59,9 @@
 </section>
 
 {% if analysis %}
+{% if not analysis.is_synthetic and analysis.risk.model_version != 'TC-EXPOSURE-v0.2' %}
+<div class="alert" role="status">This assessment uses an earlier calculation version. Run the analysis again to apply the corrected duration, date clipping and coverage checks.</div>
+{% endif %}
 <section class="result-heading">
   <div class="result-heading__identity">
     <figure class="vessel-photo">
@@ -109,24 +116,24 @@
 </section>
 
 <section class="metric-grid metric-grid--results">
-  <article class="metric-card"><span class="metric-card__label">Named storms</span><strong>{{ analysis.statistics.named_storm_encounters }}</strong><span class="metric-card__context">Distinct exposure events</span></article>
+  <article class="metric-card"><span class="metric-card__label">Named storms</span><strong>{{ analysis.statistics.named_storm_encounters }}</strong><span class="metric-card__context">Distinct storms within the selected threshold</span></article>
   <article class="metric-card"><span class="metric-card__label">Closest approach</span><strong>{% if analysis.statistics.minimum_distance_nm is not none %}{{ '%.1f' | format(analysis.statistics.minimum_distance_nm) }}<small> nm</small>{% else %}—{% endif %}</strong><span class="metric-card__context">Storm centre distance</span></article>
   <article class="metric-card"><span class="metric-card__label">Exposure duration</span><strong>{{ '%.1f' | format(analysis.statistics.hours_within_200_nm) }}<small> h</small></strong><span class="metric-card__context">Within configured threshold</span></article>
   <article class="metric-card">
     <span class="metric-card__label">Tropical-storm-force winds</span>
     {% if analysis.statistics.hours_within_34_kt_wind_field > 0 %}
     <strong>{{ '%.1f' | format(analysis.statistics.hours_within_34_kt_wind_field) }}<small> h</small></strong>
-    <span class="metric-card__context">AIS time inside reported 34 kt radii</span>
+    <span class="metric-card__context">Estimated time inside reported wind radii and selected storm threshold</span>
     {% else %}
-    <strong class="metric-card__none">None</strong>
-    <span class="metric-card__context">No AIS positions inside reported 34 kt radii</span>
+    <strong class="metric-card__none">0.0 h</strong>
+    <span class="metric-card__context">No estimated time inside reported wind radii; missing radii are unknown</span>
     {% endif %}
   </article>
 </section>
 
 <section class="analysis-grid">
   <article class="panel map-panel">
-    <div class="panel__heading"><div><span class="eyebrow">Geospatial review</span><h2>Encounter map</h2></div><span class="panel__note">Illustrative positions</span></div>
+    <div class="panel__heading"><div><span class="eyebrow">Geospatial review</span><h2>Encounter map</h2></div><span class="panel__note">{% if analysis.is_synthetic %}Illustrative positions{% else %}Estimated closest-approach positions{% endif %}</span></div>
     {% if encounters %}
     <div id="encounter-map" class="encounter-map" aria-label="Map of vessel and storm encounters"></div>
     <script id="map-data" type="application/json">{{ mapData | tojson }}</script>
@@ -151,7 +158,7 @@
   {% if encounters %}
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Storm</th><th>Closest approach</th><th>Distance</th><th>Intensity</th><th>Wind field</th><th>Duration</th><th>Event score</th></tr></thead>
+      <thead><tr><th>Storm</th><th>Closest approach</th><th>Distance</th><th>Peak intensity</th><th>Wind field</th><th>Duration</th><th>Event score</th></tr></thead>
       <tbody>
       {% for event in encounters %}
         <tr>
@@ -181,11 +188,11 @@
       <div><dt>Length</dt><dd>{{ analysis.vessel.length_m or '—' }} m</dd></div>
       <div><dt>Width</dt><dd>{{ analysis.vessel.width_m or '—' }} m</dd></div>
       <div><dt>Draught</dt><dd>{{ analysis.vessel.draft_m or '—' }} m</dd></div>
-      <div><dt>Observed days</dt><dd>{{ analysis.statistics.observed_days }}</dd></div>
-      <div><dt>AIS observations</dt><dd>{{ '{:,}'.format(analysis.statistics.ais_observation_count) }}</dd></div>
+      <div><dt>{% if analysis.is_synthetic %}Observed days{% else %}Days with derived positions{% endif %}</dt><dd>{{ analysis.statistics.observed_days }}</dd></div>
+      <div><dt>{% if analysis.is_synthetic %}AIS observations{% else %}Derived track positions{% endif %}</dt><dd>{{ '{:,}'.format(analysis.statistics.ais_observation_count) }}</dd></div>
       <div><dt>Track distance</dt><dd>{{ '{:,.0f}'.format(analysis.statistics.distance_travelled_nm) }} nm</dd></div>
       <div><dt>Average speed</dt><dd>{{ analysis.statistics.average_speed_kt }} kt</dd></div>
-      <div><dt>Maximum speed</dt><dd>{{ analysis.statistics.maximum_speed_kt }} kt</dd></div>
+      <div><dt>{% if analysis.is_synthetic %}Maximum speed{% else %}Maximum estimated track speed{% endif %}</dt><dd>{{ analysis.statistics.maximum_speed_kt }} kt</dd></div>
     </dl>
   </article>
 
@@ -194,7 +201,7 @@
     <dl class="quality-list">
       <div><dt>Identity confidence</dt><dd>{{ analysis.data_quality.identity_confidence | title }}</dd></div>
       <div><dt>Years covered</dt><dd>{{ analysis.data_quality.years_covered | join(', ') }}</dd></div>
-      <div><dt>Material storm-period gaps</dt><dd>{{ analysis.data_quality.significant_storm_period_gaps }}</dd></div>
+      <div><dt>{% if analysis.is_synthetic %}Material storm-period gaps{% else %}Storm windows with coverage gaps{% endif %}</dt><dd>{{ analysis.data_quality.significant_storm_period_gaps }}</dd></div>
       <div><dt>Calculation hash</dt><dd><code>{{ analysis.audit.calculation_hash[:12] }}…</code></dd></div>
     </dl>
     {% if analysis.data_quality.warnings %}

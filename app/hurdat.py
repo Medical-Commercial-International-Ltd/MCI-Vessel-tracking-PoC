@@ -58,6 +58,8 @@ class HurdatStorm:
             return _as_interpolated(self.points[-1], timestamp)
         left = self.points[right_index - 1]
         right = self.points[right_index]
+        if timestamp == left.timestamp:
+            return _as_interpolated(left, timestamp)
         seconds = (right.timestamp - left.timestamp).total_seconds()
         if seconds <= 0 or seconds > 12 * 60 * 60:
             return None
@@ -156,7 +158,9 @@ def _parse_point(row: list[str]) -> HurdatPoint | None:
         )
         latitude = _parse_coordinate(row[4])
         longitude = _parse_coordinate(row[5])
-        wind_kt = max(0, int(row[6].strip()))
+        wind_kt = int(row[6].strip())
+        if wind_kt < 0:
+            return None
     except (ValueError, TypeError):
         return None
     return HurdatPoint(
@@ -184,8 +188,8 @@ def _parse_radii(row: list[str], offset: int) -> tuple[float, float, float, floa
         try:
             value = float(row[index].strip())
         except (IndexError, ValueError):
-            value = 0
-        values.append(max(0, value))
+            value = -1
+        values.append(value if value >= 0 else -1)
     return tuple(values)  # type: ignore[return-value]
 
 
@@ -200,10 +204,10 @@ def _interpolate_radii(
 ) -> tuple[float, float, float, float]:
     values = []
     for left_value, right_value in zip(left, right):
-        if left_value > 0 and right_value > 0:
-            values.append(_lerp(left_value, right_value, fraction))
+        if left_value < 0 or right_value < 0:
+            values.append(-1)
         else:
-            values.append(left_value if fraction < 0.5 else right_value)
+            values.append(_lerp(left_value, right_value, fraction))
     return tuple(values)  # type: ignore[return-value]
 
 

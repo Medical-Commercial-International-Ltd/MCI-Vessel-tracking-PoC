@@ -5,7 +5,7 @@ import math
 import re
 import sqlite3
 import struct
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -19,8 +19,6 @@ class VesselRecord:
     length_m: float | None
     width_m: float | None
     draft_m: float | None
-
-
 @dataclass(frozen=True)
 class TrackSegment:
     start: datetime
@@ -31,6 +29,7 @@ class TrackSegment:
     length_m: float | None
     width_m: float | None
     draft_m: float | None
+    clipped_positions: tuple[tuple[TimedPosition, ...], ...] = ()
 
     @property
     def distance_nm(self) -> float:
@@ -91,9 +90,6 @@ class MarineCadastreTrackStore:
             match = re.search(r"(20\d{2})", path.stem)
             if not match:
                 continue
-            year = int(match.group(1))
-            if year < from_date.year or year > to_date.year:
-                continue
             connection = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=30)
             try:
                 tables = [
@@ -101,7 +97,6 @@ class MarineCadastreTrackStore:
                     for row in connection.execute(
                         "SELECT table_name FROM gpkg_contents WHERE data_type = 'features'"
                     )
-                    if _table_overlaps_period(row[0], year, from_date, to_date)
                 ]
                 for table_name in tables:
                     quoted = table_name.replace('"', '""')
@@ -120,18 +115,19 @@ class MarineCadastreTrackStore:
                         lines = _decode_gpkg_multiline(bytes(geometry))
                         if not lines:
                             continue
-                        results.append(
-                            TrackSegment(
-                                start=max(segment_start, start),
-                                end=min(segment_end, end),
-                                lines=lines,
-                                vessel_group=(group or "Unknown").strip() or "Unknown",
-                                vessel_type_code=int(vessel_type) if vessel_type is not None else None,
-                                length_m=float(length) if length is not None else None,
-                                width_m=float(width) if width is not None else None,
-                                draft_m=float(draft) if draft is not None else None,
-                            )
+                        segment = TrackSegment(
+                            start=segment_start,
+                            end=segment_end,
+                            lines=lines,
+                            vessel_group=(group or "Unknown").strip() or "Unknown",
+                            vessel_type_code=int(vessel_type) if vessel_type is not None else None,
+                            length_m=float(length) if length is not None and float(length) > 0 else None,
+                            width_m=float(width) if width is not None and float(width) > 0 else None,
+                            draft_m=float(draft) if draft is not None and float(draft) > 0 else None,
                         )
+                        clipped = clip_segment(segment, start, end)
+                        if clipped is not None:
+                            results.append(clipped)
             finally:
                 connection.close()
         return sorted(results, key=lambda segment: segment.start)
@@ -158,28 +154,61 @@ class MarineCadastreTrackStore:
 
 
 def segment_positions(segment: TrackSegment) -> list[TimedPosition]:
-    coordinates = [point for line in segment.lines for point in line]
-    if not coordinates:
-        return []
-    if len(coordinates) == 1 or segment.end <= segment.start:
-        longitude, latitude = coordinates[0]
-        return [TimedPosition(segment.start, longitude, latitude)]
-    cumulative = [0.0]
-    for left, right in zip(coordinates, coordinates[1:]):
-        cumulative.append(cumulative[-1] + haversine_nm(left[1], left[0], right[1], right[0]))
-    total_distance = cumulative[-1]
-    duration = (segment.end - segment.start).total_seconds()
-    positions = []
-    for index, (longitude, latitude) in enumerate(coordinates):
-        fraction = cumulative[index] / total_distance if total_distance > 0 else index / (len(coordinates) - 1)
-        positions.append(
-            TimedPosition(
-                timestamp=segment.start + (segment.end - segment.start) * fraction,
-                longitude=longitude,
-                latitude=latitude,
-            )
-        )
-    return positions
+    return [position for line in segment_position_lines(segment) for position in line]
+
+
+def segment_position_lines(segment: TrackSegment) -> list[list[TimedPosition]]:
+    """Assign times by path distance, without inventing travel between separate lines."""
+    if segment.clipped_positions:
+        return [list(line) for line in segment.clipped_positions]
+    total_distance = segment.distance_nm
+    count = sum(len(line) for line in segment.lines)
+    travelled = 0.0
+    index = 0
+    results = []
+    for line in segment.lines:
+        timed = []
+        for point_index, (longitude, latitude) in enumerate(line):
+            if point_index:
+                previous = line[point_index - 1]
+                travelled += haversine_nm(previous[1], previous[0], latitude, longitude)
+            fraction = travelled / total_distance if total_distance else index / max(1, count - 1)
+            timed.append(TimedPosition(segment.start + (segment.end - segment.start) * fraction, longitude, latitude))
+            index += 1
+        if len(timed) == 1 and count == 1 and segment.end > segment.start:
+            timed.append(TimedPosition(segment.end, timed[0].longitude, timed[0].latitude))
+        if timed:
+            results.append(timed)
+    return results
+
+
+def interpolate_position(left: TimedPosition, right: TimedPosition, timestamp: datetime) -> TimedPosition:
+    seconds = (right.timestamp - left.timestamp).total_seconds()
+    fraction = (timestamp - left.timestamp).total_seconds() / seconds if seconds else 0
+    longitude_delta = (right.longitude - left.longitude + 180) % 360 - 180
+    return TimedPosition(timestamp, (left.longitude + longitude_delta * fraction + 180) % 360 - 180,
+                         left.latitude + (right.latitude - left.latitude) * fraction)
+
+
+def clip_segment(segment: TrackSegment, start: datetime, end: datetime) -> TrackSegment | None:
+    """Clip geometry using original timestamps before assigning times to the retained path."""
+    start, end = max(start, segment.start), min(end, segment.end)
+    if start > end:
+        return None
+    lines = []
+    position_lines = []
+    for timed in segment_position_lines(segment):
+        retained = [point for point in timed if start <= point.timestamp <= end]
+        for left, right in zip(timed, timed[1:]):
+            for boundary in (start, end):
+                if left.timestamp < boundary < right.timestamp:
+                    retained.append(interpolate_position(left, right, boundary))
+        retained.sort(key=lambda point: point.timestamp)
+        if retained:
+            lines.append(tuple((point.longitude, point.latitude) for point in retained))
+            position_lines.append(tuple(retained))
+    return replace(segment, start=start, end=end, lines=tuple(lines),
+                   clipped_positions=tuple(position_lines)) if lines else None
 
 
 def haversine_nm(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
