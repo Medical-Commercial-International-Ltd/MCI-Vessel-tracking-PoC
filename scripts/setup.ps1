@@ -8,8 +8,11 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
 }
 
 python -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "Failed to create the Python virtual environment." }
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
+if ($LASTEXITCODE -ne 0) { throw "Failed to upgrade pip. Check network access and rerun setup." }
 & .\.venv\Scripts\python.exe -m pip install -e ".[dev,data]"
+if ($LASTEXITCODE -ne 0) { throw "Failed to install application dependencies. Check the pip error above." }
 
 if (-not (Test-Path -LiteralPath .env)) {
     Copy-Item -LiteralPath .env.example -Destination .env
