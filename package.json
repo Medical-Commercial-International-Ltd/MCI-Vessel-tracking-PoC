@@ -1,0 +1,8 @@
+{
+  "name": "mci-vessel-tracking-poc",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "powershell.exe -NoProfile -File scripts/run.ps1"
+  }
+}

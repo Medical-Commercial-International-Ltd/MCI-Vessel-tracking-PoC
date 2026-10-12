@@ -133,6 +133,12 @@ From PowerShell in the project directory:
 .\scripts\run.ps1
 ```
 
+Alternatively, with Node.js and npm installed, run `npm run dev` after the
+one-time setup. This starts the same FastAPI server with automatic reload;
+the server serves both the frontend pages and backend routes. No npm
+dependencies need to be installed. Keep the terminal open and press Ctrl+C
+to stop the server.
+
 Open <http://127.0.0.1:8000>.
 
 To populate or rebuild the full five-year MarineCadastre vessel-track cache, run this in PowerShell. The importer resumes interrupted downloads, validates each annual GeoPackage, and removes its temporary ZIP only after validation:
