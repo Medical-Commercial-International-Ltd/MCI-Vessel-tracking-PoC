@@ -67,6 +67,42 @@
   <p class="lookup-note">Select a storm, port, or both. With both selected, a vessel must be within the stated distance of each at the same recorded time. Date is optional with a storm and required for a port-only search. Length and type are AIS-reported; this does not verify vessel identity, yacht status or market value. Port distance uses the published port polygon's reference point. AIS gaps can hide vessels.</p>
 </section>
 
+<section class="panel lookup-results" aria-labelledby="database-vessels-title">
+  <div class="lookup-results__heading"><div><span class="eyebrow">Vessel database</span><h2 id="database-vessels-title">All recorded vessels</h2></div><span class="muted">{{ vesselTotal }} vessels</span></div>
+  <p class="lookup-note">Risk factors show each vessel's latest saved assessment. Select an assessed vessel to rerun its displayed settings. An unassessed vessel is analysed across the latest consecutive cached years with a 200 nm storm proximity. Names are shown where available; the NOAA track files identify vessels by MMSI.</p>
+  <form method="get" action="/event-lookup" class="vessel-catalog-search">
+    <label for="vessel-database-query">Find a vessel by name, MMSI or IMO</label>
+    <div><input id="vessel-database-query" type="search" name="vesselQuery" maxlength="100" value="{{ vesselQuery }}" placeholder="Name, MMSI or IMO"><button class="button button--secondary button--small" type="submit">Search vessels</button></div>
+  </form>
+  <p class="lookup-note">{{ vesselMatches }} matching vessels ? Page {{ vesselPage }} of {{ vesselPages }}</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Vessel / MMSI</th><th>IMO</th><th>AIS years</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Storm proximity</th><th>Last assessed</th></tr></thead>
+    <tbody>{% for vessel in databaseVessels %}{% set item = vessel.analysis %}
+      <tr>
+        <td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ vessel.mmsi }}{% endif %}" data-vessel-rerun>
+          <input type="hidden" name="csrf" value="{{ csrfToken }}">
+          <button type="submit" class="vessel-rerun-link" aria-label="{{ 'Rerun' if item else 'Run' }} analysis for {{ vessel.name }}">{{ vessel.name }}</button>
+        </form><small>MMSI {{ vessel.mmsi }}</small></td>
+        <td>{{ vessel.imo or 'Unknown' }}</td>
+        <td>{{ vessel.years | join(', ') or 'Demo' }}</td>
+        {% if item %}
+        <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }}/100 ? {{ item.risk.band | title }}</span></td>
+        <td>{{ item.risk.confidence | title }}</td>
+        <td>{{ item.statistics.named_storm_encounters }}</td>
+        <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
+        <td>{{ '%g' | format(item.input.storm_proximity_nm) }} nm</td>
+        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') }} UTC</td>
+        {% else %}<td>Not assessed</td><td>Pending analysis</td><td>Unknown</td><td>Latest cached years</td><td>200 nm</td><td>Not assessed</td>{% endif %}
+      </tr>
+    {% else %}<tr><td colspan="9">No vessels match this search.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <nav class="vessel-catalog-pagination" aria-label="Vessel table pages">
+    {% if vesselPage > 1 %}<a class="button button--secondary button--small" href="/event-lookup?vesselQuery={{ vesselQueryEncoded }}&amp;vesselPage={{ vesselPage - 1 }}#database-vessels-title">Previous</a>{% endif %}
+    {% if vesselPage < vesselPages %}<a class="button button--secondary button--small" href="/event-lookup?vesselQuery={{ vesselQueryEncoded }}&amp;vesselPage={{ vesselPage + 1 }}#database-vessels-title">Next</a>{% endif %}
+  </nav>
+  <p class="lookup-note" role="status" aria-live="polite" hidden data-vessel-rerun-status>Running vessel analysis. The result will open when ready.</p>
+</section>
+
 {% if lookupResponse %}
 <section class="panel lookup-results">
   <div class="lookup-results__heading"><div><span class="eyebrow">Search results</span><h2>{{ lookupResponse.results | length }} vessels</h2></div><span class="muted">{{ lookupResponse.inspected_segments }} candidate track segments checked</span></div>
@@ -191,5 +227,11 @@
   lookupForm.querySelectorAll('[data-lookup-combo]').forEach(installCombo);
   lookupForm.addEventListener('submit', () => { document.querySelector('[data-lookup-progress]').hidden = false; });
   updateDateRequirement();
+  document.querySelectorAll('[data-vessel-rerun]').forEach(form => {
+    form.addEventListener('submit', () => {
+      document.querySelector('[data-vessel-rerun-status]').hidden = false;
+      document.querySelectorAll('[data-vessel-rerun] button').forEach(button => { button.disabled = true; });
+    });
+  });
 </script>
 {% endblock %}

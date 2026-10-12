@@ -30,6 +30,7 @@ from app.services import (
 )
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
 from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
+from app.vessel_catalog import cached_vessels
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -311,19 +312,41 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 mapTileAttribution=configuration.map_tile_attribution,
                 error=None,
                 defaults={
-                    "identifierType": "MMSI",
-                    "identifier": mmsi if mmsi and mmsi.isdigit() and len(mmsi) == 9 else "",
-                    "fromDate": fromDate if fromDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fromDate) else f"{earliest_contiguous_year}-01-01",
-                    "toDate": toDate if toDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", toDate) else (f"{max(cached_years)}-12-31" if cached_years else "2025-12-31"),
-                    "coastalLimitNm": 75,
-                    "stormProximityNm": 200,
+                    "identifierType": analysis.input.identifier_type if analysis else "MMSI",
+                    "identifier": analysis.input.identifier if analysis else (mmsi if mmsi and mmsi.isdigit() and len(mmsi) == 9 else ""),
+                    "fromDate": analysis.input.period.from_date.isoformat() if analysis else (fromDate if fromDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fromDate) else f"{earliest_contiguous_year}-01-01"),
+                    "toDate": analysis.input.period.to_date.isoformat() if analysis else (toDate if toDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", toDate) else (f"{max(cached_years)}-12-31" if cached_years else "2025-12-31")),
+                    "coastalLimitNm": analysis.input.coastal_limit_nm if analysis else 75,
+                    "stormProximityNm": analysis.input.storm_proximity_nm if analysis else 200,
                 },
             ),
         )
 
-    def lookup_context(request: Request, *, values=None, response=None, error=None):
+    def lookup_context(request: Request, *, values=None, response=None, error=None, vessel_query="", vessel_page=1):
         service = app.state.event_lookup
         storms = service.storms()
+        latest_vessels = {}
+        for analysis in repository.list_analyses("mci"):
+            if analysis.status != "completed" or analysis.is_synthetic != (configuration.analysis_provider == "demo"):
+                continue
+            for key in analysis.vessel.mmsi or [analysis.input.identifier]:
+                previous = latest_vessels.get(key)
+                if previous is None or analysis.created_at > previous.created_at:
+                    latest_vessels[key] = analysis
+        catalog = cached_vessels(configuration.ais_cache_dir) if configuration.analysis_provider == "real" else tuple((mmsi, ()) for mmsi in sorted(latest_vessels))
+        registry = {item.mmsi: item for item in app.state.analysis_service.tracks._registry()} if configuration.analysis_provider == "real" else {}
+        query = vessel_query.strip()[:100]
+        rows = []
+        for mmsi, years in catalog:
+            analysis = latest_vessels.get(mmsi)
+            identity = registry.get(mmsi)
+            name = identity.name if identity else analysis.vessel.name if analysis else f"MMSI {mmsi}"
+            imo = identity.imo if identity else analysis.vessel.imo if analysis else None
+            if query and query.casefold() not in f"{name} {mmsi} {imo or ''}".casefold():
+                continue
+            rows.append({"mmsi": mmsi, "name": name, "imo": imo, "years": years, "analysis": analysis})
+        pages = max(1, (len(rows) + 49) // 50)
+        page = max(1, min(vessel_page, pages))
         return page_context(
             request,
             ports=service.ports(),
@@ -336,15 +359,58 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "yachtCandidates": True,
             },
             lookupResponse=response,
+            databaseVessels=rows[(page - 1) * 50:page * 50],
+            vesselTotal=len(catalog), vesselMatches=len(rows), vesselPage=page, vesselPages=pages,
+            vesselQuery=query, vesselQueryEncoded=quote(query),
             error=error,
         )
 
+    @app.post("/event-lookup/analyse/{mmsi}")
+    async def analyse_lookup_vessel(request: Request, mmsi: str, csrf: str = Form("")):
+        user, redirect = require_user(request)
+        if redirect:
+            return redirect
+        if not valid_csrf(request.session, csrf):
+            return HTMLResponse("Invalid request", status_code=400)
+        try:
+            identifier = validate_identifier("MMSI", mmsi)
+            years = app.state.analysis_service.tracks.available_years if configuration.analysis_provider == "real" else [2025]
+            if not years:
+                raise ValueError("No cached AIS track years are available.")
+            earliest = max(years)
+            while earliest - 1 in years:
+                earliest -= 1
+            analysis_input = AnalysisInput(identifier_type="MMSI", identifier=identifier,
+                                           period=DatePeriod(from_date=date(earliest, 1, 1), to_date=date(max(years), 12, 31)))
+            result = await run_in_threadpool(app.state.analysis_service.analyse, analysis_input, user["email"])
+        except ValueError as exc:
+            context = await run_in_threadpool(lookup_context, request, error=str(exc), vessel_query=mmsi)
+            return templates.TemplateResponse(request=request, name="event_lookup.html", context=context, status_code=422)
+        return RedirectResponse(f"/analysis?analysisId={quote(result.analysis_id)}", status_code=303)
+
+    @app.post("/event-lookup/rerun/{analysis_id}")
+    async def rerun_lookup_vessel(request: Request, analysis_id: str, csrf: str = Form("")):
+        user, redirect = require_user(request)
+        if redirect:
+            return redirect
+        if not valid_csrf(request.session, csrf):
+            return HTMLResponse("Invalid request", status_code=400)
+        previous = await run_in_threadpool(repository.get_analysis, "mci", analysis_id)
+        if previous is None or previous.is_synthetic != (configuration.analysis_provider == "demo"):
+            raise HTTPException(status_code=404, detail="Analysis not found")
+        try:
+            result = await run_in_threadpool(app.state.analysis_service.analyse, previous.input, user["email"])
+        except ValueError as exc:
+            context = await run_in_threadpool(lookup_context, request, error=str(exc))
+            return templates.TemplateResponse(request=request, name="event_lookup.html", context=context, status_code=422)
+        return RedirectResponse(f"/analysis?analysisId={quote(result.analysis_id)}", status_code=303)
+
     @app.get("/event-lookup", response_class=HTMLResponse)
-    async def event_lookup_page(request: Request):
+    async def event_lookup_page(request: Request, vesselQuery: str = "", vesselPage: int = 1):
         _, redirect = require_user(request)
         if redirect:
             return redirect
-        context = await run_in_threadpool(lookup_context, request)
+        context = await run_in_threadpool(lookup_context, request, vessel_query=vesselQuery, vessel_page=vesselPage)
         return templates.TemplateResponse(request=request, name="event_lookup.html", context=context)
 
     @app.post("/event-lookup", response_class=HTMLResponse)

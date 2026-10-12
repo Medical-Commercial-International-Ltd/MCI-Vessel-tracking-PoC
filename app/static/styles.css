@@ -177,6 +177,14 @@ td small { color: #84919a; display: block; margin-top: 2px; }
 .score-pill--severe { background: #f8dadd; color: var(--risk-severe); }
 .confidence { color: var(--teal); font-weight: 700; }
 .table-link { font-weight: 700; }
+.vessel-rerun-link { background: none; border: 0; padding: 0; color: var(--teal); font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
+.vessel-rerun-link:hover { text-decoration: underline; }
+.vessel-rerun-link:disabled { cursor: wait; opacity: .6; }
+.vessel-catalog-search { max-width: 620px; margin: 20px 0; }
+.vessel-catalog-search label { display: block; font-weight: 700; margin-bottom: 8px; }
+.vessel-catalog-search > div { display: flex; gap: 10px; flex-wrap: wrap; }
+.vessel-catalog-search input { flex: 1; min-width: 180px; }
+.vessel-catalog-pagination { display: flex; gap: 12px; margin-top: 16px; }
 
 /* Login */
 .login-page { background: #fff; }
