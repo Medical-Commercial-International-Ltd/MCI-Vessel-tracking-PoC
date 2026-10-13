@@ -1,0 +1,59 @@
+﻿Azure and Azure DevOps permissions
+
+CORE ACCESS
+
+1. Owner - application resource group
+   Azure Portal > Resource groups > application resource group > Access control (IAM) > Add role assignment.
+   Alternative: Contributor + Role Based Access Control Administrator at the same scope.
+
+2. Contributor - Azure subscription, only if I need to create resource groups
+   Azure Portal > Subscriptions > subscription > Access control (IAM) > Add role assignment.
+
+3. Basic access - Azure DevOps organisation
+   Azure DevOps > Organisation settings > Users > select my account > Change access level.
+
+4. Project Administrators - Azure DevOps application project
+   Azure DevOps > Project settings > Permissions > Project Administrators > Members.
+
+5. Creator permission - Azure DevOps service connections
+   Azure DevOps > Project settings > Service connections > Security (under More actions).
+
+6. Administrator - application's Azure DevOps service connection
+   Azure DevOps > Project settings > Service connections > select connection > Security.
+
+7. Contributor - pipeline deployment identity, scoped to application resource group
+   Azure Portal > Resource groups > application resource group > Access control (IAM) > Add role assignment.
+   Assign to the identity used by the service connection.
+
+8. Pipeline authorisation - deployment service connection
+   Azure DevOps > Project settings > Service connections > select connection > Pipeline permissions.
+   Authorise the deployment pipelines to use the connection.
+
+9. Application Developer - Microsoft Entra ID, if app registration is restricted
+   Microsoft Entra admin centre > Identity > Roles & admins > Application Developer > Add assignments.
+
+10. Owner - relevant application registrations
+    Microsoft Entra admin centre > Identity > Applications > App registrations > select application > Owners.
+
+ACCESS IF THESE RESOURCES ARE USED
+
+11. Key Vault Secrets Officer - me, to manage secrets
+    Azure Portal > Key vaults > application vault > Access control (IAM).
+
+12. Key Vault Secrets User - application identity, to read secrets
+    Azure Portal > Key vaults > application vault > Access control (IAM).
+
+13. Storage Blob Data Contributor - relevant user or application identity
+    Azure Portal > Storage accounts > application storage account > Access control (IAM).
+
+14. User - existing Azure DevOps agent pool; Administrator if I manage the pool
+    Azure DevOps > Organisation settings or Project settings > Agent pools > select pool > Security.
+
+15. Administrator - Azure DevOps deployment environments
+    Azure DevOps > Pipelines > Environments > select environment > Security.
+
+16. Administrator - Azure DevOps variable groups
+    Azure DevOps > Pipelines > Library > select variable group > Security.
+
+Azure CLI uses the Azure roles above; there is no separate CLI deployment permission.
+Existing administrators must assign these permissions. Azure, Azure DevOps and Microsoft Entra permissions are separate.

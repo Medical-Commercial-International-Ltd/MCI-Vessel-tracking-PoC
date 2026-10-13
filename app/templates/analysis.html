@@ -233,9 +233,15 @@
   <article class="panel quality-panel">
     <div class="panel__heading"><div><span class="eyebrow">Evidence quality</span><h2>Data confidence</h2></div><span class="quality-badge quality-badge--{{ analysis.data_quality.rating | lower }}">{{ analysis.data_quality.rating | title }}</span></div>
     <dl class="quality-list">
+      {% if analysis.data_quality.confidence_score is not none %}
+      <div><dt>Evidence confidence score</dt><dd>{{ analysis.data_quality.confidence_score }}/100</dd></div>
+      <div><dt>Observed-day coverage</dt><dd>{{ analysis.data_quality.observed_day_coverage_percent }}%</dd></div>
+      <div><dt>Supported tracking time</dt><dd>{{ analysis.data_quality.supported_time_coverage_percent }}%</dd></div>
+      <div><dt>Detected encounter coverage</dt><dd>{% if analysis.data_quality.encounter_coverage_percent is not none %}{{ analysis.data_quality.encounter_coverage_percent }}%{% else %}No detected encounters{% endif %}</dd></div>
+      {% endif %}
       <div><dt>Identity confidence</dt><dd>{{ analysis.data_quality.identity_confidence | title }}</dd></div>
       <div><dt>Years covered</dt><dd>{{ analysis.data_quality.years_covered | join(', ') }}</dd></div>
-      <div><dt>{% if analysis.is_synthetic %}Material storm-period gaps{% else %}Storm windows with coverage gaps{% endif %}</dt><dd>{{ analysis.data_quality.significant_storm_period_gaps }}</dd></div>
+      <div><dt>{% if analysis.data_quality.confidence_model_version %}Detected encounter windows with gaps{% elif analysis.is_synthetic %}Material storm-period gaps{% else %}Storm windows with coverage gaps{% endif %}</dt><dd>{{ analysis.data_quality.significant_storm_period_gaps }}</dd></div>
       <div><dt>Calculation hash</dt><dd><code>{{ analysis.audit.calculation_hash[:12] }}…</code></dd></div>
     </dl>
     {% if analysis.data_quality.warnings %}

@@ -31,6 +31,8 @@ from app.services import (
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
 from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
 from app.vessel_catalog import cached_vessels
+from app.vessel_catalog import exposure_rankings
+from app.vessel_identity import demo_yachts
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -339,14 +341,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         rows = []
         for mmsi, years in catalog:
             analysis = latest_vessels.get(mmsi)
+            if analysis is None:
+                continue
             identity = registry.get(mmsi)
             name = identity.name if identity else analysis.vessel.name if analysis else f"MMSI {mmsi}"
             imo = identity.imo if identity else analysis.vessel.imo if analysis else None
-            if query and query.casefold() not in f"{name} {mmsi} {imo or ''}".casefold():
-                continue
             rows.append({"mmsi": mmsi, "name": name, "imo": imo, "years": years, "analysis": analysis})
-        pages = max(1, (len(rows) + 49) // 50)
-        page = max(1, min(vessel_page, pages))
+        highest, lowest = exposure_rankings(rows)
+        catalog_years = dict(catalog)
+        yacht_rows = [{**identity, "years": catalog_years.get(identity["mmsi"], ()),
+                       "analysis": latest_vessels.get(identity["mmsi"])} for identity in demo_yachts()]
+        overlap = len({row["mmsi"] for row in highest} & {row["mmsi"] for row in lowest})
+        def matches(row):
+            return not query or query.casefold() in f"{row['name']} {row['mmsi']} {row['imo'] or ''}".casefold()
         return page_context(
             request,
             ports=service.ports(),
@@ -359,8 +366,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "yachtCandidates": True,
             },
             lookupResponse=response,
-            databaseVessels=rows[(page - 1) * 50:page * 50],
-            vesselTotal=len(catalog), vesselMatches=len(rows), vesselPage=page, vesselPages=pages,
+            highestRiskVessels=[row for row in highest if matches(row)],
+            lowestRiskVessels=[row for row in lowest if matches(row)],
+            assessedVesselTotal=len(rows), rankingOverlap=overlap,
+            demoYachts=yacht_rows,
             vesselQuery=query, vesselQueryEncoded=quote(query),
             error=error,
         )

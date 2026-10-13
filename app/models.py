@@ -86,6 +86,11 @@ class DataQuality(DocumentModel):
     years_covered: list[int] = Field(default_factory=list)
     significant_storm_period_gaps: int = Field(default=0, ge=0)
     warnings: list[str] = Field(default_factory=list)
+    confidence_score: int | None = Field(default=None, ge=0, le=100)
+    confidence_model_version: str | None = None
+    observed_day_coverage_percent: float | None = Field(default=None, ge=0, le=100)
+    supported_time_coverage_percent: float | None = Field(default=None, ge=0, le=100)
+    encounter_coverage_percent: float | None = Field(default=None, ge=0, le=100)
 
 
 class SourceReference(DocumentModel):

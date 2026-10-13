@@ -1,0 +1,7556 @@
+{
+  "AISVesselTracks2023.gpkg": {
+    "AISVesselTracks2023": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "AISVesselTracks2023",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4269,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    }
+  },
+  "AISVesselTracks2024.gpkg": {
+    "AISVesselTracks2024": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "AISVesselTracks2024",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4269,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    }
+  },
+  "AISVesselTracks2025.gpkg": {
+    "Atlantic_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Atlantic_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Atlantic_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GreatLakes_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GreatLakes_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Guam_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Guam_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "GulfAmerica_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "GulfAmerica_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "Pacific_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "Pacific_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_01": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_01",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_02": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_02",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_03": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_03",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_04": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_04",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_05": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_05",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_06": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_06",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_07": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_07",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_08": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_08",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_09": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_09",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_10": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_10",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_11": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_11",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    },
+    "WestCoast_12": {
+      "columns": [
+        {
+          "position": 0,
+          "name": "OBJECTID",
+          "type": "INTEGER",
+          "notNull": 1,
+          "default": null,
+          "primaryKey": 1
+        },
+        {
+          "position": 1,
+          "name": "Shape",
+          "type": "MULTILINESTRING",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 2,
+          "name": "MMSI",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 3,
+          "name": "TrackStartTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 4,
+          "name": "TrackEndTime",
+          "type": "DATETIME",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 5,
+          "name": "VesselType",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 6,
+          "name": "Length",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 7,
+          "name": "Width",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 8,
+          "name": "Draft",
+          "type": "DOUBLE",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 9,
+          "name": "DurationMinutes",
+          "type": "MEDIUMINT",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        },
+        {
+          "position": 10,
+          "name": "VesselGroup",
+          "type": "TEXT(25)",
+          "notNull": 0,
+          "default": null,
+          "primaryKey": 0
+        }
+      ],
+      "geometry": [
+        {
+          "table": "WestCoast_12",
+          "column": "Shape",
+          "type": "MULTILINESTRING",
+          "srsId": 4326,
+          "z": 0,
+          "m": 0
+        }
+      ]
+    }
+  }
+}

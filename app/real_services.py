@@ -8,6 +8,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from app import __version__
+from app.confidence import assess_confidence
 from app.ais_data import (
     MarineCadastreTrackStore,
     TimedPosition,
@@ -33,7 +34,7 @@ from app.models import (
 )
 from app.repositories import AnalysisRepository
 from app.scoring import EncounterInputs, aggregate_risk, score_encounter
-from app.exposure import movement_statistics, sampled_intervals, storm_coverage_gaps, track_intervals, union_hours
+from app.exposure import movement_statistics, sampled_intervals, track_intervals, union_hours
 
 
 class RealAnalysisService:
@@ -111,12 +112,14 @@ class RealAnalysisService:
         unavailable_years = sorted(requested_years - available_years)
         unobserved_years = sorted((requested_years & available_years) - set(coverage_years))
         observed_days = len({position.timestamp.date() for position in positions})
-        gap_count = storm_coverage_gaps(
-            intervals, storms,
+        quality = assess_confidence(
+            len(positions), observed_days,
             datetime.combine(analysis_input.period.from_date, datetime.min.time(), timezone.utc),
             datetime.combine(analysis_input.period.to_date, datetime.max.time(), timezone.utc),
+            intervals, encounters, unavailable_years,
         )
-        confidence = "MEDIUM" if observed_days >= 30 and not unavailable_years and not gap_count else "LOW"
+        gap_count = quality['significant_storm_period_gaps']
+        confidence = quality['rating']
         warnings = [
             "MarineCadastre vessel-track geometry is authoritative AIS-derived data, but timestamps between each segment's endpoints are distance-interpolated.",
             "MarineCadastre AIS is land-receiver data and may not capture vessel activity beyond normal coastal receiver range.",
@@ -138,7 +141,11 @@ class RealAnalysisService:
                 + "; this does not prove the vessel was absent."
             )
         if gap_count:
-            warnings.append(f"{gap_count} named-storm windows have track coverage gaps exceeding six hours. Exposure during those gaps is unknown.")
+            warnings.append(f"{gap_count} detected encounter windows (24 hours either side of closest approach) have tracking gaps exceeding six hours. Exposure during those gaps is unknown.")
+
+        warnings.append("Confidence is an evidence-quality heuristic based on AIS-derived position volume, observed-day coverage, supported tracking time and coverage around detected encounters; it is not a calibrated probability. Undetected exposure during gaps remains unknown.")
+        if vessel_record.identity_source == "user-supplied":
+            warnings.append("Vessel name and IMO/MMSI mapping were supplied by the user and have not been independently verified; movement and dimensions come from the available NOAA tracks.")
 
         primary_segment = max(segments, key=lambda segment: (segment.end - segment.start).total_seconds())
         distance_nm, average_speed, maximum_speed = movement_statistics(intervals)
@@ -150,6 +157,7 @@ class RealAnalysisService:
             "mmsi": vessel_record.mmsi,
             "encounters": [encounter.model_dump(mode="json", by_alias=True) for encounter in encounters],
             "model": "TC-EXPOSURE-v0.2-real",
+            "confidence": quality,
             "statistics": [len(positions), observed_days, distance_nm, average_speed, maximum_speed, hours_total, hours_wind],
         }
         calculation_hash = hashlib.sha256(
@@ -193,10 +201,9 @@ class RealAnalysisService:
             ),
             encounter_ids=[encounter.id for encounter in encounters],
             data_quality=DataQuality(
-                rating=confidence,
-                identity_confidence="HIGH" if vessel_record.name != f"MMSI {vessel_record.mmsi}" else "MEDIUM",
+                **quality,
+                identity_confidence="HIGH" if vessel_record.identity_source != "user-supplied" and vessel_record.name != f"MMSI {vessel_record.mmsi}" else "MEDIUM",
                 years_covered=coverage_years,
-                significant_storm_period_gaps=gap_count,
                 warnings=warnings,
             ),
             sources=[

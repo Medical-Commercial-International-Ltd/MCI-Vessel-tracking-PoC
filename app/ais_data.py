@@ -8,6 +8,7 @@ import struct
 from dataclasses import dataclass, replace
 from datetime import date, datetime, timezone
 from pathlib import Path
+from app.vessel_identity import demo_yachts
 
 
 @dataclass(frozen=True)
@@ -19,6 +20,7 @@ class VesselRecord:
     length_m: float | None
     width_m: float | None
     draft_m: float | None
+    identity_source: str | None = None
 @dataclass(frozen=True)
 class TrackSegment:
     start: datetime
@@ -133,9 +135,7 @@ class MarineCadastreTrackStore:
         return sorted(results, key=lambda segment: segment.start)
 
     def _registry(self) -> list[VesselRecord]:
-        if not self.registry_path.exists():
-            return []
-        payload = json.loads(self.registry_path.read_text(encoding="utf-8"))
+        payload = json.loads(self.registry_path.read_text(encoding="utf-8")) if self.registry_path.exists() else {}
         records = []
         for item in payload.get("vessels", []):
             raw_imo = item.get("imo")
@@ -150,7 +150,14 @@ class MarineCadastreTrackStore:
                     draft_m=item.get("draftM"),
                 )
             )
-        return records
+        indexed = {record.mmsi: record for record in records}
+        for item in demo_yachts():
+            existing = indexed.get(item["mmsi"])
+            if existing:
+                indexed[item["mmsi"]] = replace(existing, name=item["name"], imo=item["imo"], identity_source="user-supplied")
+            else:
+                indexed[item["mmsi"]] = VesselRecord(item["mmsi"], item["name"], item["imo"], None, None, None, None, "user-supplied")
+        return list(indexed.values())
 
 
 def segment_positions(segment: TrackSegment) -> list[TimedPosition]:

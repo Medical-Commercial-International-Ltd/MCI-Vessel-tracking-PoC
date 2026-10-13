@@ -5,6 +5,14 @@ import re
 import sqlite3
 
 
+def exposure_rankings(rows, limit=50):
+    """Rank assessed MMSIs; break equal scores consistently by name and MMSI."""
+    eligible = [row for row in rows if row.get("analysis") is not None]
+    highest = sorted(eligible, key=lambda row: (-row["analysis"].risk.score, row["name"].casefold(), row["mmsi"]))[:limit]
+    lowest = sorted(eligible, key=lambda row: (row["analysis"].risk.score, row["name"].casefold(), row["mmsi"]))[:limit]
+    return highest, lowest
+
+
 def cached_vessels(cache_dir: Path):
     files = tuple((str(path.resolve()), path.stat().st_mtime_ns, path.stat().st_size)
                   for path in sorted((cache_dir / "tracks").glob("AISVesselTracks*.gpkg")))

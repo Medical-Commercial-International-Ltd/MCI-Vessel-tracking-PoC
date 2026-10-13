@@ -67,17 +67,41 @@
   <p class="lookup-note">Select a storm, port, or both. With both selected, a vessel must be within the stated distance of each at the same recorded time. Date is optional with a storm and required for a port-only search. Length and type are AIS-reported; this does not verify vessel identity, yacht status or market value. Port distance uses the published port polygon's reference point. AIS gaps can hide vessels.</p>
 </section>
 
+<section class="panel lookup-results" aria-labelledby="demo-yachts-title">
+  <div class="lookup-results__heading"><div><span class="eyebrow">Selected yacht portfolio</span><h2 id="demo-yachts-title">Demo yachts</h2></div><span class="muted">{{ demoYachts | length }} yachts</span></div>
+  <p class="lookup-note">Names and IMO/MMSI mappings are supplied by you. Risk, confidence, dimensions and encounters come from each yacht's latest saved NOAA analysis. Select a yacht to rerun its displayed settings and open a fresh result.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Yacht</th><th>IMO</th><th>MMSI</th><th>AIS years</th><th>Length / beam / draft</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Proximity</th></tr></thead>
+    <tbody>{% for yacht in demoYachts %}{% set item = yacht.analysis %}
+      <tr><td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ yacht.mmsi }}{% endif %}" data-vessel-rerun>
+        <input type="hidden" name="csrf" value="{{ csrfToken }}"><button type="submit" class="vessel-rerun-link">{{ yacht.name }}</button>
+      </form></td><td>{{ yacht.imo }}</td><td>{{ yacht.mmsi }}</td><td>{{ yacht.years | join(', ') or 'No cached records' }}</td>
+      {% if item %}
+      <td>{% for dimension in [item.vessel.length_m, item.vessel.width_m, item.vessel.draft_m] %}{{ ('%g' | format(dimension)) ~ ' m' if dimension is not none else 'Unknown' }}{% if not loop.last %} / {% endif %}{% endfor %}</td>
+      <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }}/100 - {{ item.risk.band | title }}</span></td>
+      <td>{{ item.risk.confidence | title }}{% if item.data_quality.confidence_score is not none %}<small>{{ item.data_quality.confidence_score }}/100 evidence</small>{% endif %}</td>
+      <td>{{ item.statistics.named_storm_encounters }}</td><td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td><td>{{ '%g' | format(item.input.storm_proximity_nm) }} nm</td>
+      {% else %}<td>Unknown</td><td>Not assessed</td><td>Pending analysis</td><td>Unknown</td><td>Latest cached years</td><td>200 nm</td>{% endif %}</tr>
+    {% endfor %}</tbody>
+  </table></div>
+</section>
+
 <section class="panel lookup-results" aria-labelledby="database-vessels-title">
-  <div class="lookup-results__heading"><div><span class="eyebrow">Vessel database</span><h2 id="database-vessels-title">All recorded vessels</h2></div><span class="muted">{{ vesselTotal }} vessels</span></div>
-  <p class="lookup-note">Risk factors show each vessel's latest saved assessment. Select an assessed vessel to rerun its displayed settings. An unassessed vessel is analysed across the latest consecutive cached years with a 200 nm storm proximity. Names are shown where available; the NOAA track files identify vessels by MMSI.</p>
+  <div class="lookup-results__heading"><div><span class="eyebrow">Vessel database</span><h2 id="database-vessels-title">Insurance demo shortlist</h2></div><span class="muted">{{ assessedVesselTotal }} assessed vessels</span></div>
+  <p class="lookup-note">Up to 50 vessels with the highest exposure scores and 50 with the lowest, using each vessel's latest saved assessment. Select a vessel to rerun its displayed settings and open a fresh result in New Analysis.</p>
+  <p class="lookup-note">Higher scores highlight vessels for closer underwriting review; lower scores provide lower recorded exposure examples. Scores are not an insurance eligibility decision. Compare assessment periods, storm proximity and confidence; missing AIS coverage can produce a low score.</p>
+  {% if assessedVesselTotal < 50 %}<p class="lookup-note">Only {{ assessedVesselTotal }} vessels have a saved risk assessment, so each list contains fewer than 50 vessels.</p>{% endif %}
+  {% if rankingOverlap %}<p class="lookup-note">{{ rankingOverlap }} vessels appear in both lists because the assessed pool is small or scores are tied.</p>{% endif %}
   <form method="get" action="/event-lookup" class="vessel-catalog-search">
-    <label for="vessel-database-query">Find a vessel by name, MMSI or IMO</label>
-    <div><input id="vessel-database-query" type="search" name="vesselQuery" maxlength="100" value="{{ vesselQuery }}" placeholder="Name, MMSI or IMO"><button class="button button--secondary button--small" type="submit">Search vessels</button></div>
+    <label for="vessel-database-query">Find a vessel in the shortlists by name, MMSI or IMO</label>
+    <div><input id="vessel-database-query" type="search" name="vesselQuery" maxlength="100" value="{{ vesselQuery }}" placeholder="Name, MMSI or IMO"><button class="button button--secondary button--small" type="submit">Search shortlists</button></div>
   </form>
-  <p class="lookup-note">{{ vesselMatches }} matching vessels ? Page {{ vesselPage }} of {{ vesselPages }}</p>
+  <h3>Highest exposure - top 50</h3>
+  <p class="lookup-note">Highest scores first. Examples for closer underwriting review.</p>
+  {% set rankedVessels = highestRiskVessels %}
   <div class="table-wrap"><table>
     <thead><tr><th>Vessel / MMSI</th><th>IMO</th><th>AIS years</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Storm proximity</th><th>Last assessed</th></tr></thead>
-    <tbody>{% for vessel in databaseVessels %}{% set item = vessel.analysis %}
+    <tbody>{% for vessel in rankedVessels %}{% set item = vessel.analysis %}
       <tr>
         <td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ vessel.mmsi }}{% endif %}" data-vessel-rerun>
           <input type="hidden" name="csrf" value="{{ csrfToken }}">
@@ -87,19 +111,39 @@
         <td>{{ vessel.years | join(', ') or 'Demo' }}</td>
         {% if item %}
         <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }}/100 ? {{ item.risk.band | title }}</span></td>
-        <td>{{ item.risk.confidence | title }}</td>
+        <td>{{ item.risk.confidence | title }}{% if item.data_quality.confidence_score is not none %}<small>{{ item.data_quality.confidence_score }}/100 evidence</small>{% endif %}</td>
         <td>{{ item.statistics.named_storm_encounters }}</td>
         <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
         <td>{{ '%g' | format(item.input.storm_proximity_nm) }} nm</td>
         <td>{{ item.created_at.strftime('%d %b %Y %H:%M') }} UTC</td>
         {% else %}<td>Not assessed</td><td>Pending analysis</td><td>Unknown</td><td>Latest cached years</td><td>200 nm</td><td>Not assessed</td>{% endif %}
       </tr>
-    {% else %}<tr><td colspan="9">No vessels match this search.</td></tr>{% endfor %}</tbody>
+    {% else %}<tr><td colspan="9">No assessed vessels match this ranking and search.</td></tr>{% endfor %}</tbody>
   </table></div>
-  <nav class="vessel-catalog-pagination" aria-label="Vessel table pages">
-    {% if vesselPage > 1 %}<a class="button button--secondary button--small" href="/event-lookup?vesselQuery={{ vesselQueryEncoded }}&amp;vesselPage={{ vesselPage - 1 }}#database-vessels-title">Previous</a>{% endif %}
-    {% if vesselPage < vesselPages %}<a class="button button--secondary button--small" href="/event-lookup?vesselQuery={{ vesselQueryEncoded }}&amp;vesselPage={{ vesselPage + 1 }}#database-vessels-title">Next</a>{% endif %}
-  </nav>
+  <h3>Lowest exposure - top 50</h3>
+  <p class="lookup-note">Lowest scores first. Examples with lower recorded storm exposure.</p>
+  {% set rankedVessels = lowestRiskVessels %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Vessel / MMSI</th><th>IMO</th><th>AIS years</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Storm proximity</th><th>Last assessed</th></tr></thead>
+    <tbody>{% for vessel in rankedVessels %}{% set item = vessel.analysis %}
+      <tr>
+        <td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ vessel.mmsi }}{% endif %}" data-vessel-rerun>
+          <input type="hidden" name="csrf" value="{{ csrfToken }}">
+          <button type="submit" class="vessel-rerun-link" aria-label="{{ 'Rerun' if item else 'Run' }} analysis for {{ vessel.name }}">{{ vessel.name }}</button>
+        </form><small>MMSI {{ vessel.mmsi }}</small></td>
+        <td>{{ vessel.imo or 'Unknown' }}</td>
+        <td>{{ vessel.years | join(', ') or 'Demo' }}</td>
+        {% if item %}
+        <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }}/100 ? {{ item.risk.band | title }}</span></td>
+        <td>{{ item.risk.confidence | title }}{% if item.data_quality.confidence_score is not none %}<small>{{ item.data_quality.confidence_score }}/100 evidence</small>{% endif %}</td>
+        <td>{{ item.statistics.named_storm_encounters }}</td>
+        <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
+        <td>{{ '%g' | format(item.input.storm_proximity_nm) }} nm</td>
+        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') }} UTC</td>
+        {% else %}<td>Not assessed</td><td>Pending analysis</td><td>Unknown</td><td>Latest cached years</td><td>200 nm</td><td>Not assessed</td>{% endif %}
+      </tr>
+    {% else %}<tr><td colspan="9">No assessed vessels match this ranking and search.</td></tr>{% endfor %}</tbody>
+  </table></div>
   <p class="lookup-note" role="status" aria-live="polite" hidden data-vessel-rerun-status>Running vessel analysis. The result will open when ready.</p>
 </section>
 

@@ -11,7 +11,7 @@ from app.vessel_catalog import cached_vessels
 from tests.test_app import _csrf
 
 
-def test_noaa_catalog_pagination_risk_and_fresh_analysis(tmp_path):
+def test_noaa_shortlists_risk_and_fresh_analysis(tmp_path):
     cache = tmp_path / 'cache'
     (cache / 'tracks').mkdir(parents=True)
     for year in (2023, 2024, 2025):
@@ -53,14 +53,14 @@ def test_noaa_catalog_pagination_risk_and_fresh_analysis(tmp_path):
         client.post('/login', data={'email': 'tester@mciuw.com', 'password': 'TestPassword123!', 'csrf': _csrf(login.text)})
         page = client.get('/event-lookup')
         assert page.status_code == 200
-        assert '51 vessels' in page.text
-        assert 'Page 1 of 2' in page.text
-        assert page.text.count('data-vessel-rerun>') == 50
+        assert '1 assessed vessels' in page.text
+        assert 'Highest exposure - top 50' in page.text
+        assert 'Lowest exposure - top 50' in page.text
+        assert page.text.count('data-vessel-rerun>') == 12
         assert 'Not assessed' in page.text
-        second = client.get('/event-lookup?vesselPage=2')
-        assert second.text.count('data-vessel-rerun>') == 1
+        assert '/event-lookup/analyse/367000002' not in page.text
         found = client.get('/event-lookup?vesselQuery=TEST+VESSEL')
-        assert '1 matching vessels' in found.text
+        assert found.text.count('data-vessel-rerun>') == 12
         assert f'/event-lookup/rerun/{source.analysis_id}' in found.text
         csrf = _csrf(page.text)
         assert client.post(f'/event-lookup/rerun/{source.analysis_id}', data={'csrf': 'wrong'}).status_code == 400
@@ -78,5 +78,36 @@ def test_noaa_catalog_pagination_risk_and_fresh_analysis(tmp_path):
         assert calls[-1].storm_proximity_nm == 200
         assert client.post('/event-lookup/rerun/missing', data={'csrf': csrf}).status_code == 404
         updated = client.get('/event-lookup?vesselQuery=367000002')
-        assert 'Not assessed' not in updated.text
+        assert '/event-lookup/rerun/' in updated.text
 
+
+
+def test_rankings_cap_each_list_and_exclude_unassessed():
+    from types import SimpleNamespace
+    from app.vessel_catalog import exposure_rankings
+    rows = [{'mmsi': str(367000000 + i), 'name': f'Vessel {i:03}',
+             'analysis': SimpleNamespace(risk=SimpleNamespace(score=i))} for i in range(101)]
+    rows.append({'mmsi': '999999999', 'name': 'Unassessed', 'analysis': None})
+    highest, lowest = exposure_rankings(list(reversed(rows)))
+    assert len(highest) == len(lowest) == 50
+    assert [r['analysis'].risk.score for r in highest] == list(range(100, 50, -1))
+    assert [r['analysis'].risk.score for r in lowest] == list(range(50))
+    assert not {r['mmsi'] for r in highest} & {r['mmsi'] for r in lowest}
+    tied = [dict(r, analysis=SimpleNamespace(risk=SimpleNamespace(score=0))) for r in rows[:60]]
+    h1, l1 = exposure_rankings(tied)
+    h2, l2 = exposure_rankings(list(reversed(tied)))
+    assert [r['mmsi'] for r in h1] == [r['mmsi'] for r in h2]
+    assert [r['mmsi'] for r in l1] == [r['mmsi'] for r in l2]
+
+
+def test_demo_yacht_identity_resolves_by_mmsi_and_imo(tmp_path):
+    from app.ais_data import MarineCadastreTrackStore
+    from app.vessel_identity import demo_yachts
+    store = MarineCadastreTrackStore(tmp_path)
+    assert len(demo_yachts()) == 10
+    for yacht in demo_yachts():
+        vessel = store.resolve_vessel('MMSI', yacht['mmsi'])
+        assert vessel.name == yacht['name']
+        assert vessel.imo == yacht['imo']
+        assert vessel.identity_source == 'user-supplied'
+        assert store.resolve_vessel('IMO', yacht['imo']) == vessel
