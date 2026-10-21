@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Crew review · {{ analysis.vessel.name }} · MCI{% endblock %}
+{% block content %}
+<div class="demo-banner"><strong>{% if crewConnected %}Crewdentials development workspace{% elif crewDemo %}Crew demonstration{% else %}Crew lookup not connected{% endif %}</strong><span>{% if crewConnected %}Connected test profiles and provider evidence. Fictional records and assignments are for integration testing only.{% elif crewDemo %}Fictional people and evidence — not for underwriting use. No information is sent to Crewdentials.{% else %}Live provider access is awaiting confirmation. Existing demonstration links remain labelled.{% endif %}</span></div>
+<section class="page-heading">
+  <span class="eyebrow">Vessel assessment / Crew</span>
+  <h1>{{ analysis.vessel.name }}</h1>
+  <p>Review crew evidence and confirm who is assigned to this vessel.</p>
+</section>
+<nav class="vessel-tabs" aria-label="Vessel assessment sections">
+  <a href="/analysis?analysisId={{ analysis.analysis_id }}">Exposure</a>
+  <a href="/crew/{{ analysis.analysis_id }}" aria-current="page">Crew</a>
+</nav>
+{% if error %}<div class="alert alert--error" role="alert">{{ error }}</div>{% endif %}
+{% if saved %}<div class="crew-success" role="status">{{ 'Test assignment saved' if crewConnected else 'Demonstration assignment saved' }}. The combined assessment has been updated. This confirms the vessel link, not qualifications or suitability.</div>{% endif %}
+
+{% include 'crew_risk_summary.html' %}
+
+<section class="panel crew-section">
+  {% if crewConnected %}
+  <div class="panel__heading"><div><span class="eyebrow">Connected workspace</span><h2>Select crew evidence</h2></div><span class="quality-badge quality-badge--medium">Test profiles</span></div>
+  <p>These profiles are already connected to MCI. Select one, review its evidence, then confirm the vessel assignment. Crew membership cannot be inferred from IMO or MMSI alone.</p>
+  <div class="crew-candidates">{% for candidate in connectedProfiles %}
+    <article class="crew-candidate"><h3>{{ candidate.name }}</h3><p class="panel__note">{{ candidate.id }}</p>
+      <form method="post" action="/crew/{{ analysis.analysis_id }}/select"><input type="hidden" name="csrf" value="{{ csrfToken }}"><input type="hidden" name="person_id" value="{{ candidate.id }}"><button class="button button--secondary button--small" type="submit">Review profile</button></form>
+    </article>
+  {% else %}<p>No connected profiles have been imported.</p>{% endfor %}</div>
+  {% else %}
+  <div class="panel__heading"><div><span class="eyebrow">Find a person</span><h2>Crew lookup</h2></div><span class="quality-badge quality-badge--medium">{% if crewDemo %}Sample directory{% else %}Not connected{% endif %}</span></div>
+  <form method="post" action="/crew/{{ analysis.analysis_id }}/lookup" class="crew-form" data-crew-lookup>
+    <input type="hidden" name="csrf" value="{{ csrfToken }}">
+    <label>First name<input name="first_name" maxlength="80" autocomplete="off" value="{{ values.get('first_name', '') }}" required></label>
+    <label>Surname<input name="last_name" maxlength="80" autocomplete="off" value="{{ values.get('last_name', '') }}" required></label>
+    <label>Email address<input type="email" name="email" maxlength="254" autocomplete="off" value="{{ values.get('email', '') }}" required></label>
+    <button class="button button--primary" type="submit">Find crew member</button>
+    <p class="crew-loading" data-crew-loading role="status" hidden>Searching crew records…</p>
+  </form>
+  {% if crewDemo %}
+  <details class="crew-samples"><summary>Try a demonstration scenario</summary>
+    <p>Select a sample to fill the form, then choose Find crew member. Other email addresses return no match.</p>
+    <div class="crew-sample-buttons">
+      <button class="button button--secondary button--small" type="button" data-crew-sample="maya">Maya Patel · one match</button>
+      <button class="button button--secondary button--small" type="button" data-crew-sample="alex">Alex Morgan · two matches</button>
+      <button class="button button--secondary button--small" type="button" data-crew-sample="missing">No accessible record</button>
+      <button class="button button--secondary button--small" type="button" data-crew-sample="unavailable">Provider unavailable</button>
+    </div>
+    <p class="panel__note">Samples: maya.patel@example.test / alex.morgan@example.test / missing@example.test / unavailable@example.test</p>
+  </details>
+  {% endif %}
+  {% if searched %}
+  <div class="crew-search-results" role="status">
+    {% if not candidates %}<h3>No accessible crew record found</h3><p>Check the details or try another sample. This does not establish that the person has no qualifications.</p>
+    {% else %}
+    <h3>{{ candidates | length }} candidate{% if candidates | length != 1 %}s{% endif %} found</h3>
+    <p>Review the person before linking them to the vessel. An email match does not verify identity.</p>
+    <div class="crew-candidates">
+      {% for candidate in candidates %}
+      <article class="crew-candidate">
+        <h3>{{ candidate.first_name }} {{ candidate.last_name }}</h3>
+        <p>{{ candidate.email }}</p>
+        <p class="panel__note">Sample reference: {{ candidate.id }}</p>
+        {% if not candidate.name_consistent %}<p class="crew-caution">The name differs from your search. Review before selecting.</p>{% endif %}
+        <a class="button button--secondary" href="/crew/{{ analysis.analysis_id }}?person={{ candidate.id }}">Review profile</a>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endif %}
+</section>
+
+{% if person %}
+<section class="crew-profile crew-section">
+  <article class="panel">
+    <div class="panel__heading"><div><span class="eyebrow">Fictional crew profile</span><h2>{{ person.first_name }} {{ person.last_name }}</h2></div><span class="quality-badge quality-badge--medium">Demonstration evidence</span></div>
+    <p>{{ person.email or 'Email address not supplied by the document API.' }}</p>
+    {% if crewConnected %}<p class="panel__note">Crew profile ID: {{ person.id }}<br>Evidence retrieved: {{ person.retrieved_at }}</p>
+    {% if person.stale or person.refresh_error %}<p class="crew-caution">Evidence is stale or the last refresh failed. Refresh before relying on the combined score.</p>{% endif %}{% endif %}
+    <h3>CV and experience</h3>
+    <p>{{ person.summary or 'No CV summary supplied.' }}</p>
+    {% if person.experience %}<ul>{% for item in person.experience %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p class="empty-inline">No experience evidence supplied.</p>{% endif %}
+    <p class="panel__note">{% if crewConnected %}The document API has not supplied a CV or employment history. Certificate evidence is available below.{% else %}Self-declared sample CV statements. Experience has not been independently verified. No source files are available in this demonstration.{% endif %}</p>
+    <h3>Qualifications and document evidence</h3>
+    {% for certificate in person.certificates %}
+    <article class="crew-certificate">
+      <h3>{{ certificate.name }}</h3>
+      <dl class="crew-facts">
+        <div><dt>Reference</dt><dd>{{ certificate.reference or 'Not supplied' }}</dd></div>
+        {% if crewConnected %}<div><dt>Issue date</dt><dd>{{ certificate.issue or 'Not supplied' }}</dd></div>{% endif %}
+        <div><dt>Expiry</dt><dd>{{ certificate.expiry or 'Unknown' }}</dd></div>
+        <div><dt>Verification</dt><dd>{{ certificate.verification or 'Not verified' }}</dd></div>
+        <div><dt>Document review</dt><dd>{{ 'Details reviewed' if certificate.completed else 'Awaiting review' }}</dd></div>
+        <div><dt>Recorded limits</dt><dd>{{ certificate.limits }}</dd></div>
+      </dl>
+      {% if crewConnected %}<p><a class="button button--ghost button--small" href="/crew/{{ analysis.analysis_id }}/source/{{ person.id }}/{{ certificate.id }}">Download source document</a></p>
+      <details><summary>Provider verification records</summary>{% for verification in certificate.verifications %}<dl class="crew-facts">{% for key, value in verification.items() %}<div><dt>{{ key }}</dt><dd>{{ value if value is not none else 'Not supplied' }}</dd></div>{% endfor %}</dl>{% else %}<p>No verification recorded.</p>{% endfor %}</details>{% endif %}
+    </article>
+    {% else %}<p class="empty-inline">No qualification evidence supplied. Suitability cannot be confirmed from this record.</p>{% endfor %}
+    {% if crewConnected %}
+    <p class="panel__note">Source: Crewdentials development workspace. Provider test statuses are retained as supplied. Expiry is assessed separately.</p>
+    <a class="button button--ghost button--small" href="/crew/{{ analysis.analysis_id }}/evidence/{{ person.id }}">View full provider JSON</a>
+    <form method="post" action="/crew/{{ analysis.analysis_id }}/refresh"><input type="hidden" name="csrf" value="{{ csrfToken }}"><input type="hidden" name="person_id" value="{{ person.id }}"><button class="button button--secondary button--small" type="submit">Refresh from Crewdentials</button></form>
+    {% else %}
+    <p class="panel__note">Source: MCI fictional demonstration directory. Provider verification statuses are illustrated; no live authority checks have been performed.</p>
+    <a class="button button--ghost button--small" href="/crew/{{ analysis.analysis_id }}?person={{ person.id }}">Refresh demonstration evidence</a>
+    {% endif %}
+  </article>
+  <aside>
+    <section class="panel crew-section">
+      <span class="eyebrow">Evidence review</span><h2>Review prompts</h2>
+      <p>Evidence is incomplete. Role suitability requires underwriting review.</p>
+      <ul class="crew-findings">{% for finding in findings %}<li>{{ finding }}</li>{% endfor %}</ul>
+      <p class="panel__note">Crew evidence contributes to the combined assessment above. The original cyclone score remains visible separately.</p>
+    </section>
+    <section class="panel">
+      <span class="eyebrow">Reviewed vessel link</span><h2>{{ 'Update' if assignment else 'Confirm' }} assignment</h2>
+      <form method="post" action="/crew/{{ analysis.analysis_id }}/assign" class="crew-assignment-form">
+        <input type="hidden" name="csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="person_id" value="{{ person.id }}">
+        <label>Role<select name="role" required><option value="">Choose a role</option>{% for role in ['Captain', 'Chief officer', 'Engineer', 'Deck crew', 'Interior crew', 'Other'] %}<option {% if values.get('role', assignment.role if assignment else '') == role %}selected{% endif %}>{{ role }}</option>{% endfor %}</select></label>
+        <label>From<input type="date" name="start_date" value="{{ values.get('start_date', assignment.start_date if assignment else today) }}" required></label>
+        <label>To<input type="date" name="end_date" value="{{ values.get('end_date', assignment.end_date if assignment else '') }}" required></label>
+        <label class="crew-confirm"><input type="checkbox" name="confirmed" value="yes" required><span>I have reviewed the selected person and confirm this demonstration assignment to {{ analysis.vessel.name }}.</span></label>
+        <button class="button button--primary" type="submit">{{ 'Save test assignment and update risk' if crewConnected else 'Save demonstration assignment' }}</button>
+      </form>
+    </section>
+  </aside>
+</section>
+{% endif %}
+
+<section class="panel crew-section">
+  <div class="panel__heading"><div><span class="eyebrow">This vessel</span><h2>Crew assignments</h2></div><span class="panel__note">{{ assignments | length }} recorded</span></div>
+  {% if assignments %}
+  <div class="crew-roster">{% for row in assignments %}
+    <article class="crew-roster-row">
+      <div><h3><a href="/crew/{{ analysis.analysis_id }}?person={{ row.person_id }}">{{ row.name }}</a></h3><span class="quality-badge quality-badge--medium">Demonstration</span></div>
+      <div><strong>{{ row.role }}</strong><p>{{ row.start_date }} to {{ row.end_date }}</p></div>
+      <div class="panel__note">Reviewed by {{ row.reviewer }}<br>{{ row.reviewed_at[:10] }}</div>
+      <form method="post" action="/crew/{{ analysis.analysis_id }}/remove"><input type="hidden" name="csrf" value="{{ csrfToken }}"><input type="hidden" name="person_id" value="{{ row.person_id }}"><button class="button button--ghost button--small" type="submit">Remove assignment</button></form>
+    </article>
+  {% endfor %}</div>
+  {% else %}<p class="empty-inline">No crew assignments recorded. Find a crew member and review their profile to add one.</p>{% endif %}
+  <p class="panel__note">Assignments are shared across assessments with the same vessel identifier. They do not confirm insured cover or credential validity.</p>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='/crew.js') }}" defer></script>{% endblock %}

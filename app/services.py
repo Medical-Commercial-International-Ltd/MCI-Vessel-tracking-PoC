@@ -105,10 +105,12 @@ class DemoAnalysisService:
         risk = aggregate_risk(event_scores, confidence)
         vessel_type = generator.choice(VESSEL_TYPES)
         identifier = analysis_input.identifier
+        # Keep demo identity stable across periods and portfolio event seed suffixes.
+        identity_generator = random.Random(identifier)
         vessel = VesselIdentity(
             name=generator.choice(VESSEL_NAMES),
-            imo=identifier if analysis_input.identifier_type == "IMO" else _valid_demo_imo(generator),
-            mmsi=[identifier] if analysis_input.identifier_type == "MMSI" else [str(generator.randint(200_000_000, 799_999_999))],
+            imo=identifier if analysis_input.identifier_type == "IMO" else _valid_demo_imo(identity_generator),
+            mmsi=[identifier] if analysis_input.identifier_type == "MMSI" else [str(identity_generator.randint(200_000_000, 799_999_999))],
             vessel_type=vessel_type,
             flag=generator.choice(FLAGS),
             length_m=round(generator.uniform(85, 310), 1),

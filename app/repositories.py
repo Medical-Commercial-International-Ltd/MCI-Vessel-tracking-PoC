@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+import time
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -105,7 +106,16 @@ def _atomic_json_write(target: Path, payload: dict) -> None:
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
-        os.replace(temporary_name, target)
+        for attempt in range(5):
+            try:
+                os.replace(temporary_name, target)
+                break
+            except PermissionError:
+                # Windows readers/indexers can briefly deny replacement. Preserve
+                # the original and retry the same atomic operation for < 1 second.
+                if os.name != "nt" or attempt == 4:
+                    raise
+                time.sleep(0.025 * (2 ** attempt))
     except Exception:
         try:
             os.unlink(temporary_name)

@@ -3,16 +3,16 @@
   <desc id="desc">A cargo vessel at sea used when a verified vessel photograph is unavailable.</desc>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dceef3"/><stop offset="1" stop-color="#f3f7f7"/></linearGradient>
-    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#58a8b5"/><stop offset="1" stop-color="#17667a"/></linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0db1ee"/><stop offset="1" stop-color="#003863"/></linearGradient>
   </defs>
   <rect width="960" height="540" fill="url(#sky)"/>
   <circle cx="770" cy="115" r="54" fill="#fff" opacity=".72"/>
   <path d="M0 385c130-28 224 21 350 0 139-24 252 18 388-4 87-14 153-11 222 7v152H0z" fill="url(#sea)"/>
-  <path d="M171 352h651l-67 91H260c-29-2-56-18-71-43z" fill="#102e40"/>
+  <path d="M171 352h651l-67 91H260c-29-2-56-18-71-43z" fill="#003863"/>
   <path d="M258 308h403l54 44H226z" fill="#f4f7f7" stroke="#678390" stroke-width="5"/>
   <path d="M574 215h91v93h-91z" fill="#fff" stroke="#678390" stroke-width="5"/>
   <path d="M599 172h19v43h-19zM635 189h12v26h-12z" fill="#163d50"/>
   <path d="M596 240h20v17h-20zm35 0h20v17h-20zm-35 34h20v17h-20zm35 0h20v17h-20z" fill="#58a8b5"/>
-  <path d="M279 251h92v57h-92zm102 0h92v57h-92zm102 0h82v57h-82z" fill="#0f8f86" stroke="#0b6d68" stroke-width="4"/>
+  <path d="M279 251h92v57h-92zm102 0h92v57h-92zm102 0h82v57h-82z" fill="#0db1ee" stroke="#003863" stroke-width="4"/>
   <path d="M0 448c94-21 168 20 252 4 104-20 182 19 281 0 100-19 172 15 269-2 59-10 111-8 158 3" fill="none" stroke="#a9d8de" stroke-width="9" opacity=".8"/>
 </svg>

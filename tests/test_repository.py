@@ -12,6 +12,8 @@ from app.models import (
     VesselIdentity,
 )
 from app.repositories import FileAnalysisRepository
+import os
+import pytest
 
 
 def make_analysis() -> AnalysisDocument:
@@ -77,4 +79,22 @@ def test_json_uses_cosmos_compatible_field_names(tmp_path):
     assert '"tenantId": "mci"' in contents
     assert '"analysisId": "analysis_test"' in contents
     assert '"schemaVersion": "1.0"' in contents
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows file replacement locking")
+def test_atomic_write_retries_temporary_windows_lock(tmp_path, monkeypatch):
+    from app import repositories
+    original = repositories.os.replace
+    calls = []
+    def locked_once(source, target):
+        calls.append(target)
+        if len(calls) == 1:
+            raise PermissionError("temporary file lock")
+        return original(source, target)
+    monkeypatch.setattr(repositories.os, "replace", locked_once)
+    monkeypatch.setattr(repositories.time, "sleep", lambda _: None)
+    repository = FileAnalysisRepository(tmp_path)
+    repository.save_analysis(make_analysis())
+    assert repository.get_analysis("mci", "analysis_test").risk.score == 42
+    assert len(calls) == 2
 

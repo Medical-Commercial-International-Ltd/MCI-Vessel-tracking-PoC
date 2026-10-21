@@ -1,0 +1,6 @@
+{% macro evidence_indicator(value) -%}
+<span class="evidence-indicator evidence-indicator--{{ value.status }}" title="{{ value.label }}{% if value.detail %}: {{ value.detail }}{% endif %}">
+  <span class="evidence-indicator__icon" aria-hidden="true">{% if value.status == 'pass' %}✓{% elif value.status == 'fail' %}×{% elif value.status == 'warning' %}!{% else %}—{% endif %}</span>
+  <span class="sr-only">{{ value.label }}</span>
+</span>
+{%- endmacro %}

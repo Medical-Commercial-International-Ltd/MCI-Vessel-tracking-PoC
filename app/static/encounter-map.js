@@ -14,7 +14,8 @@
   const imageryNote = document.querySelector('[data-map-imagery-note]');
   const details = document.querySelector('[data-map-details]');
   const satelliteRetry = document.querySelector('[data-map-satellite-retry]');
-  const colors = { vessel: '#07877f', gaps: '#07877f', storm: '#ea671e', 34: '#e6b437', 50: '#ef7b2d', 64: '#c93f4d' };
+  const brandNavy = getComputedStyle(container).getPropertyValue('--mci-navy').trim() || '#003863';
+  const colors = { vessel: brandNavy, gaps: brandNavy, storm: '#ea671e', 34: '#e6b437', 50: '#ef7b2d', 64: '#c93f4d' };
   const fail = (message) => {
     container.replaceChildren(); container.classList.add('encounter-map--error');
     container.textContent = message; status.textContent = message;

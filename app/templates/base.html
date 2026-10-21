@@ -9,12 +9,12 @@
   {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
-  {% if user %}
-  <header class="app-header">
-    <a class="brand brand--header" href="/dashboard" aria-label="MCI dashboard">
-      <span class="brand__mark">MCI</span>
-      <span class="brand__product">Marine Risk Intelligence</span>
+  <header class="app-header{% if not user %} app-header--login{% endif %}">
+    <a class="brand brand--header" href="{{ '/dashboard' if user else '/login' }}" aria-label="{{ 'MCI dashboard' if user else 'MCI sign in' }}">
+      <img class="brand__logo" src="{{ url_for('static', path='/brand/mci-logo-white.svg') }}" alt="Medical &amp; Commercial International (MCI)" width="131" height="69">
+      <span class="brand__product"><span class="brand__company">Medical &amp; Commercial International</span><strong>Marine Risk Intelligence</strong></span>
     </a>
+    {% if user %}
     <nav class="main-nav" aria-label="Main navigation">
       <a href="/dashboard" class="{% if request.url.path == '/dashboard' %}is-active{% endif %}">Dashboard</a>
       <a href="/analysis" class="{% if request.url.path == '/analysis' %}is-active{% endif %}">New analysis</a>
@@ -27,8 +27,10 @@
         <button class="button button--ghost button--small" type="submit">Sign out</button>
       </form>
     </div>
+    {% else %}
+    <span class="brand__workspace">Internal workspace</span>
+    {% endif %}
   </header>
-  {% endif %}
 
   <main class="{% if user %}app-shell{% endif %}">
     {% block content %}{% endblock %}

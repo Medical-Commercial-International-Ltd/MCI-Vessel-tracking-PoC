@@ -1,0 +1,201 @@
+{
+	"info": {
+		"name": "Crewdentials — Crew Documents API",
+		"description": "Add documents to a crew member and read them back, including their verifications.\n\n## Getting started\n\nThe `API_KEY` and `WORKFLOW_ID` collection variables are already set for you. `API_KEY` is sent on every request as `Authorization: Bearer <your API key>`, and `WORKFLOW_ID` is the workflow new crew members are created on.\n\nRun **Add documents for a new crew member** first: it saves the new `CREW_PROFILE_ID`, which **Get a crew member’s documents** then reads back.\n\n## Describing documents\n\nEach document is either **described in full** or **left to be read for you**, never a mixture.\n\n- Send none of `name`, `categoryId`, `certificateTypeId`, `documentRef`, `issueDate`, `expiryDate` and the document is scanned, with the details filled in for you.\n- Or send all six. Where one does not apply, send it as `null` — a certificate that never expires carries `\"expiryDate\": null`.\n\nSending only some of them is rejected with a `400` naming what is missing.\n\nThe optional `certificateIssuerId`, `issuerCountry`, `passportNationality` and `data` may accompany a described document.\n\n## Files\n\nDocuments carry `imageUrls` (pictures of the document) and `originalFileUrls` (the file as supplied, such as a PDF). At least one of the two is required. Crewdentials downloads them, so they need to be reachable from the public internet while the request runs.\n\n## Your own reference\n\nGive each document a `key`. It is echoed back in the response so you can match the documents Crewdentials created to the ones you sent. It is not stored.\n\n## After importing\n\nImported documents are not marked complete. Someone in the workspace checks the details over and saves them, at which point `completed` becomes `true` in **Get a crew member’s documents**.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "https://crewdentials-api-dev.onrender.com/api",
+			"type": "string"
+		},
+		{
+			"key": "API_KEY",
+			"value": "mci-dev-key-1047",
+			"type": "string"
+		},
+		{
+			"key": "WORKFLOW_ID",
+			"value": "01a14162-f92e-7e28-8028-25a3994e97f7",
+			"type": "string"
+		},
+		{
+			"key": "CREW_PROFILE_ID",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Add documents for a new crew member",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const body = pm.response.json();",
+							"",
+							"pm.test('a crew member and profile were created', () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"  pm.expect(body.crewCreated).to.eql(true);",
+							"});",
+							"",
+							"// Keep the new profile for the next request in this collection.",
+							"pm.collectionVariables.set('CREW_PROFILE_ID', body.crewProfileId);",
+							"console.log('crewId', body.crewId, 'crewProfileId', body.crewProfileId);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{API_KEY}}",
+						"type": "text",
+						"description": "The API key Crewdentials issued you."
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_URL}}/v1/insertCrewDocs",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"v1",
+						"insertCrewDocs"
+					]
+				},
+				"description": "Creates a crew member and one profile on `WORKFLOW_ID`, then files the documents against it.\n\nSend `displayName` and leave `crewProfileId` out. The response returns the new `crewId` and `crewProfileId`; keep the profile id to read the documents back, or to send `crewProfileId` instead of `displayName` when adding more documents to the same person later.\n\nEach document below gives nothing but a `key` and its images, so Crewdentials reads them and fills in the details. To supply the details yourself instead, send all six of `name`, `categoryId`, `certificateTypeId`, `documentRef`, `issueDate` and `expiryDate` on that document.",
+				"body": {
+					"mode": "raw",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					},
+					"raw": "{\n  \"displayName\": \"Niko Kordelan\",\n  \"workflowId\": \"{{WORKFLOW_ID}}\",\n  \"documents\": [\n    {\n      \"key\": \"stcw-bst\",\n      \"imageUrls\": [\n        \"https://example.com/documents/stcw-bst.jpg\"\n      ]\n    },\n    {\n      \"key\": \"passport\",\n      \"imageUrls\": [\n        \"https://example.com/documents/passport-page-1.jpg\",\n        \"https://example.com/documents/passport-page-2.jpg\"\n      ]\n    }\n  ]\n}"
+				}
+			},
+			"response": [
+				{
+					"name": "Created",
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"crewId\": \"9d1f7c2e-5a84-4b31-9f0a-2c6d4e8b1a77\",\n  \"crewCreated\": true,\n  \"crewProfileId\": \"3f8b1a64-72c9-4d55-8e21-6b0f9c4a2d13\",\n  \"documents\": [\n    {\n      \"documentId\": \"7a2d5f81-3c90-4e62-b1d7-5f8a6c0e9b34\",\n      \"key\": \"stcw-bst\"\n    },\n    {\n      \"documentId\": \"c4e9a0b2-1d76-4f38-9a5c-8e2b7d13f604\",\n      \"key\": \"passport\"\n    }\n  ]\n}",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_KEY}}",
+								"type": "text",
+								"description": "The API key Crewdentials issued you."
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/insertCrewDocs",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"insertCrewDocs"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							},
+							"raw": "{\n  \"displayName\": \"Niko Kordelan\",\n  \"workflowId\": \"{{WORKFLOW_ID}}\",\n  \"documents\": [\n    {\n      \"key\": \"stcw-bst\",\n      \"imageUrls\": [\n        \"https://example.com/documents/stcw-bst.jpg\"\n      ]\n    },\n    {\n      \"key\": \"passport\",\n      \"imageUrls\": [\n        \"https://example.com/documents/passport-page-1.jpg\",\n        \"https://example.com/documents/passport-page-2.jpg\"\n      ]\n    }\n  ]\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Get a crew member's documents",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{API_KEY}}",
+						"type": "text",
+						"description": "The API key Crewdentials issued you."
+					}
+				],
+				"url": {
+					"raw": "{{BASE_URL}}/v1/getCrewDocs/{{CREW_PROFILE_ID}}",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"v1",
+						"getCrewDocs",
+						"{{CREW_PROFILE_ID}}"
+					]
+				},
+				"description": "Every document filed against a crew profile, with its details, files and verifications.\n\n- `completed` is `true` once someone in the workspace has checked the document over and saved it. Documents you have just imported stay `false` until then.\n- `imageUrls` and `originalFileUrls` are temporary links, valid for one hour. Download what you need rather than storing the links.\n- `verifications` lists the checks carried out on the document. `status` is `VERIFIED_INSTANT` or `VERIFIED_MANUAL` where the document was confirmed, `REJECTED` where it was not. An empty array means the document has not been verified."
+			},
+			"response": [
+				{
+					"name": "OK",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{API_KEY}}",
+								"type": "text",
+								"description": "The API key Crewdentials issued you."
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/getCrewDocs/{{CREW_PROFILE_ID}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"getCrewDocs",
+								"{{CREW_PROFILE_ID}}"
+							]
+						}
+					},
+					"body": "{\n  \"crewId\": \"9d1f7c2e-5a84-4b31-9f0a-2c6d4e8b1a77\",\n  \"crewProfileId\": \"3f8b1a64-72c9-4d55-8e21-6b0f9c4a2d13\",\n  \"documents\": [\n    {\n      \"id\": \"7a2d5f81-3c90-4e62-b1d7-5f8a6c0e9b34\",\n      \"createdAt\": \"2026-10-15T09:12:44.512Z\",\n      \"name\": \"STCW Basic Safety Training\",\n      \"categoryId\": \"CERTIFICATE\",\n      \"certificateTypeId\": \"STCW_BASIC_SAFETY_TRAINING\",\n      \"certificateIssuerId\": null,\n      \"documentRef\": \"BST-12345\",\n      \"issueDate\": \"2024-06-01\",\n      \"expiryDate\": \"2029-06-01\",\n      \"issuerCountry\": \"GB\",\n      \"passportNationality\": null,\n      \"archivedAt\": null,\n      \"completed\": true,\n      \"imageUrls\": [\n        \"https://storage.crewdentials.com/...signed...\"\n      ],\n      \"originalFileUrls\": [\n        \"https://storage.crewdentials.com/...signed...\"\n      ],\n      \"verifications\": [\n        {\n          \"id\": \"4aa2b89e-6496-4bbf-9d43-b585cabaa452\",\n          \"status\": \"VERIFIED_MANUAL\",\n          \"createdAt\": \"2026-10-15T10:02:11.004Z\",\n          \"completedAt\": \"2026-10-15T10:02:10.880Z\",\n          \"trusted\": null,\n          \"documentId\": \"7a2d5f81-3c90-4e62-b1d7-5f8a6c0e9b34\",\n          \"documentWorkspaceId\": \"a67aaaa6-908c-4d4e-b8a8-0f7c5675f848\"\n        }\n      ]\n    },\n    {\n      \"id\": \"c4e9a0b2-1d76-4f38-9a5c-8e2b7d13f604\",\n      \"createdAt\": \"2026-10-15T09:12:44.512Z\",\n      \"name\": null,\n      \"categoryId\": null,\n      \"certificateTypeId\": null,\n      \"certificateIssuerId\": null,\n      \"documentRef\": null,\n      \"issueDate\": null,\n      \"expiryDate\": null,\n      \"issuerCountry\": null,\n      \"passportNationality\": null,\n      \"archivedAt\": null,\n      \"completed\": false,\n      \"imageUrls\": [\n        \"https://storage.crewdentials.com/...signed...\"\n      ],\n      \"originalFileUrls\": [],\n      \"verifications\": []\n    }\n  ]\n}"
+				}
+			]
+		}
+	]
+}

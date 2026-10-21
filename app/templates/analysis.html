@@ -56,6 +56,11 @@
   {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
 </section>
 
+{% if crewExample and not analysis %}
+<div class="alert"><strong>Crew integration test ready.</strong> Sam and Freya have random test assignments to MMSI {{ crewExample.vessel.mmsi | join(', ') }}.
+  <a href="/analysis?analysisId={{ crewExample.analysisId }}">Open the vessel and crew scenario</a> or enter this MMSI above to run it again.</div>
+{% endif %}
+
 <section class="processing-panel" hidden data-processing-panel aria-live="polite">
   <div class="spinner"></div>
   <div><strong>Building vessel assessment</strong><span data-processing-message>Resolving vessel identity…</span></div>
@@ -91,6 +96,13 @@
   </div>
 </section>
 
+<nav class="vessel-tabs" aria-label="Vessel assessment sections">
+  <a href="/analysis?analysisId={{ analysis.analysis_id }}" aria-current="page">Exposure</a>
+  <a href="/crew/{{ analysis.analysis_id }}">Crew</a>
+</nav>
+
+{% include 'crew_risk_summary.html' %}
+
 <section class="risk-hero risk-hero--{{ analysis.risk.band | lower }}">
   <div class="score-gauge" style="--score: {{ analysis.risk.score }}">
     <div><strong>{{ analysis.risk.score }}</strong><span>out of 100</span></div>
@@ -100,9 +112,9 @@
     <h2>{{ analysis.risk.band | title }} exposure</h2>
     <p>
       {% if analysis.risk.underwriter_referral %}
-      This assessment meets the current threshold for underwriter referral.
+      The cyclone component meets the current threshold for underwriter referral.
       {% else %}
-      This assessment does not meet the current automatic referral threshold.
+      The cyclone component does not meet its automatic referral threshold. See the combined assessment for crew findings.
       {% endif %}
     </p>
     <div class="risk-meta">

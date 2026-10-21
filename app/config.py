@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,10 @@ class Settings(BaseSettings):
     admin_email: str = "demo@mciuw.com"
     admin_password: str = "ChangeMe123!"
     analysis_provider: str = "demo"
+    crew_provider: Literal["demo", "unavailable", "crewdentials"] = "demo"
+    crewdentials_base_url: str = "https://crewdentials-api-dev.onrender.com/api"
+    crewdentials_api_key: SecretStr = SecretStr("")
+    crew_evidence_max_age_hours: int = Field(default=24, ge=1, le=168)
     demo_seed_count: int = Field(default=248, ge=0, le=5000)
     data_dir: Path = Path("data")
     ais_cache_dir: Path = Path("C:/MCI-AIS-Cache")

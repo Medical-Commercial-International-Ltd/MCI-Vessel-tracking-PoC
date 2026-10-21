@@ -1,0 +1,58 @@
+{% if analysis.underwriting %}
+{% from 'evidence_indicator.html' import evidence_indicator %}
+{% set combined = analysis.underwriting %}
+{% set crewRisk = combined.crew %}
+<section class="panel crew-section combined-assessment" aria-label="Vessel and crew assessment">
+  <div class="panel__heading">
+    <div><span class="eyebrow">Vessel + crew</span><h2>{{ 'Test scenario assessment' if combined.is_test_data else 'Combined risk assessment' }}</h2></div>
+    <a class="button button--secondary button--small" href="/crew/{{ analysis.analysis_id }}">Manage crew</a>
+  </div>
+  {% if combined.is_test_data %}<p class="crew-caution">Fictional crew or vessel data contributes to this scenario. Random test assignments do not establish who actually crews this vessel.</p>{% endif %}
+  <div class="combined-metrics">
+    <div><span>Cyclone exposure</span><strong>{{ combined.exposure_score }}<small>/100</small></strong></div>
+    <div><span>Crew evidence gaps</span><strong>{{ crewRisk.score if crewRisk.score is not none else 'Unknown' }}{% if crewRisk.score is not none %}<small>/100</small>{% endif %}</strong></div>
+    <div><span>{{ 'Illustrative combined score' if combined.is_test_data else 'Combined score' }}</span><strong>{{ combined.score if combined.score is not none else 'Incomplete' }}{% if combined.score is not none %}<small>/100</small>{% endif %}</strong></div>
+    <div><span>Review decision</span><strong class="combined-decision">{{ 'Refer for review' if combined.underwriter_referral else 'No automatic referral' }}</strong></div>
+  </div>
+  <p class="panel__note">Crew assessed {{ crewRisk.assessed_on }} · {{ crewRisk.members | length }} current assignments · {{ combined.model_version }} · Uncalibrated POC metric</p>
+  {% if crewRisk.members %}
+  <div class="evidence-legend" aria-label="Crew evidence status key">
+    <span><i class="evidence-key evidence-key--pass" aria-hidden="true">✓</i> Present / clear</span>
+    <span><i class="evidence-key evidence-key--warning" aria-hidden="true">!</i> Needs review</span>
+    <span><i class="evidence-key evidence-key--fail" aria-hidden="true">×</i> Missing / failed</span>
+    <span><i class="evidence-key evidence-key--unknown" aria-hidden="true">—</i> Unknown</span>
+  </div>
+  <div class="crew-candidates">
+    {% for member in crewRisk.members %}
+    <article class="crew-candidate crew-evidence-card">
+      <div class="crew-evidence-card__heading">
+        <div><h3><a href="/crew/{{ analysis.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a></h3>
+          <p>{{ member.role }} · {{ member.start_date.strftime('%d %b %Y') }} – {{ member.end_date.strftime('%d %b %Y') }}</p></div>
+        <div class="crew-gap-score"><span>Evidence gap</span><strong>{{ member.score if member.score is not none else 'Unknown' }}{% if member.score is not none %}<small>/100</small>{% endif %}</strong></div>
+      </div>
+      {% if member.score is none %}<p class="crew-evidence-unavailable">Evidence unavailable or out of date. Refresh the profile to assess these checks.</p>{% endif %}
+      <table class="crew-evidence-table" aria-label="Evidence checklist for {{ member.name }}">
+        <thead><tr><th scope="col">Evidence</th><th scope="col">Document</th><th scope="col" class="crew-verification-label" aria-label="Verification"><span>Verification</span><span aria-hidden="true">Check</span></th><th scope="col">Dates</th></tr></thead>
+        <tbody>{% for check in member.checks %}
+          <tr><th scope="row">{{ check.label }}</th><td>{{ evidence_indicator(check.document) }}</td><td>{{ evidence_indicator(check.verification) }}</td><td>{{ evidence_indicator(check.validity) }}</td></tr>
+        {% endfor %}</tbody>
+      </table>
+      <p class="crew-experience-note"><span class="evidence-key evidence-key--{{ 'unknown' if member.experience_supplied is none else 'pass' if member.experience_supplied else 'fail' }}" aria-hidden="true">{{ '—' if member.experience_supplied is none else '✓' if member.experience_supplied else '×' }}</span> CV / experience {{ 'unknown' if member.experience_supplied is none else 'supplied' if member.experience_supplied else 'not supplied' }} <span>· Not scored</span></p>
+      {% if member.evidence_retrieved_at %}<p class="panel__note crew-evidence-timestamp">Updated {{ member.evidence_retrieved_at.strftime('%d %b %Y %H:%M UTC') }}</p>{% endif %}
+      <details class="crew-scoring-details"><summary>Scoring details and findings</summary>
+        <dl class="crew-facts">{% for label, points in member.components.items() %}<div><dt>{{ label }}</dt><dd>{{ points }}/100</dd></div>{% endfor %}</dl>
+        <ul class="crew-findings">{% for finding in member.findings %}<li>{{ finding }}</li>{% endfor %}</ul>
+      </details>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}<p>No current crew assignments. <a href="/crew/{{ analysis.analysis_id }}">Select connected crew and confirm roles and dates</a> to complete the assessment.</p>{% endif %}
+  <details class="crew-samples"><summary>How crew affects the assessment</summary>
+    <p>Higher scores mean larger evidence gaps. Each role uses provisional safety and medical evidence slots, plus competency evidence for Captain, Chief officer and Engineer. Competency has weight 3, medical weight 2 and each of four safety slots weight 1. These are POC review rules, not statutory certification requirements.</p>
+    <p>For each document we take the highest applicable penalty: rejected or expired 100; referred/queries or expiry before assignment end 75; missing/unrecognised verification 60; pending verification 50; reviewed/checked or unreviewed details 40; expiry within 90 days 35; missing expiry 25; missing issue date 15. Missing required evidence scores 100. Verified status alone scores 0; date and review checks still apply. Conflicting checks use the worst result; duplicate documents use the lowest gap score for that evidence slot.</p>
+    <p>Each person's score is the weighted mean of their slots; the roster uses its highest individual score. Combined = cyclone exposure + round((100 − cyclone exposure) × 0.25 × crew score ÷ 100). This adds up to 25 points and never reduces exposure. Missing, rejected, expired, referred or assignment-period expiry evidence triggers review; so does a missing Captain or a score of 60 or above. Unknown or stale profiles leave the combined score incomplete.</p>
+    <ul>{% for finding in crewRisk.findings %}<li>{{ finding }}</li>{% endfor %}</ul>
+    <p>CV experience is not scored. This metric is not actuarially calibrated and does not establish crew competence or legal compliance. Historical exposure remains separate from current crew evidence.</p>
+  </details>
+</section>
+{% endif %}

@@ -113,6 +113,60 @@ class AuditRecord(DocumentModel):
     calculation_hash: str
 
 
+class CrewEvidenceIndicator(DocumentModel):
+    status: Literal["pass", "warning", "fail", "unknown"]
+    label: str
+    detail: str = ""
+
+
+class CrewEvidenceCheck(DocumentModel):
+    label: str
+    document: CrewEvidenceIndicator
+    verification: CrewEvidenceIndicator
+    validity: CrewEvidenceIndicator
+
+
+class CrewMemberRisk(DocumentModel):
+    person_id: str
+    name: str
+    role: str
+    start_date: date
+    end_date: date
+    score: int | None = Field(default=None, ge=0, le=100)
+    is_test_data: bool = True
+    evidence_retrieved_at: datetime | None = None
+    findings: list[str] = Field(default_factory=list)
+    components: dict[str, int] = Field(default_factory=dict)
+    checks: list[CrewEvidenceCheck] = Field(default_factory=list)
+    experience_supplied: bool | None = None
+
+
+class CrewRiskAssessment(DocumentModel):
+    model_version: str = "CREW-EVIDENCE-v0.1"
+    assessed_on: date
+    score: int | None = Field(default=None, ge=0, le=100)
+    band: str = "UNKNOWN"
+    status: str = "INCOMPLETE"
+    underwriter_referral: bool = True
+    is_test_data: bool = False
+    members: list[CrewMemberRisk] = Field(default_factory=list)
+    findings: list[str] = Field(default_factory=list)
+    evidence_hash: str = ""
+
+
+class UnderwritingAssessment(DocumentModel):
+    model_version: str = "VESSEL-CREW-v0.1"
+    exposure_score: int
+    crew: CrewRiskAssessment
+    score: int | None = Field(default=None, ge=0, le=100)
+    band: str = "UNKNOWN"
+    crew_adjustment: int | None = None
+    underwriter_referral: bool = True
+    is_test_data: bool = False
+    actuarially_calibrated: bool = False
+    calculation_hash: str = ""
+
+
 class AnalysisDocument(DocumentModel):
     id: str
     document_type: Literal["vesselRiskAnalysis"] = "vesselRiskAnalysis"
@@ -127,6 +181,7 @@ class AnalysisDocument(DocumentModel):
     input: AnalysisInput
     vessel: VesselIdentity
     risk: RiskAssessment
+    underwriting: UnderwritingAssessment | None = None
     statistics: AnalysisStatistics
     encounter_ids: list[str] = Field(default_factory=list)
     data_quality: DataQuality

@@ -2,6 +2,12 @@
 
 Localhost proof of concept for assessing a vessel's historical tropical-cyclone exposure in U.S. coastal waters.
 
+The visual theme matches the MCI Document Extraction Service and
+[MCI website](https://www.mciuw.com/): navy `#003863`, cyan `#0DB1EE`, white and
+light grey `#F2F2F2`. The official white MCI SVG is bundled locally in
+`app/static/brand/`; navy buttons and mastheads share the same CSS tokens.
+Evidence, warning and risk colours retain their status meanings.
+
 For the proposed Azure platform spanning marine, cargo and specialist yachts, see the [Marine and Cargo High Level Design](MARINE_CARGO_HLD.md).
 
 ## What is included
@@ -17,11 +23,116 @@ For the proposed Azure platform spanning marine, cargo and specialist yachts, se
 
 The active `real` provider matches NOAA/BOEM/U.S. Coast Guard MarineCadastre AIS vessel tracks against NOAA National Hurricane Center HURDAT2 best tracks. It never generates substitute encounters when source data is absent.
 
+## Crew evidence and combined vessel assessment
+
+The vessel results page shows current assigned crew alongside historical cyclone
+exposure. Crew links persist by resolved IMO, with MMSI aliases for vessels whose
+IMO becomes known later. Entering the same vessel identifier brings back those
+assignments. Crew membership is never inferred from the identifier itself.
+
+Crew evidence appears as a checklist with separate document, verification and
+date indicators: green ticks mean present/clear, amber marks require review, red
+crosses indicate missing/failed evidence, and grey dashes mean unknown. Uploaded
+but unverified documents stay green for presence and amber for verification.
+Detailed findings and scoring points remain available in an expandable section.
+
+`CREW_PROVIDER=crewdentials` uses the connected development profiles and saved
+provider responses under `data/crew/`. Review and select a profile from **Crew**,
+then confirm its role and assignment dates. The page shows certificate details,
+all verification records, saved source documents and a manual provider refresh.
+The API key stays server-side in `.env`. Failed refreshes retain evidence but mark
+the combined assessment incomplete; evidence older than 24 hours also requires
+refresh. A null expiry date does not establish a non-expiring certificate.
+
+After retrieving or uploading development profiles with the supplied scripts,
+register the saved responses and configure development access:
+
+```powershell
+.venv/Scripts/python.exe -m scripts.setup_crew_integration --configure-development
+```
+
+Add `--random-test-roster` only when a random test vessel link is wanted. This
+selects an assessed vessel with no crew, assigns Sam and Freya to shuffled deck
+roles for 180 days, and saves an idempotent `data/crew/test-roster.json` record.
+The analysis form links to that test scenario. Restart the application after
+changing `.env`. All saved profiles in this setup are explicitly fictional.
+
+The provisional `CREW-EVIDENCE-v0.1` metric scores gaps in required evidence
+slots: four safety slots (weight 1 each), medical fitness (weight 2), and role
+competency for Captain/Chief officer/Engineer (weight 3). These are POC rules,
+not flag-state or statutory manning requirements. Each document takes its worst
+applicable verification, date or review penalty. Rejected/expired/missing evidence
+scores 100; referral/query or expiry before assignment end 75; absent/unknown
+verification 60; pending 50; reviewed/checked or details awaiting review 40;
+expiry within 90 days 35; missing expiry 25; missing issue date 15. Invalid dates
+are treated as missing, and future or reversed issue dates score 100. Verified
+status contributes zero verification points, independently of expiry. For
+duplicate evidence the slot uses the lowest document gap score. A person's score
+is their weighted mean; the vessel uses the highest individual score. Serious
+gaps trigger referral even below the numeric threshold. Inactive assignments do
+not contribute. Missing/currently unavailable evidence produces an unknown score.
+
+`VESSEL-CREW-v0.1` adds `round((100 - exposure) * 0.25 * crewScore / 100)` to the
+cyclone score. It cannot lower exposure and adds at most 25 points. No current
+crew, stale/unavailable profiles or a failed refresh leave the combined score
+incomplete. Missing Captain, serious evidence gaps, combined/crew scores of at
+least 60, or an existing exposure referral require review. Current crew is not
+attributed to historical storm encounters. CV experience, roster completeness,
+flag recognition, vessel-specific limits and specialist endorsements are outside
+this provisional score and require review. The metric is not actuarially
+calibrated; combinations containing dummy data are labelled test scenarios.
+
+The JSON export retains the original `risk` and adds `underwriting`, with member
+findings, per-slot penalties, evidence timestamps, model versions and calculation
+hashes. Saved enriched documents use schema version 1.1; legacy 1.0 documents
+remain readable. Assignment changes recalculate saved assessments for the vessel;
+new views/exports also recalculate to account for date changes. Crew information
+is restricted to signed-in underwriters/admins, including the export.
+
+### Offline crew demonstration
+
+Open a completed vessel assessment and select **Crew** beside **Exposure**. This
+workflow uses a separate fictional crew directory, including when vessel analysis
+uses real AIS data. No crew lookup, invitation or document request is sent to
+Crewdentials. Live lookup remains dependent on the provider contract described in
+[the implementation plan](docs/crewdentials-implementation-plan.md).
+
+Choose **Try a demonstration scenario** to fill the lookup form. Maya Patel
+(`maya.patel@example.test`) illustrates a single candidate and an approaching
+qualification expiry. Alex Morgan (`alex.morgan@example.test`) illustrates multiple
+candidates, a name discrepancy, expired/rejected evidence and missing CV data.
+Other addresses return no match; `unavailable@example.test` illustrates an outage.
+
+Review a profile, choose a role and assignment dates, then explicitly confirm the
+demonstration vessel link. Assignments persist across assessments with the same
+IMO, or MMSI where no IMO is available. Saving an existing person updates their
+assignment; removal and updates retain a local audit history. The single-tenant
+POC restricts crew access to signed-in underwriters/admins and validates CSRF on
+changes. Assignment confirmation does not verify credentials or change exposure
+scores. Source files and real provider evidence are not available in this demo.
+
+`CREW_PROVIDER=demo` is the default. Set `CREW_PROVIDER=unavailable` to show the
+unconnected state without searching the fictional directory. Local assignment and
+audit data live in `data/crew/assignments.sqlite`, excluded from source control.
+
 ## Event Look up
 
 Open **Event Look up** from the top navigation to discover MMSIs in the cached 2021-2025 AIS tracks. Choose a named NOAA storm, one of 150 U.S. principal ports, or both. The storm, port and vessel-type fields are editable dropdowns: click into a field and type to narrow its choices, then click a suggestion or use the arrow keys and Enter. Storm options include year and NHC storm ID so repeated names are unambiguous. When both storm and port are selected, a vessel must be within the chosen nautical-mile distance of both at the same recorded time. A storm search can leave the date blank to inspect its complete recorded lifetime; a single date is faster. A port-only search requires a date. Results show separate storm and port distances and link directly to **New analysis** with MMSI and date prefilled.
 
-The **Insurance demo shortlist** below the lookup form shows up to 50 assessed MMSIs with the highest exposure scores and 50 with the lowest. Each MMSI uses its latest completed assessment in the active data mode; unassessed vessels are excluded. Lists sort by score, then name/MMSI to break ties. Search filters the selected shortlists. Small assessed pools or tied scores can result in vessels appearing in both lists; the UI explains this. Select a vessel to rerun its displayed assessment period and proximity and open a fresh **New Analysis** result. These are exposure rankings, not insurance eligibility decisions; confidence and missing coverage remain visible.
+The **Demo yachts** portfolio below the lookup form contains the ten selected yachts. Select a yacht to run or refresh its assessment and open the result in **New analysis**. The portfolio shows each yacht's latest saved exposure, confidence and supporting vessel information.
+
+Each demo yacht has two distinct fictional sample crew roles: Captain and Chief
+officer. Their names appear in the portfolio and open the crew evidence attached
+to the yacht's assessment. These small rosters are integration fixtures, not
+complete operational manning lists. To prepare another batch, run
+`python -m scripts.setup_yacht_crew prepare`, serve that batch's marked files with
+`scripts/seed_crewdentials.py serve --output-dir data/crew/yacht-portfolio-tests`,
+then run the setup module's `upload --base-url https://...`, `verify` and `assign`
+actions. Upload is resumable without retrying ambiguous POSTs; assignment is
+idempotent and preserves existing reviewed links. The manifest, provider IDs,
+file hashes and roster report remain under ignored `data/crew/`. Newly uploaded
+documents retain the provider's unreviewed/unverified state until checked in
+Crewdentials; the setup does not manufacture successful verification results.
 
 
 The AIS vessel-type dropdown is read from the local track database. The **Yacht candidates** filter includes AIS pleasure/sailing craft (group or type codes 36/37) with a recorded length of at least 24 m. You can also set another minimum length or turn the preset off. Gross tonnage and vessel value are deliberately not filters: this data does not substantiate them, and length alone cannot establish a £5m-£50m valuation. Missing AIS tracks do not prove that a vessel was absent.

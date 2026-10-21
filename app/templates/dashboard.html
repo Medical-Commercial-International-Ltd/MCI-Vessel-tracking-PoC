@@ -101,7 +101,7 @@
   <div class="panel__heading"><div><span class="eyebrow">Underwriting activity</span><h2>Recent assessments</h2></div><a href="/analysis">New analysis</a></div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Entered identifier</th><th>Vessel</th><th>Period</th><th>Type</th><th>Score</th><th>Confidence</th><th>Analysed</th><th></th></tr></thead>
+      <thead><tr><th>Entered identifier</th><th>Vessel</th><th>Period</th><th>Type</th><th>Exposure</th><th>Vessel + crew</th><th>Confidence</th><th>Analysed</th><th></th></tr></thead>
       <tbody>
         {% for item in recent %}
         <tr>
@@ -110,12 +110,13 @@
           <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
           <td>{{ item.vessel.vessel_type }}</td>
           <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }} · {{ item.risk.band | title }}</span></td>
+          <td>{% if item.underwriting %}{{ item.underwriting.score if item.underwriting.score is not none else 'Incomplete' }}<small>{{ 'Test scenario · ' if item.underwriting.is_test_data else '' }}{{ 'Review required' if item.underwriting.underwriter_referral else 'No automatic referral' }}</small>{% else %}—{% endif %}</td>
           <td><span class="confidence">{{ item.risk.confidence | title }}</span></td>
           <td>{{ item.created_at.strftime('%d %b %Y') }}<small>{{ item.created_at.strftime('%H:%M UTC') }}</small></td>
           <td><a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">View</a></td>
         </tr>
         {% else %}
-        <tr><td colspan="8"><div class="empty-inline">No real-data assessments yet. Run a new analysis to add one.</div></td></tr>
+        <tr><td colspan="9"><div class="empty-inline">No real-data assessments yet. Run a new analysis to add one.</div></td></tr>
         {% endfor %}
       </tbody>
     </table>

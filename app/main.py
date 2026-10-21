@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
+import json
 import re
 import logging
 import subprocess
@@ -16,6 +17,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
 
 from app.config import Settings, get_settings
+from app.crew import install_crew_routes
 from app.encounter_map import build_map_data
 from app.event_lookup import EventLookupService
 from app.models import AnalysisInput, DatePeriod
@@ -31,7 +33,6 @@ from app.services import (
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
 from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
 from app.vessel_catalog import cached_vessels
-from app.vessel_catalog import exposure_rankings
 from app.vessel_identity import demo_yachts
 
 
@@ -114,11 +115,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     def page_context(request: Request, **values):
+        crew_example = None
+        roster_path = configuration.data_dir / "crew" / "test-roster.json"
+        if request.session.get("user", {}).get("role") in {"admin", "underwriter"} and roster_path.exists():
+            try:
+                crew_example = json.loads(roster_path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                pass
         return {
             "request": request,
             "user": request.session.get("user"),
             "csrfToken": csrf_token(request.session),
             "provider": configuration.analysis_provider,
+            "crewExample": crew_example,
             **values,
         }
 
@@ -127,6 +136,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if not user:
             return None, RedirectResponse("/login", status_code=303)
         return user, None
+
+    def with_crew(request, analysis):
+        if not analysis:
+            return None
+        if request.session.get("user", {}).get("role") not in {"admin", "underwriter"}:
+            return analysis.model_copy(update={"underwriting": None})
+        return app.state.enrich_crew_risk(analysis)
 
     def satellite_context(request, analysis_id, encounter_id):
         if not request.session.get("user"):
@@ -265,7 +281,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             context=page_context(
                 request,
                 summary=summary,
-                recent=analyses[:8],
+                recent=[with_crew(request, item) for item in analyses[:8]],
                 activityMonths=activity_months,
                 activityIsIllustrative=activity_is_illustrative,
                 headlineMetrics=headline_metrics,
@@ -291,7 +307,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         earliest_contiguous_year = max(cached_years) if cached_years else 2021
         while earliest_contiguous_year - 1 in cached_years:
             earliest_contiguous_year -= 1
-        analysis = repository.get_analysis("mci", analysisId) if analysisId else None
+        analysis = with_crew(request, repository.get_analysis("mci", analysisId)) if analysisId else None
         vessel_photo = (
             await run_in_threadpool(photo_catalog.image_for, analysis.vessel)
             if analysis and configuration.analysis_provider == "real" and not analysis.is_synthetic
@@ -324,7 +340,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             ),
         )
 
-    def lookup_context(request: Request, *, values=None, response=None, error=None, vessel_query="", vessel_page=1):
+    def lookup_context(request: Request, *, values=None, response=None, error=None):
         service = app.state.event_lookup
         storms = service.storms()
         latest_vessels = {}
@@ -336,24 +352,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 if previous is None or analysis.created_at > previous.created_at:
                     latest_vessels[key] = analysis
         catalog = cached_vessels(configuration.ais_cache_dir) if configuration.analysis_provider == "real" else tuple((mmsi, ()) for mmsi in sorted(latest_vessels))
-        registry = {item.mmsi: item for item in app.state.analysis_service.tracks._registry()} if configuration.analysis_provider == "real" else {}
-        query = vessel_query.strip()[:100]
-        rows = []
-        for mmsi, years in catalog:
-            analysis = latest_vessels.get(mmsi)
-            if analysis is None:
-                continue
-            identity = registry.get(mmsi)
-            name = identity.name if identity else analysis.vessel.name if analysis else f"MMSI {mmsi}"
-            imo = identity.imo if identity else analysis.vessel.imo if analysis else None
-            rows.append({"mmsi": mmsi, "name": name, "imo": imo, "years": years, "analysis": analysis})
-        highest, lowest = exposure_rankings(rows)
         catalog_years = dict(catalog)
-        yacht_rows = [{**identity, "years": catalog_years.get(identity["mmsi"], ()),
-                       "analysis": latest_vessels.get(identity["mmsi"])} for identity in demo_yachts()]
-        overlap = len({row["mmsi"] for row in highest} & {row["mmsi"] for row in lowest})
-        def matches(row):
-            return not query or query.casefold() in f"{row['name']} {row['mmsi']} {row['imo'] or ''}".casefold()
+        yacht_rows = []
+        crew_visible = request.session.get("user", {}).get("role") in {"admin", "underwriter"}
+        current_day = datetime.now(timezone.utc).date().isoformat()
+        for identity in demo_yachts():
+            crew = app.state.crew_repository.list(f"mci:IMO:{identity['imo']}") if crew_visible else []
+            yacht_rows.append({**identity, "years": catalog_years.get(identity["mmsi"], ()),
+                               "analysis": with_crew(request, latest_vessels.get(identity["mmsi"])),
+                               "crew": [row for row in crew if row["start_date"] <= current_day <= row["end_date"]]})
         return page_context(
             request,
             ports=service.ports(),
@@ -366,11 +373,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "yachtCandidates": True,
             },
             lookupResponse=response,
-            highestRiskVessels=[row for row in highest if matches(row)],
-            lowestRiskVessels=[row for row in lowest if matches(row)],
-            assessedVesselTotal=len(rows), rankingOverlap=overlap,
             demoYachts=yacht_rows,
-            vesselQuery=query, vesselQueryEncoded=quote(query),
             error=error,
         )
 
@@ -393,8 +396,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                            period=DatePeriod(from_date=date(earliest, 1, 1), to_date=date(max(years), 12, 31)))
             result = await run_in_threadpool(app.state.analysis_service.analyse, analysis_input, user["email"])
         except ValueError as exc:
-            context = await run_in_threadpool(lookup_context, request, error=str(exc), vessel_query=mmsi)
+            context = await run_in_threadpool(lookup_context, request, error=str(exc))
             return templates.TemplateResponse(request=request, name="event_lookup.html", context=context, status_code=422)
+        with_crew(request, result)
         return RedirectResponse(f"/analysis?analysisId={quote(result.analysis_id)}", status_code=303)
 
     @app.post("/event-lookup/rerun/{analysis_id}")
@@ -412,14 +416,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except ValueError as exc:
             context = await run_in_threadpool(lookup_context, request, error=str(exc))
             return templates.TemplateResponse(request=request, name="event_lookup.html", context=context, status_code=422)
+        with_crew(request, result)
         return RedirectResponse(f"/analysis?analysisId={quote(result.analysis_id)}", status_code=303)
 
     @app.get("/event-lookup", response_class=HTMLResponse)
-    async def event_lookup_page(request: Request, vesselQuery: str = "", vesselPage: int = 1):
+    async def event_lookup_page(request: Request):
         _, redirect = require_user(request)
         if redirect:
             return redirect
-        context = await run_in_threadpool(lookup_context, request, vessel_query=vesselQuery, vessel_page=vesselPage)
+        context = await run_in_threadpool(lookup_context, request)
         return templates.TemplateResponse(request=request, name="event_lookup.html", context=context)
 
     @app.post("/event-lookup", response_class=HTMLResponse)
@@ -540,6 +545,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     defaults=defaults,
                 ),
             )
+        with_crew(request, result)
         return RedirectResponse(
             f"/analysis?analysisId={quote(result.analysis_id)}",
             status_code=303,
@@ -553,6 +559,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         analysis = repository.get_analysis("mci", analysis_id)
         if not analysis:
             return HTMLResponse("Analysis not found", status_code=404)
+        analysis = with_crew(request, analysis)
         payload = analysis.model_dump_json(by_alias=True, indent=2) + "\n"
         return Response(
             content=payload,
@@ -570,6 +577,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "cacheLimitGb": configuration.ais_cache_limit_gb,
         }
 
+    install_crew_routes(app, configuration, repository, templates, page_context)
     return app
 
 

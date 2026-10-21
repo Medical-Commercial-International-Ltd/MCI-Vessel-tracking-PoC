@@ -16,6 +16,7 @@ htmlcov/
 data/analyses/
 data/jobs/
 data/users/
+data/crew/
 data/demo-seeded.json
 data/vessel_photos/
 *.log
