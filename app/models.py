@@ -134,6 +134,7 @@ class CrewMemberRisk(DocumentModel):
     end_date: date
     score: int | None = Field(default=None, ge=0, le=100)
     is_test_data: bool = True
+    is_test_snapshot: bool = False
     evidence_retrieved_at: datetime | None = None
     findings: list[str] = Field(default_factory=list)
     components: dict[str, int] = Field(default_factory=dict)
@@ -142,7 +143,7 @@ class CrewMemberRisk(DocumentModel):
 
 
 class CrewRiskAssessment(DocumentModel):
-    model_version: str = "CREW-EVIDENCE-v0.1"
+    model_version: str = "CREW-EVIDENCE-v0.2"
     assessed_on: date
     score: int | None = Field(default=None, ge=0, le=100)
     band: str = "UNKNOWN"
@@ -155,7 +156,7 @@ class CrewRiskAssessment(DocumentModel):
 
 
 class UnderwritingAssessment(DocumentModel):
-    model_version: str = "VESSEL-CREW-v0.1"
+    model_version: str = "VESSEL-CREW-v0.2"
     exposure_score: int
     crew: CrewRiskAssessment
     score: int | None = Field(default=None, ge=0, le=100)
@@ -165,6 +166,30 @@ class UnderwritingAssessment(DocumentModel):
     is_test_data: bool = False
     actuarially_calibrated: bool = False
     calculation_hash: str = ""
+
+
+class ResponseWindow(DocumentModel):
+    kind: str
+    storm_id: str
+    storm_name: str
+    start: datetime
+    end: datetime
+    start_distance_nm: float
+    end_distance_nm: float
+    fixed_distance_nm: float
+    improvement_nm: float
+    start_position: tuple[float, float]
+    end_position: tuple[float, float]
+    field: str = "UNKNOWN"
+
+
+class StormResponseAssessment(DocumentModel):
+    model_version: str = "BROADCAST-RESPONSE-v1"
+    status: str = "INSUFFICIENT"
+    observation_count: int = 0
+    source_dates: list[date] = Field(default_factory=list)
+    windows: list[ResponseWindow] = Field(default_factory=list)
+    findings: list[str] = Field(default_factory=list)
 
 
 class AnalysisDocument(DocumentModel):
@@ -182,6 +207,7 @@ class AnalysisDocument(DocumentModel):
     vessel: VesselIdentity
     risk: RiskAssessment
     underwriting: UnderwritingAssessment | None = None
+    storm_response: StormResponseAssessment = Field(default_factory=StormResponseAssessment)
     statistics: AnalysisStatistics
     encounter_ids: list[str] = Field(default_factory=list)
     data_quality: DataQuality
@@ -216,12 +242,24 @@ class EncounterExposure(DocumentModel):
     maximum_storm_wind_kt: int = Field(ge=0)
 
 
+class StormBehaviour(DocumentModel):
+    model_version: str = "STORM-BEHAVIOUR-v0.1"
+    status: str = "INSUFFICIENT"
+    proximity_nm: float = 200
+    stationary_hours: float = 0
+    stationary_worsening_hours: float = 0
+    avoidance_manoeuvres: int = 0
+    adjustment: int = 0
+    findings: list[str] = Field(default_factory=list)
+
+
 class EventRisk(DocumentModel):
     event_score: int = Field(ge=0, le=100)
     proximity_points: int = Field(ge=0)
     intensity_points: int = Field(ge=0)
     wind_field_points: int = Field(ge=0)
     duration_points: int = Field(ge=0)
+    behaviour: StormBehaviour = Field(default_factory=StormBehaviour)
 
 
 class EncounterDocument(DocumentModel):

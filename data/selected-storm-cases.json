@@ -1,0 +1,114 @@
+{
+  "sources": {
+    "tracks": "NOAA MarineCadastre AIS Vessel Tracks 2023",
+    "storms": "NHC HURDAT2, AL132023"
+  },
+  "searchedStorms": [
+    "Idalia 2023",
+    "Lee 2023",
+    "Ophelia 2023",
+    "Helene 2024",
+    "Milton 2024",
+    "Erin 2025"
+  ],
+  "method": "Pleasure craft/sailing or AIS types 36/37, length >=24m. Track timestamp estimates sampled every 15 minutes within single track lines, no vertex gap >6h. Broader separation comparisons up to 500nm within initially retrieved storm-region track subset. This is not an exhaustive global yacht search.",
+  "limitations": [
+    "All intermediate vessel timestamps are derived from segment endpoints and distance; these are not original AIS broadcasts.",
+    "Reported wind radii are not measured wind at the yacht.",
+    "Neither intent nor knowledge of forecasts can be established.",
+    "Relocation candidate stayed outside the reported 34kt radius; no demonstrated wind-field exit or sharp avoidance turn."
+  ],
+  "cases": [
+    {
+      "kind": "continued_approach",
+      "storm": "LEE",
+      "storm_id": "AL132023",
+      "mmsi": "319011000",
+      "length": 138.0,
+      "start": "2023-09-16 03:34:19+00:00",
+      "turn_time": "2023-09-16 04:34:19+00:00",
+      "end": "2023-09-16 05:34:19+00:00",
+      "positions": [
+        [
+          -71.4105847883661,
+          40.967614331565436
+        ],
+        [
+          -71.3929214227766,
+          40.90215300187352
+        ],
+        [
+          -71.37535933002658,
+          40.83667917287693
+        ]
+      ],
+      "distances": [
+        255.4,
+        248.8,
+        244.7
+      ],
+      "speeds": [
+        4.0,
+        4.0
+      ],
+      "turn": 0.1,
+      "continuation_distance": 244.7,
+      "improvement": 0.0,
+      "wind_field": "34KT",
+      "storm_wind": 70,
+      "rank": 55.30043994995293,
+      "name": "RISING SUN",
+      "imo": "8982307",
+      "interpretation": "Candidate only; not evidence of intent or an insurance acceptance/decline decision.",
+      "sourceSegments": [
+        {
+          "year": 2023,
+          "table": "AISVesselTracks2023",
+          "objectId": 2273182,
+          "trackStart": "2023-09-15T06:34:19.0Z",
+          "trackEnd": "2023-09-18T06:00:02.0Z"
+        }
+      ]
+    },
+    {
+      "kind": "relocation",
+      "storm": "LEE",
+      "storm_id": "AL132023",
+      "mmsi": "319619000",
+      "length": 47.0,
+      "start": "2023-09-15 17:19:31+00:00",
+      "end": "2023-09-16 17:19:31+00:00",
+      "positions": [
+        [
+          -71.56281187083366,
+          41.072027121028526
+        ],
+        [
+          -72.70748979703923,
+          40.420366617766504
+        ]
+      ],
+      "distances": [
+        337.6,
+        342.7
+      ],
+      "fixed_distance": 277.6,
+      "fixed_field": "OUTSIDE 34KT",
+      "wind_field": "OUTSIDE 34KT",
+      "improvement": 65.1,
+      "rank": 65.12663069002542,
+      "name": "AMORE",
+      "imo": "9334478",
+      "interpretation": "Candidate only; not evidence of intent or an insurance acceptance/decline decision.",
+      "sourceSegments": [
+        {
+          "year": 2023,
+          "table": "AISVesselTracks2023",
+          "objectId": 2114156,
+          "trackStart": "2023-09-15T06:34:31.0Z",
+          "trackEnd": "2023-09-18T05:59:59.0Z"
+        }
+      ]
+    }
+  ]
+}

@@ -19,4 +19,5 @@ data/users/
 data/crew/
 data/demo-seeded.json
 data/vessel_photos/
+data/broadcasts/
 *.log

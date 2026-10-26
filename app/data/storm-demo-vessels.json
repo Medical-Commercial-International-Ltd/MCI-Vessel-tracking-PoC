@@ -1,0 +1,22 @@
+{
+  "vessels": [
+    {
+      "name": "AZULITA",
+      "mmsi": "368001090",
+      "imo": null,
+      "label": "Moved away from the storm",
+      "note": "Philippe, 3 October 2023. Original NOAA broadcasts; intent unproven.",
+      "from": "2023-10-03",
+      "to": "2023-10-03"
+    },
+    {
+      "name": "A1A",
+      "mmsi": "368281860",
+      "imo": null,
+      "label": "Moved away from the storm",
+      "note": "Philippe, 3 October 2023. Mixed behaviour: also underway while the storm approached later that day.",
+      "from": "2023-10-03",
+      "to": "2023-10-03"
+    }
+  ]
+}

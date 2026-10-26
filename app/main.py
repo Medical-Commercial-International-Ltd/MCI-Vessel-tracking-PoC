@@ -33,7 +33,7 @@ from app.services import (
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
 from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
 from app.vessel_catalog import cached_vessels
-from app.vessel_identity import demo_yachts
+from app.vessel_identity import demo_yachts, storm_demo_vessels
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -314,7 +314,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             else vessel_image(analysis.vessel) if analysis else None
         )
         encounters = repository.list_encounters("mci", analysisId) if analysis else []
-        map_data = await run_in_threadpool(build_map_data, analysis, encounters, configuration.ais_cache_dir) if analysis and encounters else []
+        map_data = await run_in_threadpool(build_map_data, analysis, encounters, configuration.ais_cache_dir, configuration.data_dir / 'broadcasts') if analysis and encounters else []
         for event in map_data:
             event["satelliteManifestUrl"] = f"/api/satellite/{analysis.analysis_id}/{event['id']}/manifest"
         return templates.TemplateResponse(
@@ -342,6 +342,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def lookup_context(request: Request, *, values=None, response=None, error=None):
         service = app.state.event_lookup
+        stationary_path = configuration.data_dir / 'stationary-storm-shortlist.json'
+        stationary_cases = json.loads(stationary_path.read_text(encoding='utf-8')) if stationary_path.exists() else None
         storms = service.storms()
         latest_vessels = {}
         for analysis in repository.list_analyses("mci"):
@@ -356,11 +358,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         yacht_rows = []
         crew_visible = request.session.get("user", {}).get("role") in {"admin", "underwriter"}
         current_day = datetime.now(timezone.utc).date().isoformat()
-        for identity in demo_yachts():
-            crew = app.state.crew_repository.list(f"mci:IMO:{identity['imo']}") if crew_visible else []
+        for identity in demo_yachts() + storm_demo_vessels():
+            key = f"mci:IMO:{identity['imo']}" if identity['imo'] else f"mci:MMSI:{identity['mmsi']}"
+            crew = app.state.crew_repository.list(key) if crew_visible else []
             yacht_rows.append({**identity, "years": catalog_years.get(identity["mmsi"], ()),
                                "analysis": with_crew(request, latest_vessels.get(identity["mmsi"])),
                                "crew": [row for row in crew if row["start_date"] <= current_day <= row["end_date"]]})
+        movement_results = {}
+        if response:
+            from app.storm_response import BroadcastStore, assess_response
+            chosen = next((s for s in storms if values and s.storm_id == values.get('stormId')), None)
+            selected_storms = [chosen] if chosen else storms
+            store = BroadcastStore(configuration.data_dir / 'broadcasts')
+            for item in response.results:
+                day = date.fromisoformat(values['date']) if values and values.get('date') else None
+                period = DatePeriod(from_date=day or (chosen.start.date() if chosen else item.timestamp.date()),
+                                    to_date=day or (chosen.end.date() if chosen else item.timestamp.date()))
+                rows, dates = store.load(item.mmsi, period)
+                movement_results[item.mmsi] = assess_response(rows, selected_storms, dates,
+                    float(values.get('distanceNm',200)) if values else 200)
         return page_context(
             request,
             ports=service.ports(),
@@ -373,7 +389,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "yachtCandidates": True,
             },
             lookupResponse=response,
+            lookupMovement=movement_results,
             demoYachts=yacht_rows,
+            stationaryCases=stationary_cases,
             error=error,
         )
 
@@ -394,6 +412,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 earliest -= 1
             analysis_input = AnalysisInput(identifier_type="MMSI", identifier=identifier,
                                            period=DatePeriod(from_date=date(earliest, 1, 1), to_date=date(max(years), 12, 31)))
+            scenario = next((v for v in storm_demo_vessels() if v['mmsi'] == identifier), None)
+            if scenario:
+                analysis_input.period = DatePeriod(from_date=date.fromisoformat(scenario['from']), to_date=date.fromisoformat(scenario['to']))
+                analysis_input.storm_proximity_nm = 70
             result = await run_in_threadpool(app.state.analysis_service.analyse, analysis_input, user["email"])
         except ValueError as exc:
             context = await run_in_threadpool(lookup_context, request, error=str(exc))

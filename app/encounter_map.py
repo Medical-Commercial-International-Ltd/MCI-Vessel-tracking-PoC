@@ -71,7 +71,7 @@ def playback_path(timed_lines, edges, anchor, start, end):
     return result, gaps
 
 
-def build_map_data(analysis, encounters, cache_dir):
+def build_map_data(analysis, encounters, cache_dir, broadcast_root=None):
     events = []
     storms = {}
     if not analysis.is_synthetic:
@@ -94,6 +94,11 @@ def build_map_data(analysis, encounters, cache_dir):
             end = min(timestamp + timedelta(hours=24), storm.end, datetime.combine(
                 analysis.input.period.to_date, datetime.max.time(), timezone.utc))
             segments = store.load_segments(analysis.vessel.mmsi[0], start.date(), end.date())
+            if broadcast_root is not None:
+                from app.storm_response import BroadcastStore, overlay_segments
+                from app.models import DatePeriod
+                rows, dates = BroadcastStore(broadcast_root).load(analysis.vessel.mmsi[0], DatePeriod(from_date=start.date(),to_date=end.date()))
+                segments = overlay_segments(segments, rows, dates)
             timed_lines = [line for segment in segments for line in segment_position_lines(segment)]
             edges = []
             sample_points = []

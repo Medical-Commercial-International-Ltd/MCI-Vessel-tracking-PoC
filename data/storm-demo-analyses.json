@@ -1,0 +1,14 @@
+{
+  "vessels": [
+    {
+      "name": "AZULITA",
+      "mmsi": "368001090",
+      "analysisId": "analysis_0870619c496b49e6a186f7f2e06ea65c"
+    },
+    {
+      "name": "A1A",
+      "mmsi": "368281860",
+      "analysisId": "analysis_9a97ff20d45547e297cd23917fd5bc7a"
+    }
+  ]
+}

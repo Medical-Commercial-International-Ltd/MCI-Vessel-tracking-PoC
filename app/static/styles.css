@@ -541,3 +541,20 @@ dd { font-size: 12px; font-weight: 700; margin: 0; }
   .crew-evidence-table tbody th, .crew-evidence-table tbody td { padding: 10px 3px; }
   .crew-evidence-table tbody th { font-size: 11px; }
 }
+
+/* Keep the underwriting decision alongside the vessel identity. */
+.result-heading { flex-wrap: wrap; align-items: stretch; }
+.result-heading__identity { flex: 1 1 450px; }
+.overall-risk { flex: 1 1 330px; padding: 24px; border: 1px solid var(--border, #d9e2ec); border-radius: 12px; background: #f3f7fb; color: #152b42; }
+.overall-risk__score { display: block; font-size: 56px; line-height: 1.2; }
+.overall-risk__score small { font-size: 20px; }
+.overall-risk__incomplete { display: block; font-size: 24px; margin-top: 12px; }
+.overall-risk__components { display: flex; gap: 28px; flex-wrap: wrap; }
+.overall-risk p { margin: 10px 0; }
+.result-heading > .result-actions { flex-basis: 100%; justify-content: flex-end; }
+.risk-details { margin: 20px 0; }
+.risk-details > summary { cursor: pointer; font-weight: 600; padding: 16px; background: #edf2f7; border-radius: 8px; }
+.behaviour-method { margin: 24px 0; padding: 24px; }
+.behaviour-method p { line-height: 1.6; }
+@media (max-width: 600px) { .overall-risk { min-width: 0; flex-basis: 100%; } }
+@media print { .risk-details > .combined-assessment { display: block; } }

@@ -8,7 +8,7 @@ import struct
 from dataclasses import dataclass, replace
 from datetime import date, datetime, timezone
 from pathlib import Path
-from app.vessel_identity import demo_yachts
+from app.vessel_identity import demo_yachts, storm_demo_vessels
 
 
 @dataclass(frozen=True)
@@ -151,7 +151,7 @@ class MarineCadastreTrackStore:
                 )
             )
         indexed = {record.mmsi: record for record in records}
-        for item in demo_yachts():
+        for item in demo_yachts() + storm_demo_vessels():
             existing = indexed.get(item["mmsi"])
             if existing:
                 indexed[item["mmsi"]] = replace(existing, name=item["name"], imo=item["imo"], identity_source="user-supplied")

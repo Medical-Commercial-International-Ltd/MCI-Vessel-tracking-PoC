@@ -1,0 +1,118 @@
+{
+  "date": "2023-09-23",
+  "storm_id": "AL162023",
+  "ships_checked": 943,
+  "stationary_matches": 283,
+  "criteria": "Starts 50-70 nm from storm; 1/2/3/6 hour window; no gap >30 min; every speed 0-1 kt; every position within 1 nm of start; storm separation decreases >=5 nm.",
+  "source": "https://coast.noaa.gov/htdata/CMSP/AISDataHandler/2023/AIS_2023_09_23.zip",
+  "cases": [
+    {
+      "name": "SERENITY",
+      "mmsi": "367733210",
+      "imo": "IMO9806809",
+      "vessel_type": "37",
+      "window": {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T03:35:24Z",
+        "end": "2023-09-23T09:38:19Z",
+        "start_distance_nm": 68.05,
+        "end_distance_nm": 23.25,
+        "fixed_distance_nm": 23.22,
+        "improvement_nm": 0.03,
+        "start_position": [
+          -76.66407,
+          34.71526
+        ],
+        "end_position": [
+          -76.66402,
+          34.71524
+        ],
+        "field": "50KT"
+      },
+      "context": "Morehead City / Beaufort harbour area; shelter requires review."
+    },
+    {
+      "name": "LEGACY",
+      "mmsi": "319920000",
+      "imo": "IMO9583586",
+      "vessel_type": "37",
+      "window": {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T01:53:56Z",
+        "end": "2023-09-23T07:53:58Z",
+        "start_distance_nm": 69.69,
+        "end_distance_nm": 35.45,
+        "fixed_distance_nm": 35.45,
+        "improvement_nm": 0.01,
+        "start_position": [
+          -77.81368,
+          34.21646
+        ],
+        "end_position": [
+          -77.81367,
+          34.21647
+        ],
+        "field": "50KT"
+      },
+      "context": "Wrightsville Beach anchorage area; shelter requires review."
+    },
+    {
+      "name": "BBC AFRICA",
+      "mmsi": "304881000",
+      "imo": "IMO9362621",
+      "vessel_type": "70",
+      "window": {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T03:47:46Z",
+        "end": "2023-09-23T09:47:58Z",
+        "start_distance_nm": 66.91,
+        "end_distance_nm": 20.75,
+        "fixed_distance_nm": 20.68,
+        "improvement_nm": 0.07,
+        "start_position": [
+          -76.70372,
+          34.71589
+        ],
+        "end_position": [
+          -76.70373,
+          34.7159
+        ],
+        "field": "50KT"
+      },
+      "context": "Morehead City port area; shelter requires review."
+    },
+    {
+      "name": "GEORGIA",
+      "mmsi": "319436000",
+      "imo": "IMO1006300",
+      "vessel_type": "37",
+      "window": {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T17:14:13Z",
+        "end": "2023-09-23T20:14:13Z",
+        "start_distance_nm": 69.78,
+        "end_distance_nm": 63.67,
+        "fixed_distance_nm": 63.67,
+        "improvement_nm": 0.0,
+        "start_position": [
+          -76.29293,
+          36.84466
+        ],
+        "end_position": [
+          -76.29297,
+          36.84473
+        ],
+        "field": "34KT"
+      },
+      "context": "Norfolk harbour area; shelter requires review."
+    }
+  ]
+}

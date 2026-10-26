@@ -110,7 +110,7 @@
           <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
           <td>{{ item.vessel.vessel_type }}</td>
           <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }} · {{ item.risk.band | title }}</span></td>
-          <td>{% if item.underwriting %}{{ item.underwriting.score if item.underwriting.score is not none else 'Incomplete' }}<small>{{ 'Test scenario · ' if item.underwriting.is_test_data else '' }}{{ 'Review required' if item.underwriting.underwriter_referral else 'No automatic referral' }}</small>{% else %}—{% endif %}</td>
+          <td>{% if item.underwriting %}{% if item.underwriting.score is not none %}<span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }} ? {{ item.underwriting.band | title }}</span>{% else %}Incomplete{% endif %}<small>{{ 'Test scenario · ' if item.underwriting.is_test_data else '' }}{{ 'Review required' if item.underwriting.underwriter_referral else 'No automatic referral' }}</small>{% else %}—{% endif %}</td>
           <td><span class="confidence">{{ item.risk.confidence | title }}</span></td>
           <td>{{ item.created_at.strftime('%d %b %Y') }}<small>{{ item.created_at.strftime('%H:%M UTC') }}</small></td>
           <td><a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">View</a></td>

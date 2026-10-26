@@ -76,6 +76,7 @@
     <div class="panel__heading"><div><span class="eyebrow">Fictional crew profile</span><h2>{{ person.first_name }} {{ person.last_name }}</h2></div><span class="quality-badge quality-badge--medium">Demonstration evidence</span></div>
     <p>{{ person.email or 'Email address not supplied by the document API.' }}</p>
     {% if crewConnected %}<p class="panel__note">Crew profile ID: {{ person.id }}<br>Evidence retrieved: {{ person.retrieved_at }}</p>
+    {% if person.is_test_snapshot %}<p class="crew-caution">Saved fictional test snapshot. Live evidence freshness is waived for this development fixture. Certificate expiry and failed refresh checks still apply.</p>{% endif %}
     {% if person.stale or person.refresh_error %}<p class="crew-caution">Evidence is stale or the last refresh failed. Refresh before relying on the combined score.</p>{% endif %}{% endif %}
     <h3>CV and experience</h3>
     <p>{{ person.summary or 'No CV summary supplied.' }}</p>

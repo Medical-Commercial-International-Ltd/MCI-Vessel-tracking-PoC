@@ -35,6 +35,9 @@ from app.models import (
 from app.repositories import AnalysisRepository
 from app.scoring import EncounterInputs, aggregate_risk, score_encounter
 from app.exposure import movement_statistics, sampled_intervals, track_intervals, union_hours
+from app.storm_behaviour import assess_behaviour
+from app.storm_response import BroadcastStore, assess_response, overlay_segments
+from app.models import StormBehaviour
 
 
 class RealAnalysisService:
@@ -68,6 +71,9 @@ class RealAnalysisService:
             analysis_input.period.from_date,
             analysis_input.period.to_date,
         )
+        metadata_segment = max(segments, key=lambda s:(s.end-s.start).total_seconds()) if segments else None
+        rows, source_dates = BroadcastStore(self.repository.root.parent / 'broadcasts').load(vessel_record.mmsi, analysis_input.period) if hasattr(self.repository, 'root') else ([], [])
+        segments = overlay_segments(segments, rows, source_dates)
         if not segments:
             years = ", ".join(str(year) for year in self.tracks.available_years) or "none"
             raise ValueError(
@@ -103,6 +109,20 @@ class RealAnalysisService:
             intervals=intervals,
             totals=totals,
         )
+        response = assess_response(rows, storms, source_dates, analysis_input.storm_proximity_nm)
+        for event in encounters:
+            windows = [w for w in response.windows if w.storm_id == event.storm.id]
+            still = [w for w in windows if w.kind == 'STATIONARY_APPROACH']
+            away = [w for w in windows if w.kind == 'MOVED_AWAY']
+            hours = max(((w.end-w.start).total_seconds()/3600 for w in still), default=0)
+            adjustment = min(20, round(hours*5)) - (5 if away else 0)
+            event.risk.behaviour = StormBehaviour(model_version=response.model_version,
+                status=response.status, proximity_nm=analysis_input.storm_proximity_nm,
+                stationary_hours=hours, stationary_worsening_hours=hours,
+                avoidance_manoeuvres=len(away), adjustment=adjustment,
+                findings=[f'{w.kind.replace("_", " ").title()}: {w.start_distance_nm:g} to {w.end_distance_nm:g} nm; staying put would give {w.fixed_distance_nm:g} nm.' for w in windows] + response.findings)
+            base = event.risk.proximity_points + event.risk.intensity_points + event.risk.wind_field_points + event.risk.duration_points
+            event.risk.event_score = max(0, min(100, base+adjustment))
         event_scores = [encounter.risk.event_score for encounter in encounters]
         coverage_years = sorted({position.timestamp.year for position in positions})
         requested_years = set(
@@ -147,7 +167,7 @@ class RealAnalysisService:
         if vessel_record.identity_source == "user-supplied":
             warnings.append("Vessel name and IMO/MMSI mapping were supplied by the user and have not been independently verified; movement and dimensions come from the available NOAA tracks.")
 
-        primary_segment = max(segments, key=lambda segment: (segment.end - segment.start).total_seconds())
+        primary_segment = metadata_segment or max(segments, key=lambda segment: (segment.end - segment.start).total_seconds())
         distance_nm, average_speed, maximum_speed = movement_statistics(intervals)
         hours_total = round(union_hours(totals["exposure"]), 1)
         hours_wind = round(union_hours(totals["wind"]), 1)
@@ -156,7 +176,9 @@ class RealAnalysisService:
             "input": analysis_input.model_dump(mode="json", by_alias=True),
             "mmsi": vessel_record.mmsi,
             "encounters": [encounter.model_dump(mode="json", by_alias=True) for encounter in encounters],
-            "model": "TC-EXPOSURE-v0.2-real",
+            "model": "TC-EXPOSURE-v0.4-real",
+            "stormResponse": response.model_dump(mode='json'),
+            "broadcastEvidence": rows,
             "confidence": quality,
             "statistics": [len(positions), observed_days, distance_nm, average_speed, maximum_speed, hours_total, hours_wind],
         }
@@ -164,7 +186,7 @@ class RealAnalysisService:
             json.dumps(calculation_payload, sort_keys=True, default=str).encode()
         ).hexdigest()
         risk = aggregate_risk(event_scores, confidence)
-        risk.model_version = "TC-EXPOSURE-v0.2"
+        risk.model_version = "TC-EXPOSURE-v0.4"
         analysis = AnalysisDocument(
             id=analysis_id,
             analysis_id=analysis_id,
@@ -185,6 +207,7 @@ class RealAnalysisService:
                 draft_m=vessel_record.draft_m or primary_segment.draft_m,
             ),
             risk=risk,
+            storm_response=response,
             statistics=AnalysisStatistics(
                 ais_observation_count=len(positions),
                 observed_days=observed_days,
@@ -227,6 +250,10 @@ class RealAnalysisService:
                 calculation_hash=calculation_hash,
             ),
         )
+        if source_dates:
+            analysis.sources.append(SourceReference(provider='NOAA MarineCadastre',
+                dataset='Original daily AIS broadcasts: ' + ', '.join(str(d) for d in source_dates), retrieved_at=completed))
+            analysis.data_quality.warnings.append('On cached original-broadcast dates, actual observations replace derived track timing. Movement checks use only original broadcasts and reject gaps over 30 minutes. Other dates remain unassessed for behaviour.')
         self.repository.save_analysis(analysis)
         for encounter in encounters:
             self.repository.save_encounter(encounter)
@@ -316,6 +343,8 @@ class RealAnalysisService:
                     duration_hours=raw_duration,
                 )
             )
+            event_risk.behaviour = assess_behaviour(intervals, storm, proximity_nm)
+            event_risk.event_score = max(0, min(100, event_risk.event_score + event_risk.behaviour.adjustment))
             matches.append(
                 (storm, closest, maximum_wind, strongest_field, duration, wind_duration, event_risk,
                  max((hit[1] for hit in hits), key=lambda point: point.wind_kt).status)

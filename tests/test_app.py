@@ -79,7 +79,9 @@ def test_login_dashboard_analysis_and_json_download(tmp_path):
 
         result = client.get(result_url)
         assert result.status_code == 200
-        assert "Tropical Cyclone Exposure Score" in result.text
+        assert "Weather risk score" in result.text
+        assert "Overall risk" in result.text
+        assert "Assessment incomplete" in result.text
         analysis_id = result_url.split("=", 1)[1]
 
         updated_dashboard = client.get("/dashboard")

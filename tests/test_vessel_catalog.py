@@ -61,7 +61,7 @@ def test_demo_yacht_portfolio_and_fresh_analysis(tmp_path):
         assert 'Vessel database' not in page.text
         assert 'Insurance demo shortlist' not in page.text
         assert 'Search shortlists' not in page.text
-        assert page.text.count('data-vessel-rerun>') == 10
+        assert page.text.count('data-vessel-rerun>') == 12
         assert yacht['name'] in page.text
         assert 'data-vessel-rerun-status' in page.text
         assert 'Not assessed' in page.text
@@ -84,7 +84,7 @@ def test_demo_yacht_portfolio_and_fresh_analysis(tmp_path):
         assert client.post('/event-lookup/rerun/missing', data={'csrf': csrf}).status_code == 404
         updated = client.get('/event-lookup')
         assert '/event-lookup/rerun/' in updated.text
-        assert updated.text.count('data-vessel-rerun>') == 10
+        assert updated.text.count('data-vessel-rerun>') == 12
 
 
 

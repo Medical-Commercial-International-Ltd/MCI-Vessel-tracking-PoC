@@ -6,3 +6,8 @@ def demo_yachts():
     """Explicit user-supplied identities; NOAA tracks remain the movement source."""
     path = Path(__file__).parent / "data" / "demo-yachts.json"
     return json.loads(path.read_text(encoding="utf-8"))["vessels"]
+
+
+def storm_demo_vessels():
+    path = Path(__file__).parent / 'data' / 'storm-demo-vessels.json'
+    return json.loads(path.read_text(encoding='utf-8'))['vessels']

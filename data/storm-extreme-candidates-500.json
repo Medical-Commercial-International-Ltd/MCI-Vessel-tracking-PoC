@@ -1,0 +1,461 @@
+[
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "368148660",
+    "length": 26.0,
+    "start": "2023-08-28 22:47:03+00:00",
+    "end": "2023-08-29 04:47:03+00:00",
+    "positions": [
+      [
+        -81.07223999999997,
+        24.684330000000045
+      ],
+      [
+        -80.11120026960387,
+        25.738916531788615
+      ]
+    ],
+    "distances": [
+      287.2,
+      334.1
+    ],
+    "fixed_distance": 255.7,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 78.4,
+    "rank": 78.41612214214729
+  },
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "319236900",
+    "length": 38.0,
+    "start": "2023-09-06 13:36:47+00:00",
+    "end": "2023-09-06 19:36:47+00:00",
+    "positions": [
+      [
+        -69.23425047751175,
+        40.55751304849583
+      ],
+      [
+        -70.649758216973,
+        40.30202777041429
+      ]
+    ],
+    "distances": [
+      338.1,
+      379.5
+    ],
+    "fixed_distance": 314.5,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 65.0,
+    "rank": 65.04699138848889
+  },
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "367477950",
+    "length": 28.0,
+    "start": "2023-09-06 07:43:15+00:00",
+    "end": "2023-09-06 19:43:15+00:00",
+    "positions": [
+      [
+        -71.71454230733018,
+        41.1573853555257
+      ],
+      [
+        -72.85521145073977,
+        40.608690008130736
+      ]
+    ],
+    "distances": [
+      461.3,
+      466.5
+    ],
+    "fixed_distance": 407.2,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 59.3,
+    "rank": 59.26484949364345
+  },
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "319063200",
+    "length": 48.0,
+    "start": "2023-08-30 23:06:33+00:00",
+    "end": "2023-08-31 23:06:33+00:00",
+    "positions": [
+      [
+        -75.90937558872214,
+        36.9203265371422
+      ],
+      [
+        -76.4207000235152,
+        38.92842572188733
+      ]
+    ],
+    "distances": [
+      369.1,
+      377.5
+    ],
+    "fixed_distance": 263.9,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 113.6,
+    "rank": 113.59194790967871
+  },
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "319436000",
+    "length": 48.0,
+    "start": "2023-08-31 09:57:54+00:00",
+    "end": "2023-08-31 21:57:54+00:00",
+    "positions": [
+      [
+        -73.7278203979619,
+        39.767623109198354
+      ],
+      [
+        -74.04835696031549,
+        40.663659073887615
+      ]
+    ],
+    "distances": [
+      413.7,
+      434.5
+    ],
+    "fixed_distance": 379.5,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 55.0,
+    "rank": 54.990470837303576
+  },
+  {
+    "kind": "relocation",
+    "storm": "IDALIA",
+    "storm_id": "AL102023",
+    "mmsi": "339261000",
+    "length": 26.0,
+    "start": "2023-09-05 23:43:56+00:00",
+    "end": "2023-09-06 11:43:56+00:00",
+    "positions": [
+      [
+        -68.14725088198469,
+        40.83769450796847
+      ],
+      [
+        -70.09471911383767,
+        41.47700804311966
+      ]
+    ],
+    "distances": [
+      359.9,
+      368.2
+    ],
+    "fixed_distance": 296.1,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 72.1,
+    "rank": 72.07872295065886
+  },
+  {
+    "kind": "relocation",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "319304000",
+    "length": 55.0,
+    "start": "2023-09-15 20:00:02+00:00",
+    "end": "2023-09-16 20:00:02+00:00",
+    "positions": [
+      [
+        -71.67577962464605,
+        41.17696910713944
+      ],
+      [
+        -72.38363965305592,
+        40.63788647913752
+      ]
+    ],
+    "distances": [
+      323.0,
+      347.6
+    ],
+    "fixed_distance": 302.1,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 45.5,
+    "rank": 45.4578468101883
+  },
+  {
+    "kind": "relocation",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "319619000",
+    "length": 47.0,
+    "start": "2023-09-15 17:19:31+00:00",
+    "end": "2023-09-16 17:19:31+00:00",
+    "positions": [
+      [
+        -71.56281187083366,
+        41.072027121028526
+      ],
+      [
+        -72.70748979703923,
+        40.420366617766504
+      ]
+    ],
+    "distances": [
+      337.6,
+      342.7
+    ],
+    "fixed_distance": 277.6,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 65.1,
+    "rank": 65.12663069002542
+  },
+  {
+    "kind": "relocation",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "367339380",
+    "length": 30.0,
+    "start": "2023-09-16 02:23:42+00:00",
+    "end": "2023-09-17 02:23:42+00:00",
+    "positions": [
+      [
+        -70.02317229963134,
+        42.737213603836715
+      ],
+      [
+        -70.24050180081036,
+        42.14692143723137
+      ]
+    ],
+    "distances": [
+      264.6,
+      270.2
+    ],
+    "fixed_distance": 239.4,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 30.7,
+    "rank": 30.748573397036722
+  },
+  {
+    "kind": "relocation",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "367694520",
+    "length": 27.0,
+    "start": "2023-09-16 06:15:55+00:00",
+    "end": "2023-09-17 06:15:55+00:00",
+    "positions": [
+      [
+        -68.28933050128083,
+        44.107329851373066
+      ],
+      [
+        -68.88332895318642,
+        43.720801280240835
+      ]
+    ],
+    "distances": [
+      213.1,
+      222.5
+    ],
+    "fixed_distance": 187.9,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 34.5,
+    "rank": 34.53872898026947
+  },
+  {
+    "kind": "relocation",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "319257200",
+    "length": 42.0,
+    "start": "2023-09-15 18:28:56+00:00",
+    "end": "2023-09-16 18:28:56+00:00",
+    "positions": [
+      [
+        -72.48152038757286,
+        41.1326227465898
+      ],
+      [
+        -73.50783010945145,
+        40.95975541474496
+      ]
+    ],
+    "distances": [
+      359.0,
+      362.4
+    ],
+    "fixed_distance": 317.7,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 44.7,
+    "rank": 44.70498110320989
+  },
+  {
+    "kind": "continued_approach",
+    "storm": "LEE",
+    "storm_id": "AL132023",
+    "mmsi": "319011000",
+    "length": 138.0,
+    "start": "2023-09-16 03:34:19+00:00",
+    "turn_time": "2023-09-16 04:34:19+00:00",
+    "end": "2023-09-16 05:34:19+00:00",
+    "positions": [
+      [
+        -71.4105847883661,
+        40.967614331565436
+      ],
+      [
+        -71.3929214227766,
+        40.90215300187352
+      ],
+      [
+        -71.37535933002658,
+        40.83667917287693
+      ]
+    ],
+    "distances": [
+      255.4,
+      248.8,
+      244.7
+    ],
+    "speeds": [
+      4.0,
+      4.0
+    ],
+    "turn": 0.1,
+    "continuation_distance": 244.7,
+    "improvement": 0.0,
+    "wind_field": "34KT",
+    "storm_wind": 70,
+    "rank": 55.30043994995293
+  },
+  {
+    "kind": "relocation",
+    "storm": "OPHELIA",
+    "storm_id": "AL162023",
+    "mmsi": "319257200",
+    "length": 42.0,
+    "start": "2023-09-22 10:45:00+00:00",
+    "end": "2023-09-23 10:45:00+00:00",
+    "positions": [
+      [
+        -79.89953857364898,
+        32.14992875690519
+      ],
+      [
+        -80.05768255627616,
+        31.585908095637894
+      ]
+    ],
+    "distances": [
+      234.1,
+      244.2
+    ],
+    "fixed_distance": 212.7,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 31.5,
+    "rank": 31.520677141153584
+  },
+  {
+    "kind": "relocation",
+    "storm": "HELENE",
+    "storm_id": "AL092024",
+    "mmsi": "368011980",
+    "length": 32.0,
+    "start": "2024-09-26 11:36:29+00:00",
+    "end": "2024-09-27 11:36:29+00:00",
+    "positions": [
+      [
+        -80.75335832320914,
+        28.92617744744992
+      ],
+      [
+        -80.47804797468729,
+        28.38694818510562
+      ]
+    ],
+    "distances": [
+      375.5,
+      375.8
+    ],
+    "fixed_distance": 340.4,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 35.4,
+    "rank": 35.42045876117521
+  },
+  {
+    "kind": "relocation",
+    "storm": "MILTON",
+    "storm_id": "AL142024",
+    "mmsi": "367194150",
+    "length": 29.0,
+    "start": "2024-10-08 17:32:37+00:00",
+    "end": "2024-10-08 23:32:37+00:00",
+    "positions": [
+      [
+        -80.93644984010498,
+        24.67521371020146
+      ],
+      [
+        -79.7764746133393,
+        25.03185499487861
+      ]
+    ],
+    "distances": [
+      413.1,
+      413.9
+    ],
+    "fixed_distance": 347.2,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 66.7,
+    "rank": 66.65402524865834
+  },
+  {
+    "kind": "relocation",
+    "storm": "ERIN",
+    "storm_id": "AL052025",
+    "mmsi": "366724450",
+    "length": 42.0,
+    "start": "2025-08-21 16:18:28+00:00",
+    "end": "2025-08-22 16:18:28+00:00",
+    "positions": [
+      [
+        -69.71633347136631,
+        42.62011242416602
+      ],
+      [
+        -70.56936984440323,
+        42.51600684992968
+      ]
+    ],
+    "distances": [
+      422.2,
+      426.3
+    ],
+    "fixed_distance": 395.7,
+    "fixed_field": "OUTSIDE 34KT",
+    "wind_field": "OUTSIDE 34KT",
+    "improvement": 30.6,
+    "rank": 30.60709026294876
+  }
+]

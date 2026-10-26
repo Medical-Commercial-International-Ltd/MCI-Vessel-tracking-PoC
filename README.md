@@ -72,8 +72,10 @@ is their weighted mean; the vessel uses the highest individual score. Serious
 gaps trigger referral even below the numeric threshold. Inactive assignments do
 not contribute. Missing/currently unavailable evidence produces an unknown score.
 
-`VESSEL-CREW-v0.1` adds `round((100 - exposure) * 0.25 * crewScore / 100)` to the
-cyclone score. It cannot lower exposure and adds at most 25 points. No current
+`VESSEL-CREW-v0.2` starts with the higher of weather and crew scores, then adds
+`round((100 - higher) * 0.25 * lower / 100)`. Neither component can be diluted.
+Crew v0.2 applies a minimum score of 60 to critical evidence gaps or a missing
+Captain; the roster still takes the highest member score. No current
 crew, stale/unavailable profiles or a failed refresh leave the combined score
 incomplete. Missing Captain, serious evidence gaps, combined/crew scores of at
 least 60, or an existing exposure referral require review. Current crew is not
@@ -408,3 +410,102 @@ Ratings: Insufficient for fewer than 10 positions or three observed days; High r
 
 
 The **Demo yachts** table on Event Look up contains ten user-supplied name/IMO/MMSI mappings in `app/data/demo-yachts.json`. These mappings enrich new real-data analyses and permit IMO lookup without downloading additional NOAA position files. They are labelled as user-supplied, retain Medium identity confidence, and do not fill missing dimensions or flag information. Each yacht row combines its supplied identity with the latest saved assessment and can rerun it. Historic analyses retain their original identities.
+
+
+## Storm movement assessment
+
+Real-data analyses use `TC-EXPOSURE-v0.3` with `STORM-BEHAVIOUR-v0.1`.
+The vessel header shows overall risk, component scores, confidence and referral.
+Existing saved weather assessments retain their original calculation; rerun an
+analysis to apply the new model. Crew assessments are refreshed on viewing.
+Synthetic encounters and legacy records have unknown movement evidence and no
+behaviour adjustment.
+
+Within the selected proximity (default 200 nm), supported track edges up to six
+hours are assessed. At <=1 kt, a storm closing at least 5 nm toward the starting
+position, or strengthening at least 10 kt without increasing separation, adds
+5 points per stationary hour, capped at 20 per encounter. Both endpoints must
+be within range. A contiguous course change >=30 degrees following an approach
+>=5 nm, with separation increasing >=5 nm and exceeding continuation of the
+previous course/speed by >=10 nm, reduces the event score by 5, capped at 10.
+Scores are clipped to 0?100 before the existing weather aggregation.
+
+These provisional thresholds describe retrospective geometry, not intent or
+forecast-informed decisions. Shelter and navigable alternative routes are not
+available. Avoidance is evaluated only for detected encounters; a vessel that
+stayed entirely outside the configured proximity receives no avoidance credit.
+Short unsupported observations, separate tracks and gaps over six hours cannot
+establish stationary behaviour. Interval endpoints are conservative estimates;
+intermediate changes can remain undetected. The models are not actuarially
+calibrated. Per-event findings, adjustments and model versions are in JSON.
+
+
+Fictional crew snapshots can be used offline in the development demo by setting
+`CREW_USE_TEST_SNAPSHOTS=true` in `.env` and restarting the app. This applies only
+when `APP_ENV=development` and a directory entry explicitly has `isTestData: true`.
+The original retrieval timestamp is preserved and the UI/export labels the
+snapshot. Real profiles retain the normal freshness limit. Certificate expiry,
+assignment dates, future retrieval dates and failed refreshes still affect the
+assessment. The default is false; production always enforces freshness.
+
+
+## Original-broadcast storm response checks
+
+Every new real MMSI/IMO analysis and Event Look up result runs
+`BROADCAST-RESPONSE-v1` against available original NOAA broadcasts.
+`data/broadcasts/<MMSI>.json` holds locally imported records and source dates;
+the two permanent demo fixtures in `app/data/storm-demo-broadcasts.json` also
+work when the local broadcast cache is absent. No original coverage means
+unknown response and no movement adjustment. NOAA daily archives are not
+silently downloaded on each search. This does not establish absence of
+movement on unobserved dates.
+
+AZULITA (368001090) and A1A (368281860) appear alongside the ten original demo
+yachts. Both have a verified movement-away window on 3 October 2023 during
+Philippe; A1A also has a later approach window. Neither broadcasts a valid IMO.
+The catalogue labels name the historical scenario; newly calculated findings
+remain specific to the selected dates. Their saved default period is that day
+and the proximity is 70 nm.
+
+`TC-EXPOSURE-v0.4` replaces derived geometry with original observations on
+cached broadcast days, including map playback. Other days retain the original
+exposure geometry; derived timestamps are never used to award a behavioural
+credit or stationary penalty. The response table shows start/end coordinates
+in JSON, dates, distances, staying-put separation and movement benefit.
+The expandable method describes the exact thresholds and score adjustments.
+
+Distances use haversine geometry (Earth radius 3440.065 nm). Actual separation
+uses the preceding whole-minute HURDAT2 position, matching the research
+calculation; the stationary counterfactual uses the exact endpoint timestamp.
+Compare 1/2/3/6 hours with the nearest endpoint within five minutes, rejecting
+observation gaps over thirty minutes. A movement-away window starts 50?70 nm
+from a tropical/subtropical storm or hurricane with intensity >=34 kt, has a
+valid starting SOG >2 and <50 kt and COG <360 degrees, a hypothetical storm
+closure >=3 nm, benefit >=5 nm, and increasing actual separation. Benefit =
+actual end separation minus distance from the original vessel position to the
+storm at the end. This is a retrospective geometric comparison, not intent.
+
+Stationary-approach windows require all reported speeds 0?1 kt, all observed
+positions within 1 nm of the starting point, separation decreasing >=5 nm,
+and the same supported time windows and starting distance band. They do not
+establish that moving was safer. The strongest window per storm/kind is kept;
+overlapping windows are not summed. The movement-away credit is 5 points per
+storm. Stationary approach adds 5 points per hour in the strongest window,
+capped at 20. Original broadcasts with invalid coordinates/timestamps are
+excluded; unavailable AIS SOG 102.3 and COG 360 do not establish movement.
+
+Research/import commands (daily archives must be downloaded first):
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.check_storm_broadcasts 2023-10-03
+.\.venv\Scripts\python.exe -m scripts.analyse_close_broadcasts 2023-10-03 AL172023
+.\.venv\Scripts\python.exe -m scripts.import_storm_broadcasts 2023-10-03
+.\.venv\Scripts\python.exe -m scripts.find_stationary_broadcasts 2023-09-23 AL162023
+```
+
+The stationary search checks all ship types in the original daily archive,
+retains provenance and saves qualifying broadcast records for future analyses.
+The September 2023 shortlist is in `data/stationary-storm-shortlist.json`.
+These records include protected port/anchorage cases and are not automatic
+decline examples. Earlier long derived-track timing suggested some false
+offshore positions; use original observations for movement assertions.

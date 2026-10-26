@@ -1,0 +1,191 @@
+{
+  "search_scope": {
+    "years": [
+      2023,
+      2024,
+      2025
+    ],
+    "source_segments": 6593159,
+    "systems_searched": 106,
+    "derived_vessel_storm_matches_within_70_nm": 217,
+    "original_broadcast_days_checked": [
+      "2023-09-23",
+      "2023-10-03"
+    ]
+  },
+  "storm": "Tropical Storm Philippe (AL172023)",
+  "date": "2023-10-03",
+  "time_zone": "UTC",
+  "distance_unit": "nautical miles",
+  "sources": {
+    "broadcasts": "https://coast.noaa.gov/htdata/CMSP/AISDataHandler/2023/AIS_2023_10_03.zip",
+    "storm_report": "https://www.nhc.noaa.gov/data/tcr/AL172023_Philippe.pdf"
+  },
+  "method": "Actual broadcast positions compared with interpolated NOAA HURDAT2 positions, at nearest minute. Endpoints within five minutes of comparison windows, no observed gap exceeding thirty minutes. Invalid AIS speed 102.3 and course 360 do not establish movement.",
+  "limitations": [
+    "This is the full local 2023-2025 cache, not the entire global historical NOAA archive.",
+    "Neither intent nor an insurance accept/decline decision is established.",
+    "Both cited windows are outside reported 34kt wind radii; close centre distance is not measured adverse weather.",
+    "A1A also showed movement increasing separation earlier that day, so it is not a clean non-response example.",
+    "Long derived-track timing was found to misplace some yachts offshore; original broadcasts are needed before using such movement claims."
+  ],
+  "cases": [
+    {
+      "name": "A1A",
+      "mmsi": "368281860",
+      "imo": null,
+      "imo_note": "No valid IMO reported in NOAA broadcasts; 0000000 is an unavailable value, not an IMO number.",
+      "interpretation": "Increasing exposure; mixed behaviour, not a decline recommendation",
+      "pattern": {
+        "kind": "continued_approach",
+        "start": {
+          "MMSI": "368281860",
+          "BaseDateTime": "2023-10-03T12:03:22",
+          "LAT": "18.78130",
+          "LON": "-64.77213",
+          "SOG": "8.0",
+          "COG": "138.3",
+          "Heading": "511.0",
+          "VesselName": "A1A",
+          "IMO": "IMO0000000",
+          "CallSign": "WDN4536",
+          "VesselType": "37",
+          "Status": "",
+          "Length": "18",
+          "Width": "5",
+          "Draft": "",
+          "Cargo": "",
+          "TransceiverClass": "B",
+          "distance_nm": 67.08,
+          "field": "OUTSIDE 34KT"
+        },
+        "end": {
+          "MMSI": "368281860",
+          "BaseDateTime": "2023-10-03T15:00:20",
+          "LAT": "18.86033",
+          "LON": "-64.70343",
+          "SOG": "8.0",
+          "COG": "129.1",
+          "Heading": "511.0",
+          "VesselName": "A1A",
+          "IMO": "IMO0000000",
+          "CallSign": "WDN4536",
+          "VesselType": "37",
+          "Status": "",
+          "Length": "18",
+          "Width": "5",
+          "Draft": "",
+          "Cargo": "",
+          "TransceiverClass": "B",
+          "distance_nm": 37.13,
+          "field": "OUTSIDE 34KT"
+        },
+        "turn": 9.2
+      },
+      "other_detected_patterns": [
+        {
+          "kind": "movement_away",
+          "start": {
+            "MMSI": "368281860",
+            "BaseDateTime": "2023-10-03T11:15:50",
+            "LAT": "18.54636",
+            "LON": "-64.56437",
+            "SOG": "30.3",
+            "COG": "321.7",
+            "Heading": "511.0",
+            "VesselName": "A1A",
+            "IMO": "IMO0000000",
+            "CallSign": "WDN4536",
+            "VesselType": "37",
+            "Status": "",
+            "Length": "18",
+            "Width": "5",
+            "Draft": "",
+            "Cargo": "",
+            "TransceiverClass": "B",
+            "distance_nm": 61.3,
+            "field": "OUTSIDE 34KT"
+          },
+          "end": {
+            "MMSI": "368281860",
+            "BaseDateTime": "2023-10-03T12:15:50",
+            "LAT": "18.77040",
+            "LON": "-64.77835",
+            "SOG": "8.7",
+            "COG": "63.3",
+            "Heading": "511.0",
+            "VesselName": "A1A",
+            "IMO": "IMO0000000",
+            "CallSign": "WDN4536",
+            "VesselType": "37",
+            "Status": "",
+            "Length": "18",
+            "Width": "5",
+            "Draft": "",
+            "Cargo": "",
+            "TransceiverClass": "B",
+            "distance_nm": 65.5,
+            "field": "OUTSIDE 34KT"
+          },
+          "fixed_distance": 52.82,
+          "improvement": 12.68
+        }
+      ]
+    },
+    {
+      "name": "AZULITA",
+      "mmsi": "368001090",
+      "imo": null,
+      "imo_note": "No valid IMO reported in NOAA broadcasts; 0000000 is an unavailable value, not an IMO number.",
+      "interpretation": "Movement increased separation; intent unproven",
+      "pattern": {
+        "kind": "movement_away",
+        "start": {
+          "MMSI": "368001090",
+          "BaseDateTime": "2023-10-03T13:20:53",
+          "LAT": "18.30942",
+          "LON": "-64.86213",
+          "SOG": "8.5",
+          "COG": "124.7",
+          "Heading": "511.0",
+          "VesselName": "AZULITA",
+          "IMO": "",
+          "CallSign": "WDJ6876",
+          "VesselType": "36",
+          "Status": "",
+          "Length": "",
+          "Width": "",
+          "Draft": "",
+          "Cargo": "",
+          "TransceiverClass": "B",
+          "distance_nm": 65.1,
+          "field": "OUTSIDE 34KT"
+        },
+        "end": {
+          "MMSI": "368001090",
+          "BaseDateTime": "2023-10-03T19:21:53",
+          "LAT": "18.28563",
+          "LON": "-65.63381",
+          "SOG": "0.0",
+          "COG": "320.9",
+          "Heading": "511.0",
+          "VesselName": "AZULITA",
+          "IMO": "",
+          "CallSign": "WDJ6876",
+          "VesselType": "36",
+          "Status": "",
+          "Length": "",
+          "Width": "",
+          "Draft": "",
+          "Cargo": "",
+          "TransceiverClass": "B",
+          "distance_nm": 77.65,
+          "field": "OUTSIDE 34KT"
+        },
+        "fixed_distance": 54.17,
+        "improvement": 23.48
+      },
+      "other_detected_patterns": []
+    }
+  ]
+}

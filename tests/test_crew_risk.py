@@ -79,12 +79,12 @@ def test_slot_weighting_missing_documents_duplicates_and_roster_dilution():
     missing_medical = deepcopy(good)
     missing_medical["certificates"] = [doc for doc in good["certificates"] if doc["type"] != "MEDICAL_FITNESS_CERTIFICATE_ENG1"]
     result = assess_crew([assignment()], Provider({PROFILE_ID: missing_medical}), TODAY)
-    assert result.score == round(200 / 9)
+    assert result.score == 60
     assert result.underwriter_referral
     rejected = deepcopy(good)
     rejected["certificates"][-1]["statuses"] = ["REJECTED"]
     result = assess_crew([assignment(), assignment(person_id="good")], Provider({PROFILE_ID: rejected, "good": good}), TODAY)
-    assert result.score == round(300 / 9)
+    assert result.score == 60
     assert result.underwriter_referral  # Rejection forces review below numeric threshold.
     rejected["certificates"].append(certificate(id="renewal"))
     assert assess_crew([assignment()], Provider({PROFILE_ID: rejected}), TODAY).score == 0
@@ -97,6 +97,28 @@ def test_evidence_hash_changes_when_provider_decision_changes():
     a = assess_crew([assignment()], Provider({PROFILE_ID: first}), TODAY)
     b = assess_crew([assignment()], Provider({PROFILE_ID: second}), TODAY)
     assert a.evidence_hash != b.evidence_hash
+
+
+def test_missing_captain_sets_high_risk_floor():
+    result = assess_crew([assignment(role="Chief officer")], Provider({PROFILE_ID: person()}), TODAY)
+    assert result.score == 60
+    assert result.band == "HIGH"
+    assert result.underwriter_referral
+
+
+def test_combination_preserves_each_component_and_is_monotonic():
+    from types import SimpleNamespace
+    from app.models import CrewRiskAssessment
+    previous = 0
+    for weather in range(101):
+        analysis = SimpleNamespace(risk=SimpleNamespace(score=weather, underwriter_referral=False),
+                                   is_synthetic=False, audit=SimpleNamespace(calculation_hash="test"))
+        crew = CrewRiskAssessment(assessed_on=TODAY, score=60)
+        combined = combine_risk(analysis, crew)
+        assert max(weather, 60) <= combined.score <= 100
+        assert combined.score >= previous
+        assert combined.crew_adjustment == combined.score - weather
+        previous = combined.score
 
 
 def test_checklist_distinguishes_uploaded_unverified_expired_and_missing_evidence():
@@ -233,8 +255,8 @@ def test_combination_is_bounded_and_never_reduces_exposure(connected, exposure):
     analysis.risk.score = exposure
     crew = assess_crew([assignment()], Provider({PROFILE_ID: {**person(), "certificates": []}}), TODAY)
     combined = combine_risk(analysis, crew)
-    assert combined.score == exposure + round((100 - exposure) * .25)
-    assert exposure <= combined.score <= min(100, exposure + 25)
+    assert combined.score == 100
+    assert max(exposure, crew.score) <= combined.score <= 100
 
 
 def test_restricted_user_cannot_read_crew_via_analysis_or_export(connected, monkeypatch):
@@ -300,3 +322,47 @@ def test_refresh_http_error_is_visible_and_preserves_previous_source(connected, 
         provider.refresh(PROFILE_ID)
     assert provider.get(PROFILE_ID)["raw"] == previous
     assert provider.get(PROFILE_ID)["refresh_error"]
+
+
+@pytest.mark.parametrize("enabled,environment,test_data,expected", [
+    (True, "development", True, True),
+    (False, "development", True, False),
+    (True, "production", True, False),
+    (True, "development", False, False),
+    (True, "development", None, False),
+])
+def test_snapshot_freshness_exception_is_explicit_and_development_only(tmp_path, enabled, environment, test_data, expected):
+    write_provider_data(tmp_path)
+    root = tmp_path / "crew"
+    (root / "connected-profiles.json").write_text(json.dumps([
+        {"id": PROFILE_ID, "name": "Fictional Captain", "isTestData": test_data}]))
+    path = root / "evidence" / f"{PROFILE_ID}.json"
+    cached = json.loads(path.read_text())
+    original_time = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
+    cached["retrievedAt"] = original_time
+    path.write_text(json.dumps(cached))
+    provider = CrewdentialsProvider(Settings(data_dir=tmp_path, app_env=environment, crew_use_test_snapshots=enabled))
+    profile = provider.get(PROFILE_ID)
+    assert profile["is_test_snapshot"] is expected
+    assert profile["stale"] is not expected
+    assert profile["retrieved_at"] == original_time
+    result = assess_crew([assignment()], provider, TODAY)
+    assert (result.score is not None) is expected
+    assert result.members[0].is_test_snapshot is expected
+    assert json.loads(path.read_text())["retrievedAt"] == original_time
+
+
+def test_snapshot_does_not_hide_failed_refresh_or_expired_certificates(tmp_path):
+    write_provider_data(tmp_path)
+    path = tmp_path / "crew/evidence" / f"{PROFILE_ID}.json"
+    cached = json.loads(path.read_text())
+    cached["retrievedAt"] = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
+    cached["payload"]["documents"][0]["expiryDate"] = "2020-01-01"
+    path.write_text(json.dumps(cached))
+    provider = CrewdentialsProvider(Settings(data_dir=tmp_path, crew_use_test_snapshots=True, app_env="development"))
+    result = assess_crew([assignment()], provider, TODAY)
+    assert result.score >= 60
+    assert result.underwriter_referral
+    cached["refreshError"] = True
+    path.write_text(json.dumps(cached))
+    assert assess_crew([assignment()], provider, TODAY).score is None

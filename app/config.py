@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     crewdentials_base_url: str = "https://crewdentials-api-dev.onrender.com/api"
     crewdentials_api_key: SecretStr = SecretStr("")
     crew_evidence_max_age_hours: int = Field(default=24, ge=1, le=168)
+    crew_use_test_snapshots: bool = False
     demo_seed_count: int = Field(default=248, ge=0, le=5000)
     data_dir: Path = Path("data")
     ais_cache_dir: Path = Path("C:/MCI-AIS-Cache")

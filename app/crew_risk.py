@@ -136,6 +136,9 @@ def assess_member(assignment, person, today):
         member.checks = [evidence_check(label, None, today, member.end_date, unavailable=True) for label, _, _ in slots]
         return member, True
     member.is_test_data = member.is_test_data or person.get("is_demo", True)
+    member.is_test_snapshot = bool(person.get("is_test_snapshot"))
+    if member.is_test_snapshot:
+        member.findings.append("Saved fictional test snapshot; the live evidence freshness limit is disabled for this development fixture. Certificate dates are still assessed today.")
     member.experience_supplied = bool(person.get("experience"))
     if person.get("retrieved_at"):
         member.evidence_retrieved_at = datetime.fromisoformat(person["retrieved_at"])
@@ -163,6 +166,9 @@ def assess_member(assignment, person, today):
         referral = referral or critical
         member.findings.extend(f"{label}: {reason}." for reason in reasons)
     member.score = round(weighted / total_weight)
+    if referral:
+        member.score = max(60, member.score)
+        member.findings.append("Critical evidence gap: minimum score 60 pending review.")
     if not person.get("experience"):
         member.findings.append("CV and experience not supplied; experience is not scored.")
     return member, referral
@@ -197,6 +203,9 @@ def assess_crew(assignments, provider, today=None):
     captain_missing = not any(row["role"] == "Captain" for row in active)
     if active and captain_missing:
         result.findings.append("No current Captain assignment; roster review required.")
+        if result.score is not None:
+            result.score = max(60, result.score)
+            result.band = risk_band(result.score)
     result.underwriter_referral = result.score is None or critical or captain_missing or result.score >= 60
     # Signed file URLs rotate independently of certificate evidence and are excluded.
     for person in inputs["evidence"]:
@@ -210,9 +219,10 @@ def combine_risk(analysis, crew):
     result = UnderwritingAssessment(exposure_score=analysis.risk.score, crew=crew,
                                     is_test_data=analysis.is_synthetic or crew.is_test_data)
     if crew.score is not None:
-        # Adds at most 25% of the remaining headroom; crew cannot reduce exposure.
-        result.crew_adjustment = round((100 - analysis.risk.score) * 0.25 * crew.score / 100)
-        result.score = min(100, analysis.risk.score + result.crew_adjustment)
+        # Preserve the stronger component, then add a bounded interaction uplift.
+        baseline = max(analysis.risk.score, crew.score)
+        result.score = min(100, baseline + round((100 - baseline) * 0.25 * min(analysis.risk.score, crew.score) / 100))
+        result.crew_adjustment = result.score - analysis.risk.score
         result.band = risk_band(result.score)
     result.underwriter_referral = (analysis.risk.underwriter_referral or crew.underwriter_referral
                                    or result.score is None or result.score >= 60)

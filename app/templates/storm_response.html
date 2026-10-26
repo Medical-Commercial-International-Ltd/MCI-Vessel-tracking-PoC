@@ -1,0 +1,21 @@
+<section class="panel behaviour-method" aria-label="Storm movement response">
+  <h2>Storm movement response</h2>
+  <p>{{ analysis.storm_response.status | replace('_',' ') | title }} · {{ analysis.storm_response.observation_count }} original AIS broadcasts · {{ analysis.storm_response.model_version }}</p>
+  <p>Original broadcast dates: {{ analysis.storm_response.source_dates | join(', ') or 'None available' }}. This check runs on every new analysis; missing broadcasts produce an unknown result.</p>
+  {% if analysis.storm_response.windows %}
+  <div class="table-wrap"><table><thead><tr><th>Finding</th><th>Storm / UTC window</th><th>Start distance</th><th>End distance</th><th>If vessel stayed put</th><th>Movement benefit</th><th>Reported wind field</th></tr></thead>
+  <tbody>{% for w in analysis.storm_response.windows %}<tr>
+    <td><strong>{{ {'MOVED_AWAY':'Moved away from the storm', 'CONTINUED_APPROACH':'Underway as storm approached', 'STATIONARY_APPROACH':'Stationary as storm approached'}.get(w.kind,w.kind) }}</strong></td>
+    <td>{{ w.storm_name }}<small>{{ w.start.strftime('%d %b %Y %H:%M') }} to {{ w.end.strftime('%d %b %Y %H:%M') }}</small></td>
+    <td>{{ '%.2f'|format(w.start_distance_nm) }} nm</td><td>{{ '%.2f'|format(w.end_distance_nm) }} nm</td><td>{{ '%.2f'|format(w.fixed_distance_nm) }} nm</td><td>{{ '%+.2f'|format(w.improvement_nm) }} nm</td><td>{{ w.field }}</td>
+  </tr>{% endfor %}</tbody></table></div>
+  {% endif %}
+  {% for finding in analysis.storm_response.findings %}<p>{{ finding }}</p>{% endfor %}
+  <details><summary>Exact movement calculations and thresholds</summary>
+    <p>Distances use the haversine formula with Earth radius 3,440.065 nautical miles. Start/end separation = distance(vessel position, simultaneous HURDAT2 storm position). Staying-put separation = distance(start vessel position, end storm position). Movement benefit = actual end separation − staying-put separation.</p>
+    <p>Compare original observations over 1, 2, 3 and 6 hours, using the nearest endpoint within 5 minutes. Reject any window with an observation gap above 30 minutes. Start/end storm separation is calculated at the preceding whole minute; the staying-put calculation uses the exact endpoint timestamp. Tropical/subtropical storm or hurricane status and at least 34 kt intensity are required.</p>
+    <p>Moved away: starts 50–70 nm away (subject to selected proximity), valid starting speed above 2 and below 50 kt and course below 360°, storm would close at least 3 nm if the vessel stayed, movement benefit at least 5 nm, and actual separation increases. Underway as storm approached: separation falls at least 5 nm, valid speeds at both endpoints, endpoint courses differ by no more than 15°, and position displacement implies above 2 kt. Endpoint courses do not establish an unchanged route throughout the window.</p>
+    <p>Stationary approach: every reported speed is valid and at most 1 kt, every observed position remains within 1 nm of the starting position, and separation falls at least 5 nm. Harbour or anchorage protection must be reviewed. Each storm retains its strongest example of each pattern; overlapping windows are not added together.</p>
+    <p>Weather scoring: stationary approach adds 5 points per hour in the strongest verified window, capped at 20. A verified movement-away window reduces the encounter by 5 points. The existing proximity, wind-field, intensity and duration components remain; event scores are bounded to 0–100. No original broadcasts means no movement adjustment.</p>
+  </details>
+</section>

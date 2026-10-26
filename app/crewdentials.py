@@ -86,10 +86,15 @@ class CrewdentialsProvider:
                                  "statuses": statuses, "verifications": doc["verifications"],
                                  "limits": "Role limits and flag recognition not supplied"})
         age = (datetime.now(timezone.utc) - retrieved_at).total_seconds() / 3600
+        # An explicit development fixture may age without pretending to be a live refresh.
+        snapshot = (self.settings.app_env == "development"
+                    and self.settings.crew_use_test_snapshots
+                    and entry.get("isTestData") is True)
         return {"id": person_id, "first_name": name[0], "last_name": name[1] if len(name) > 1 else "",
                 "email": None, "summary": None, "experience": [], "certificates": certificates,
                 "is_demo": entry.get("isTestData", True), "retrieved_at": retrieved_at.isoformat(),
-                "stale": age > self.settings.crew_evidence_max_age_hours or age < 0,
+                "is_test_snapshot": snapshot,
+                "stale": (age > self.settings.crew_evidence_max_age_hours and not snapshot) or age < 0,
                 "refresh_error": cached.get("refreshError"), "raw": payload}
 
     def refresh(self, person_id):
