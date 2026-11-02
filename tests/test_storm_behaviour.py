@@ -49,14 +49,14 @@ def test_course_change_requires_improvement_over_continuing_course():
     assert disconnected.avoidance_manoeuvres == 0
 
 
-def test_real_encounter_persists_adjustment_and_explanation():
+def test_derived_geometry_cannot_apply_a_behaviour_adjustment():
     positions = [position(0, 0), position(2, 0)]
     service = object.__new__(RealAnalysisService)
     encounter = service._match_encounters("test", positions, [storm([(0, 2, 0), (2, 1, 0)])], 200)[0]
     risk = encounter.risk
-    assert risk.behaviour.adjustment == 10
-    assert risk.event_score == min(100, risk.proximity_points + risk.intensity_points + risk.wind_field_points + risk.duration_points + 10)
-    assert risk.model_dump(by_alias=True)["behaviour"]["stationaryWorseningHours"] == 2
+    assert risk.behaviour.adjustment == 0
+    assert risk.behaviour.status == 'INSUFFICIENT'
+    assert risk.event_score == min(100, risk.proximity_points + risk.intensity_points + risk.wind_field_points + risk.duration_points)
 
 
 def test_stationary_penalty_is_capped_and_does_not_apply_to_moving_vessel():

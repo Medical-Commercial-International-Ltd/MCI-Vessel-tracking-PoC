@@ -1,0 +1,19 @@
+<section class="panel assessment-summary" id="underwriting-summary" aria-labelledby="summary-title">
+  <div class="panel__heading"><div><span class="eyebrow">Underwriting summary</span><h2 id="summary-title">{{ briefing.appetite.label if briefing.appetite else briefing.decision }}</h2></div></div>
+  {% if briefing.appetite %}{% set policy = briefing.appetite %}
+  <div class="appetite-recommendation">
+    <span class="eyebrow">Demonstration appetite · {{ policy.version }}</span>
+    <h3>Why this recommendation</h3>
+    <ul>{% for reason in policy.reasons %}<li>{{ reason }}</li>{% endfor %}</ul>
+    <p>{% if policy.uses_fictional_crew %}This recommendation includes the fictional crew assigned to this demo, not the vessel's actual or historical crew. {% endif %}<a href="/demo-cases#appetite-rules">View decision rules</a>.</p>
+    <details><summary>Conditions before offering or reconsidering terms</summary><ul>{% for condition in policy.conditions %}<li>{{ condition }}</li>{% endfor %}</ul></details>
+  </div>
+  {% endif %}
+  <div class="summary-columns">
+    <div><h3>Weather evidence</h3><p>{{ briefing.weather }}</p><p>Tracking confidence: <strong>{{ analysis.risk.confidence | title }}</strong>{% if analysis.data_quality.supported_time_coverage_percent is not none %} · {{ analysis.data_quality.supported_time_coverage_percent }}% of the selected time supported{% endif %}.</p></div>
+    <div><h3>Vessel response</h3><p>{{ briefing.movement_summary }}</p><p>Storm movement and vessel movement are compared separately. Historical geometry does not establish the Captain's intent.</p></div>
+    <div><h3>Current crew evidence</h3><p>{{ briefing.crew }}</p><p>Current assignments do not identify who was aboard during historical storms.</p></div>
+  </div>
+  <h3>Next steps before offering terms</h3>
+  <ul class="review-actions">{% for action in briefing.actions %}<li>{{ action }}</li>{% endfor %}</ul>
+</section>

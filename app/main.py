@@ -33,23 +33,27 @@ from app.services import (
 from app.vessel_photos import VesselPhotoCatalog, vessel_image
 from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteService
 from app.vessel_catalog import cached_vessels
-from app.vessel_identity import demo_yachts, storm_demo_vessels
+from app.vessel_identity import demo_yachts, storm_demo_vessels, storm_demo_case
+from app.briefing import build_briefing
+from app.demo_appetite import worked_examples
+from app.demo_cases import local_cases
+from app.storm_response import RESPONSE_LABELS
 
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 
-def illustrative_activity_months(reference: datetime | None = None) -> list[dict[str, int | str]]:
-    """Return chart-only sample activity without creating fake assessments."""
+def assessment_activity_months(analyses, reference: datetime | None = None) -> list[dict[str, int | str]]:
+    """Six calendar months, including months with no actual assessments."""
     current = reference or datetime.now(timezone.utc)
-    counts = [3, 5, 4, 7, 6, 8]
     months = []
     current_index = current.year * 12 + current.month - 1
-    for offset, count in zip(range(5, -1, -1), counts):
+    for offset in range(5, -1, -1):
         month_index = current_index - offset
         year, zero_based_month = divmod(month_index, 12)
         label = datetime(year, zero_based_month + 1, 1).strftime("%b")
+        count = sum(item.created_at.year == year and item.created_at.month == zero_based_month + 1 for item in analyses)
         months.append({"label": label, "count": count})
     return months
 
@@ -115,6 +119,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     def page_context(request: Request, **values):
+        displayed = [values.get('analysis'), *values.get('recent', [])]
+        show_demo_notice = (
+            configuration.analysis_provider == 'demo'
+            or (configuration.crew_random_demo and configuration.app_env == 'development')
+            or values.get('crewDemo') or values.get('crewConnected')
+            or request.url.path == '/event-lookup'
+            or any(item and (item.is_synthetic or (item.underwriting and item.underwriting.is_test_data))
+                   for item in displayed)
+        )
         crew_example = None
         roster_path = configuration.data_dir / "crew" / "test-roster.json"
         if request.session.get("user", {}).get("role") in {"admin", "underwriter"} and roster_path.exists():
@@ -127,7 +140,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "user": request.session.get("user"),
             "csrfToken": csrf_token(request.session),
             "provider": configuration.analysis_provider,
+            "stormCasePresets": [{key: item.get(key) for key in ['name', 'mmsi', 'imo', 'from', 'to', 'proximityNm', 'note']}
+                                 for item in storm_demo_vessels()] if configuration.analysis_provider == 'real' else [],
+            "showDemoNotice": show_demo_notice,
+            "demoAppetiteEnabled": configuration.app_env == 'development' and request.session.get('user', {}).get('role') in {'admin', 'underwriter'},
             "crewExample": crew_example,
+            "responseLabels": RESPONSE_LABELS,
+            "autoDemoCrew": bool(configuration.crew_random_demo and configuration.app_env == 'development'
+                                  and request.session.get('user', {}).get('role') in {'admin', 'underwriter'}),
             **values,
         }
 
@@ -259,22 +279,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         else:
             analyses = [analysis for analysis in analyses if analysis.is_synthetic]
         summary = dashboard_summary(analyses)
-        if configuration.analysis_provider == "real":
-            activity_months = illustrative_activity_months()
-            activity_is_illustrative = True
-            headline_metrics = {
-                "highOrSevere": 2,
-                "highConfidencePercent": 80,
-                "isIllustrative": True,
-            }
-        else:
-            activity_months = summary["months"][-6:]
-            activity_is_illustrative = False
-            headline_metrics = {
-                "highOrSevere": summary["highOrSevere"],
-                "highConfidencePercent": summary["highConfidencePercent"],
-                "isIllustrative": False,
-            }
+        activity_months = assessment_activity_months(analyses)
+        activity_is_illustrative = False
+        headline_metrics = {
+            "highOrSevere": summary["highOrSevere"],
+            "highConfidencePercent": summary["highConfidencePercent"],
+            "isIllustrative": False,
+        }
         return templates.TemplateResponse(
             request=request,
             name="dashboard.html",
@@ -285,6 +296,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 activityMonths=activity_months,
                 activityIsIllustrative=activity_is_illustrative,
                 headlineMetrics=headline_metrics,
+                cachedYears=app.state.analysis_service.tracks.available_years if configuration.analysis_provider == 'real' else [],
             ),
         )
 
@@ -295,6 +307,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         mmsi: str | None = None,
         fromDate: str | None = None,
         toDate: str | None = None,
+        crewScenario: str = "",
     ):
         _, redirect = require_user(request)
         if redirect:
@@ -307,7 +320,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         earliest_contiguous_year = max(cached_years) if cached_years else 2021
         while earliest_contiguous_year - 1 in cached_years:
             earliest_contiguous_year -= 1
-        analysis = with_crew(request, repository.get_analysis("mci", analysisId)) if analysisId else None
+        try:
+            analysis = repository.get_analysis("mci", analysisId) if analysisId else None
+        except ValueError:
+            analysis = None
+        analysis = with_crew(request, analysis)
         vessel_photo = (
             await run_in_threadpool(photo_catalog.image_for, analysis.vessel)
             if analysis and configuration.analysis_provider == "real" and not analysis.is_synthetic
@@ -315,27 +332,31 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         encounters = repository.list_encounters("mci", analysisId) if analysis else []
         map_data = await run_in_threadpool(build_map_data, analysis, encounters, configuration.ais_cache_dir, configuration.data_dir / 'broadcasts') if analysis and encounters else []
+        case_preset = storm_demo_case('MMSI', mmsi) if configuration.analysis_provider == 'real' else None
         for event in map_data:
             event["satelliteManifestUrl"] = f"/api/satellite/{analysis.analysis_id}/{event['id']}/manifest"
         return templates.TemplateResponse(
             request=request,
             name="analysis.html",
+            status_code=404 if analysisId and analysis is None else 200,
             context=page_context(
                 request,
                 analysis=analysis,
+                briefing=build_briefing(analysis, encounters, demo_appetite=configuration.app_env == 'development' and bool(analysis.underwriting)) if analysis else None,
                 vesselImage=vessel_photo,
                 encounters=encounters,
                 mapData=map_data,
                 mapTileUrl=configuration.map_tile_url,
                 mapTileAttribution=configuration.map_tile_attribution,
-                error=None,
+                error="This saved assessment could not be found. Run a new analysis using the vessel identifier." if analysisId and analysis is None else None,
                 defaults={
                     "identifierType": analysis.input.identifier_type if analysis else "MMSI",
                     "identifier": analysis.input.identifier if analysis else (mmsi if mmsi and mmsi.isdigit() and len(mmsi) == 9 else ""),
-                    "fromDate": analysis.input.period.from_date.isoformat() if analysis else (fromDate if fromDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fromDate) else f"{earliest_contiguous_year}-01-01"),
-                    "toDate": analysis.input.period.to_date.isoformat() if analysis else (toDate if toDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", toDate) else (f"{max(cached_years)}-12-31" if cached_years else "2025-12-31")),
+                    "fromDate": analysis.input.period.from_date.isoformat() if analysis else (fromDate if fromDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", fromDate) else (case_preset or {}).get('from', f"{earliest_contiguous_year}-01-01")),
+                    "toDate": analysis.input.period.to_date.isoformat() if analysis else (toDate if toDate and re.fullmatch(r"\d{4}-\d{2}-\d{2}", toDate) else (case_preset or {}).get('to', f"{max(cached_years)}-12-31" if cached_years else "2025-12-31")),
                     "coastalLimitNm": analysis.input.coastal_limit_nm if analysis else 75,
-                    "stormProximityNm": analysis.input.storm_proximity_nm if analysis else 200,
+                    "stormProximityNm": analysis.input.storm_proximity_nm if analysis else (case_preset.get('proximityNm', 70) if case_preset else 200),
+                    "crewScenario": crewScenario if not analysis else "",
                 },
             ),
         )
@@ -360,17 +381,28 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         current_day = datetime.now(timezone.utc).date().isoformat()
         for identity in demo_yachts() + storm_demo_vessels():
             key = f"mci:IMO:{identity['imo']}" if identity['imo'] else f"mci:MMSI:{identity['mmsi']}"
-            crew = app.state.crew_repository.list(key) if crew_visible else []
-            yacht_rows.append({**identity, "years": catalog_years.get(identity["mmsi"], ()),
-                               "analysis": with_crew(request, latest_vessels.get(identity["mmsi"])),
+            current_analysis = with_crew(request, latest_vessels.get(identity['mmsi']))
+            if crew_visible and app.state.demo_crew_scenarios:
+                snapshot_key = current_analysis.analysis_id if current_analysis else 'portfolio_' + identity['mmsi']
+                crew = app.state.demo_crew_scenarios.get(snapshot_key)['assignments']
+            else:
+                crew = app.state.crew_repository.list(key) if crew_visible else []
+            from app.storm_response import BroadcastStore
+            original_dates = BroadcastStore(configuration.data_dir / 'broadcasts').metadata(identity['mmsi']).get('sourceDates', []) if configuration.analysis_provider == 'real' else []
+            vessel_years = sorted(set(catalog_years.get(identity['mmsi'], ())) | {int(d[:4]) for d in original_dates})
+            yacht_rows.append({**identity, "years": vessel_years,
+                               "analysis": current_analysis,
                                "crew": [row for row in crew if row["start_date"] <= current_day <= row["end_date"]]})
         movement_results = {}
+        lookup_crew = {}
         if response:
             from app.storm_response import BroadcastStore, assess_response
             chosen = next((s for s in storms if values and s.storm_id == values.get('stormId')), None)
             selected_storms = [chosen] if chosen else storms
             store = BroadcastStore(configuration.data_dir / 'broadcasts')
             for item in response.results:
+                if crew_visible and app.state.demo_crew_scenarios:
+                    lookup_crew[item.mmsi] = app.state.demo_crew_scenarios.preview(item.mmsi)
                 day = date.fromisoformat(values['date']) if values and values.get('date') else None
                 period = DatePeriod(from_date=day or (chosen.start.date() if chosen else item.timestamp.date()),
                                     to_date=day or (chosen.end.date() if chosen else item.timestamp.date()))
@@ -390,6 +422,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             },
             lookupResponse=response,
             lookupMovement=movement_results,
+            lookupCrew=lookup_crew,
             demoYachts=yacht_rows,
             stationaryCases=stationary_cases,
             error=error,
@@ -405,17 +438,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             identifier = validate_identifier("MMSI", mmsi)
             years = app.state.analysis_service.tracks.available_years if configuration.analysis_provider == "real" else [2025]
-            if not years:
+            scenario = storm_demo_case('MMSI', identifier) if configuration.analysis_provider == 'real' else None
+            if not years and not scenario:
                 raise ValueError("No cached AIS track years are available.")
-            earliest = max(years)
+            latest = max(years) if years else int(scenario['to'][:4])
+            earliest = latest
             while earliest - 1 in years:
                 earliest -= 1
             analysis_input = AnalysisInput(identifier_type="MMSI", identifier=identifier,
-                                           period=DatePeriod(from_date=date(earliest, 1, 1), to_date=date(max(years), 12, 31)))
-            scenario = next((v for v in storm_demo_vessels() if v['mmsi'] == identifier), None)
+                                           period=DatePeriod(from_date=date(earliest, 1, 1), to_date=date(latest, 12, 31)))
             if scenario:
                 analysis_input.period = DatePeriod(from_date=date.fromisoformat(scenario['from']), to_date=date.fromisoformat(scenario['to']))
-                analysis_input.storm_proximity_nm = 70
+                analysis_input.storm_proximity_nm = scenario.get('proximityNm', 70)
             result = await run_in_threadpool(app.state.analysis_service.analyse, analysis_input, user["email"])
         except ValueError as exc:
             context = await run_in_threadpool(lookup_context, request, error=str(exc))
@@ -440,6 +474,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return templates.TemplateResponse(request=request, name="event_lookup.html", context=context, status_code=422)
         with_crew(request, result)
         return RedirectResponse(f"/analysis?analysisId={quote(result.analysis_id)}", status_code=303)
+
+    @app.get("/demo-cases", response_class=HTMLResponse)
+    async def demo_cases_page(request: Request):
+        user, redirect = require_user(request)
+        if redirect:
+            return redirect
+        if configuration.app_env != 'development':
+            raise HTTPException(404, 'Page not found')
+        if user.get('role') not in {'admin', 'underwriter'}:
+            raise HTTPException(403, 'Underwriting access required')
+        analyses = await run_in_threadpool(repository.list_analyses, 'mci')
+        return templates.TemplateResponse(request=request, name='demo_cases.html',
+            context=page_context(request, cases=local_cases(analyses), examples=worked_examples(), showDemoNotice=True))
 
     @app.get("/event-lookup", response_class=HTMLResponse)
     async def event_lookup_page(request: Request):
@@ -501,6 +548,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         toDate: date = Form(...),
         coastalLimitNm: float = Form(75),
         stormProximityNm: float = Form(200),
+        crewScenario: str = Form(""),
         csrf: str = Form(...),
     ):
         user, redirect = require_user(request)
@@ -513,6 +561,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "toDate": toDate.isoformat(),
             "coastalLimitNm": coastalLimitNm,
             "stormProximityNm": stormProximityNm,
+            "crewScenario": crewScenario,
         }
         error = None
         if not valid_csrf(request.session, csrf):
@@ -567,11 +616,32 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     defaults=defaults,
                 ),
             )
+        if app.state.demo_crew_scenarios and user.get('role') in {'admin', 'underwriter'}:
+            app.state.demo_crew_scenarios.adopt(result, crewScenario)
         with_crew(request, result)
         return RedirectResponse(
             f"/analysis?analysisId={quote(result.analysis_id)}",
             status_code=303,
         )
+
+    @app.get("/analysis/{analysis_id}/briefing", response_class=HTMLResponse)
+    async def broker_briefing(request: Request, analysis_id: str):
+        user, redirect = require_user(request)
+        if redirect:
+            return redirect
+        if user.get("role") not in {"admin", "underwriter"}:
+            raise HTTPException(403, "Underwriter access is required for the combined briefing")
+        try:
+            analysis = repository.get_analysis("mci", analysis_id)
+        except ValueError:
+            analysis = None
+        if analysis is None:
+            raise HTTPException(404, "Assessment not found")
+        analysis = with_crew(request, analysis)
+        encounters = repository.list_encounters("mci", analysis_id)
+        return templates.TemplateResponse(request=request, name="briefing.html",
+            context=page_context(request, analysis=analysis, encounters=encounters,
+                briefing=build_briefing(analysis, encounters, demo_appetite=configuration.app_env == 'development'), generatedAt=datetime.now(timezone.utc)))
 
     @app.get("/analysis/{analysis_id}/json", include_in_schema=False)
     async def download_analysis(request: Request, analysis_id: str):

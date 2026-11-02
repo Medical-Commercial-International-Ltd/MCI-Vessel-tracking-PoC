@@ -4,23 +4,16 @@
 {% endblock %}
 {% block title %}Vessel analysis · MCI Marine Risk{% endblock %}
 {% block content %}
-{% if analysis and analysis.is_synthetic %}
-<div class="demo-banner"><strong>Demonstration result</strong><span>Synthetic data — not for underwriting use</span></div>
-{% elif provider == 'real' %}
-<div class="demo-banner"><strong>Real-data mode</strong><span>MarineCadastre AIS vessel tracks matched to NOAA NHC HURDAT2 best tracks</span></div>
-{% else %}
-<div class="demo-banner"><strong>Demonstration mode</strong><span>Synthetic data — not for underwriting use</span></div>
-{% endif %}
-
 <section class="page-heading">
   <span class="eyebrow">Vessel assessment</span>
   <h1>Vessel risk assessment</h1>
-  <p>Find a vessel by MMSI or IMO and review its overall weather and crew risk.</p>
+  <p>Review historical cyclone exposure, vessel movement and current crew evidence together.</p>
 </section>
 
 <section class="analysis-form-card">
   <form method="post" action="/analysis" class="analysis-form" data-analysis-form>
     <input type="hidden" name="csrf" value="{{ csrfToken }}">
+    {% if autoDemoCrew %}<input type="hidden" name="crewScenario" value="{{ defaults.get('crewScenario', '') }}">{% endif %}
     <label>
       <span>Identifier type</span>
       <select name="identifierType">
@@ -53,10 +46,11 @@
     </details>
     <button class="button button--primary analysis-form__submit" type="submit">Run analysis <span aria-hidden="true">→</span></button>
   </form>
+  {% if stormCasePresets %}<script type="application/json" id="storm-case-presets">{{ stormCasePresets | tojson }}</script><p class="lookup-note" data-case-period-note hidden></p>{% endif %}
   {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
 </section>
 
-{% if crewExample and not analysis %}
+{% if crewExample and not analysis and not autoDemoCrew %}
 <div class="alert"><strong>Crew integration test ready.</strong> Sam and Freya have random test assignments to MMSI {{ crewExample.vessel.mmsi | join(', ') }}.
   <a href="/analysis?analysisId={{ crewExample.analysisId }}">Open the vessel and crew scenario</a> or enter this MMSI above to run it again.</div>
 {% endif %}
@@ -67,8 +61,9 @@
 </section>
 
 {% if analysis %}
-{% if not analysis.is_synthetic and analysis.risk.model_version != 'TC-EXPOSURE-v0.4' %}
-<div class="alert" role="status">This assessment uses an earlier calculation version. Run the analysis again to include storm movement patterns in the weather score.</div>
+{% if analysis.historical_case %}{% include 'historical_case.html' %}{% endif %}
+{% if not analysis.is_synthetic and analysis.risk.model_version != 'TC-EXPOSURE-v0.5' %}
+<div class="alert" role="status">This saved assessment uses an earlier method. Run the analysis again for the current towards/away comparison. Historical scores have been preserved.</div>
 {% endif %}
 <section class="result-heading">
   <div class="result-heading__identity">
@@ -80,7 +75,7 @@
       </figcaption>
     </figure>
     <div>
-      <span class="eyebrow">Completed assessment</span>
+      <span class="eyebrow">Historical vessel assessment</span>
       <h2>{{ analysis.vessel.name }}</h2>
       <div class="identity-line">
         {% if analysis.vessel.imo %}<span>IMO {{ analysis.vessel.imo }}</span>{% endif %}
@@ -92,7 +87,7 @@
   </div>
   <aside class="overall-risk" aria-label="Overall vessel risk">
     {% set overall = analysis.underwriting %}
-    <span class="eyebrow">Overall risk ? higher means greater risk</span>
+    <span class="eyebrow">Overall risk indicator · higher means more concern</span>
     {% if overall and overall.score is not none %}
     <strong class="overall-risk__score">{{ overall.score }}<small>/100</small></strong>
     <span class="score-pill score-pill--{{ overall.band | lower }}">{{ overall.band | title }} risk</span>
@@ -100,13 +95,14 @@
     <p>Current crew evidence is required for an overall score.</p>{% endif %}
     <p><strong>{{ 'Refer for underwriter review' if not overall or overall.underwriter_referral else 'No automatic referral' }}</strong></p>
     <div class="overall-risk__components"><span>Weather <b>{{ analysis.risk.score }}/100</b></span><span>Crew <b>{{ (overall.crew.score|string + '/100') if overall and overall.crew.score is not none else 'Unknown' }}</b></span></div>
-    <p class="panel__note">Weather confidence: {{ analysis.risk.confidence | title }} ? {{ analysis.input.period.from_date }} to {{ analysis.input.period.to_date }}</p>
-    {% if overall %}<p class="panel__note">Crew evidence as of {{ overall.crew.assessed_on }}{% if overall.is_test_data %} ? Illustrative test scenario{% endif %}</p>{% endif %}
-    <a href="#risk-details">Review score drivers and evidence ?</a>
+    <p class="panel__note">Weather confidence: {{ analysis.risk.confidence | title }} · {{ analysis.input.period.from_date }} to {{ analysis.input.period.to_date }}</p>
+    {% if overall %}<p class="panel__note">Crew evidence assessed {{ overall.crew.assessed_on }}</p>{% endif %}
+    <p class="panel__note">An evidence indicator, not a loss probability or acceptance decision.</p>
+    <a href="#underwriting-summary">Review findings and next steps →</a>
   </aside>
   <div class="result-actions">
     <a class="button button--secondary" href="/analysis/{{ analysis.analysis_id }}/json">Download JSON</a>
-    <button class="button button--ghost" type="button" onclick="window.print()">Print report</button>
+    {% if user.role in ['admin', 'underwriter'] %}<a class="button button--primary" href="/analysis/{{ analysis.analysis_id }}/briefing">Broker briefing / print</a>{% endif %}
   </div>
 </section>
 
@@ -114,6 +110,16 @@
   <a href="/analysis?analysisId={{ analysis.analysis_id }}" aria-current="page">Exposure</a>
   <a href="/crew/{{ analysis.analysis_id }}">Crew</a>
 </nav>
+
+{% include 'assessment_summary.html' %}
+
+{% if autoDemoCrew and analysis.underwriting %}
+<section class="panel crew-section" aria-label="Crew for this assessment">
+  <h2>Crew for this assessment</h2>
+  <p>This roster is used in the crew evidence, combined score and broker briefing.</p>
+  <div class="crew-candidates">{% for member in analysis.underwriting.crew.members %}<div class="crew-candidate"><h3><a href="/crew/{{ analysis.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a></h3><p>{{ member.role }}</p><p>Evidence gap: {{ member.score }}/100</p></div>{% endfor %}</div>
+</section>
+{% endif %}
 
 <details class="risk-details" id="risk-details"><summary>Crew evidence and scoring details</summary>
 {% include 'crew_risk_summary.html' %}
@@ -125,10 +131,10 @@
   </div>
   <div class="risk-hero__summary">
     <span class="eyebrow eyebrow--light">Weather risk score</span>
-    <h2>{{ analysis.risk.band | title }} weather risk</h2>
+    <h2>{% if not encounters %}No exposure detected in available tracks{% else %}{{ analysis.risk.band | title }} observed exposure{% endif %}</h2>
     <p>
       {% if analysis.risk.underwriter_referral %}
-      The weather component meets the current threshold for underwriter referral.
+      Review required because of the exposure score or limited tracking confidence.
       {% else %}
       The weather component does not meet its automatic referral threshold. See the combined assessment for crew findings.
       {% endif %}
@@ -211,7 +217,7 @@
       <div><span>Top-three average</span><div class="bar-track"><span class="bar-fill" style="width: {{ analysis.risk.components.top_three_average }}%"></span></div><strong>{{ analysis.risk.components.top_three_average }}</strong></div>
       <div><span>Recurrence</span><div class="bar-track"><span class="bar-fill" style="width: {{ analysis.risk.components.recurrence }}%"></span></div><strong>{{ analysis.risk.components.recurrence }}</strong></div>
     </div>
-    <div class="formula-card"><code>50% worst + 30% top-three + 20% recurrence</code><p>Each encounter considers proximity, storm intensity, reported wind field, exposure duration and supported movement patterns.</p></div>
+    <div class="formula-card"><code>{% if analysis.risk.model_version == 'TC-EXPOSURE-v0.5' %}max(worst, 50% worst + 30% top-three + 20% recurrence){% else %}50% worst + 30% top-three + 20% recurrence{% endif %}</code><p>Each encounter considers proximity, storm intensity, reported wind field, exposure duration and supported movement patterns.{% if analysis.risk.model_version == 'TC-EXPOSURE-v0.5' %} The worst encounter sets a minimum: adding mild events cannot dilute it.{% endif %}</p><p>Top-three averages up to three available encounters. Recurrence is 25% of the sum of event scores, rounded and capped at 100. Bands: Low 0–19; Moderate 20–39; Elevated 40–59; High 60–79; Severe 80–100.</p></div>
   </article>
 </section>
 
@@ -231,10 +237,10 @@
           <td>{% if event.storm.category %}Category {{ event.storm.category }}{% else %}{% set storm_labels = {'TD': 'Tropical depression', 'TS': 'Tropical storm', 'SS': 'Subtropical storm', 'SD': 'Subtropical depression', 'EX': 'Extratropical', 'LO': 'Low', 'DB': 'Disturbance', 'WV': 'Tropical wave'} %}{{ storm_labels.get(event.storm.classification, event.storm.classification) }}{% endif %}<small>{{ event.exposure.maximum_storm_wind_kt }} kt</small></td>
           <td>{{ event.exposure.strongest_wind_field }}</td>
           <td>{{ '%.1f' | format(event.exposure.duration_within_200_nm_hours) }} h</td>
-          <td><details><summary>{{ event.risk.behaviour.status | title }} ? {{ '%+d' | format(event.risk.behaviour.adjustment) }} points</summary>
+          <td><details><summary>{{ 'Partial evidence' if event.risk.behaviour.status == 'ASSESSED_PARTIAL' else 'Unknown' if event.risk.behaviour.status == 'INSUFFICIENT' else event.risk.behaviour.status | title }} · {{ '%+d' | format(event.risk.behaviour.adjustment) }} points</summary>
             {% for finding in event.risk.behaviour.findings %}<p>{{ finding }}</p>{% else %}<p>Movement evidence was not assessed. Run a real-data analysis to evaluate supported tracks.</p>{% endfor %}
             </details></td>
-          <td><span class="event-score">{{ event.risk.event_score }}</span></td>
+          <td><details><summary><span class="event-score">{{ event.risk.event_score }}</span> /100</summary><p>Proximity {{ event.risk.proximity_points }} + intensity {{ event.risk.intensity_points }} + wind field {{ event.risk.wind_field_points }} + duration {{ event.risk.duration_points }} + movement {{ '%+d' | format(event.risk.behaviour.adjustment) }}. Bounded to 0–100.</p></details></td>
         </tr>
       {% endfor %}
       </tbody>
@@ -255,7 +261,7 @@
       <div><dt>Width</dt><dd>{{ analysis.vessel.width_m or '—' }} m</dd></div>
       <div><dt>Draught</dt><dd>{{ analysis.vessel.draft_m or '—' }} m</dd></div>
       <div><dt>{% if analysis.is_synthetic %}Observed days{% else %}Days with derived positions{% endif %}</dt><dd>{{ analysis.statistics.observed_days }}</dd></div>
-      <div><dt>{% if analysis.is_synthetic %}AIS observations{% else %}Derived track positions{% endif %}</dt><dd>{{ '{:,}'.format(analysis.statistics.ais_observation_count) }}</dd></div>
+      <div><dt>{% if analysis.is_synthetic %}AIS observations{% else %}Tracking positions analysed{% endif %}</dt><dd>{{ '{:,}'.format(analysis.statistics.ais_observation_count) }}</dd></div>
       <div><dt>Track distance</dt><dd>{{ '{:,.0f}'.format(analysis.statistics.distance_travelled_nm) }} nm</dd></div>
       <div><dt>Average speed</dt><dd>{{ analysis.statistics.average_speed_kt }} kt</dd></div>
       <div><dt>{% if analysis.is_synthetic %}Maximum speed{% else %}Maximum estimated track speed{% endif %}</dt><dd>{{ analysis.statistics.maximum_speed_kt }} kt</dd></div>

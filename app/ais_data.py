@@ -153,10 +153,12 @@ class MarineCadastreTrackStore:
         indexed = {record.mmsi: record for record in records}
         for item in demo_yachts() + storm_demo_vessels():
             existing = indexed.get(item["mmsi"])
+            source = item.get('identitySource', 'user-supplied')
             if existing:
-                indexed[item["mmsi"]] = replace(existing, name=item["name"], imo=item["imo"], identity_source="user-supplied")
+                indexed[item["mmsi"]] = replace(existing, name=item["name"], imo=item["imo"], identity_source=source)
             else:
-                indexed[item["mmsi"]] = VesselRecord(item["mmsi"], item["name"], item["imo"], None, None, None, None, "user-supplied")
+                indexed[item["mmsi"]] = VesselRecord(item["mmsi"], item["name"], item["imo"], None,
+                    item.get('lengthM'), item.get('widthM'), item.get('draftM'), source)
         return list(indexed.values())
 
 

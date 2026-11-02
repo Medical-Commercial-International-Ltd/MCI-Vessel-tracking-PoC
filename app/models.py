@@ -97,6 +97,8 @@ class SourceReference(DocumentModel):
     provider: str
     dataset: str
     retrieved_at: datetime
+    url: str | None = None
+    sha256: str | None = None
 
 
 class ArtifactReference(DocumentModel):
@@ -181,6 +183,7 @@ class ResponseWindow(DocumentModel):
     start_position: tuple[float, float]
     end_position: tuple[float, float]
     field: str = "UNKNOWN"
+    score_adjustment: int = 0
 
 
 class StormResponseAssessment(DocumentModel):
@@ -190,6 +193,16 @@ class StormResponseAssessment(DocumentModel):
     source_dates: list[date] = Field(default_factory=list)
     windows: list[ResponseWindow] = Field(default_factory=list)
     findings: list[str] = Field(default_factory=list)
+    assessed_storm_ids: list[str] = Field(default_factory=list)
+
+
+class HistoricalCaseEvidence(DocumentModel):
+    title: str
+    event_date: date
+    source_url: str
+    finding: str
+    tracking_note: str
+    retrospective: bool = True
 
 
 class AnalysisDocument(DocumentModel):
@@ -207,6 +220,7 @@ class AnalysisDocument(DocumentModel):
     vessel: VesselIdentity
     risk: RiskAssessment
     underwriting: UnderwritingAssessment | None = None
+    historical_case: HistoricalCaseEvidence | None = None
     storm_response: StormResponseAssessment = Field(default_factory=StormResponseAssessment)
     statistics: AnalysisStatistics
     encounter_ids: list[str] = Field(default_factory=list)

@@ -34,7 +34,7 @@ def lookup(client, analysis, email="maya.patel@example.test", first="Maya", last
 def test_lookup_candidates_profiles_and_missing_evidence(crew_client):
     client, app, analyses = crew_client
     base = f"/crew/{analyses[0].analysis_id}"
-    assert "Crew demonstration" in client.get(base).text
+    assert 'Demo application — includes fictional data for demonstration purposes.' in client.get(base).text
     result = lookup(client, analyses[0])
     assert result.status_code == 200
     assert "1 candidate found" in result.text
@@ -73,7 +73,7 @@ def test_assignment_review_validation_upsert_history_and_remove(crew_client):
         data["role"] = role
         result = client.post(base + "/assign", data=data)
         assert result.status_code == 200
-        assert "Demonstration assignment saved" in result.text
+        assert "Assignment saved" in result.text
         assert "expires before the assignment ends" in result.text
     store = app.state.crew_repository
     with sqlite3.connect(store.path) as connection:

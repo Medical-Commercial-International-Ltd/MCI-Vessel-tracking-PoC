@@ -99,6 +99,8 @@ def risk_band(score: int) -> str:
 def aggregate_risk(
     event_scores: list[int],
     confidence: str = "HIGH",
+    *,
+    preserve_worst: bool = False,
 ) -> RiskAssessment:
     if not event_scores:
         return RiskAssessment(
@@ -118,6 +120,10 @@ def aggregate_risk(
     top_three_average = round(mean(ordered[:3]))
     recurrence = min(100, round(sum(score / 100 for score in ordered) * 25))
     total = round((0.5 * worst) + (0.3 * top_three_average) + (0.2 * recurrence))
+    # v0.5: adding a mild encounter must not dilute an established severe event.
+    # Older/demo calculations retain their explicitly versioned legacy formula.
+    if preserve_worst:
+        total = max(worst, total)
     band = risk_band(total)
     return RiskAssessment(
         score=total,

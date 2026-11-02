@@ -18,7 +18,8 @@
     <nav class="main-nav" aria-label="Main navigation">
       <a href="/dashboard" class="{% if request.url.path == '/dashboard' %}is-active{% endif %}">Dashboard</a>
       <a href="/analysis" class="{% if request.url.path == '/analysis' %}is-active{% endif %}">New analysis</a>
-      <a href="/event-lookup" class="{% if request.url.path == '/event-lookup' %}is-active{% endif %}">Event Look up</a>
+      <a href="/event-lookup" class="{% if request.url.path == '/event-lookup' %}is-active{% endif %}">Find vessels</a>
+      {% if demoAppetiteEnabled %}<a href="/demo-cases" class="{% if request.url.path == '/demo-cases' %}is-active{% endif %}">Demo cases</a>{% endif %}
     </nav>
     <div class="user-menu">
       <span>{{ user.displayName }}</span>
@@ -33,6 +34,7 @@
   </header>
 
   <main class="{% if user %}app-shell{% endif %}">
+    {% if user and showDemoNotice %}<p class="demo-notice">Demo application — includes fictional data for demonstration purposes.</p>{% endif %}
     {% block content %}{% endblock %}
   </main>
   <script src="{{ url_for('static', path='/app.js') }}" defer></script>

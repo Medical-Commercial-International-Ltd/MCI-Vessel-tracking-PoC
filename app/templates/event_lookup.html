@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Event Look up · MCI Marine Risk{% endblock %}
+{% block title %}Find vessels · MCI Marine Risk{% endblock %}
 {% block content %}
 <section class="page-heading">
   <span class="eyebrow">AIS discovery</span>
-  <h1>Event Look up</h1>
+  <h1>Find vessels</h1>
   <p>Find vessels recorded near a named storm, a U.S. principal port, or both.</p>
 </section>
 
@@ -68,16 +68,16 @@
 </section>
 
 <section class="panel lookup-results" aria-labelledby="demo-yachts-title">
-  <div class="lookup-results__heading"><div><span class="eyebrow">Selected yacht portfolio</span><h2 id="demo-yachts-title">Demo yachts</h2></div><span class="muted">{{ demoYachts | length }} yachts</span></div>
-  <p class="lookup-note">The original ten yacht identities were supplied by you. The two movement examples use names from original NOAA broadcasts. Risk, confidence, dimensions and encounters come from each vessel's latest saved NOAA analysis. Select a vessel to rerun its displayed settings and open a fresh result.</p>
+  <div class="lookup-results__heading"><div><span class="eyebrow">Selected yacht portfolio and historical references</span><h2 id="demo-yachts-title">Demo yachts</h2></div><span class="muted">{{ demoYachts | length }} vessels</span></div>
+  <p class="lookup-note">Includes yacht examples and El Faro, a commercial cargo loss reference. Weather uses NOAA storm data and the tracking sources identified in each assessment; El Faro also uses NTSB recorded offshore positions. Select a vessel to rerun its displayed settings and open a fresh result.</p>
   <div class="table-wrap"><table>
-    <thead><tr><th>Yacht</th><th>IMO</th><th>MMSI</th><th>Fictional crew</th><th>AIS years</th><th>Length / beam / draft</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Proximity</th></tr></thead>
+    <thead><tr><th>Yacht</th><th>IMO</th><th>MMSI</th><th>Crew</th><th>AIS years</th><th>Length / beam / draft</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Proximity</th></tr></thead>
     <tbody>{% for yacht in demoYachts %}{% set item = yacht.analysis %}
       <tr><td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ yacht.mmsi }}{% endif %}" data-vessel-rerun>
         <input type="hidden" name="csrf" value="{{ csrfToken }}"><button type="submit" class="vessel-rerun-link">{{ yacht.name }}</button>
       </form>{% if yacht.label %}<small><strong>{{ yacht.label }}</strong><br>{{ yacht.note }}</small>{% endif %}</td><td>{{ yacht.imo or 'Not reported' }}</td><td>{{ yacht.mmsi }}</td>
       <td>{% if user.role in ['admin', 'underwriter'] %}
-        {% for member in yacht.crew %}<div>{% if item %}<a href="/crew/{{ item.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a>{% else %}{{ member.name }}{% endif %}<small>{{ member.role }} · Test assignment</small></div>{% else %}Not assigned{% endfor %}
+        {% for member in yacht.crew %}<div>{% if item %}<a href="/crew/{{ item.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a>{% else %}{{ member.name }}{% endif %}<small>{{ member.role }}</small></div>{% else %}Not assigned{% endfor %}
       {% else %}Underwriting access required{% endif %}</td>
       <td>{{ yacht.years | join(', ') or 'No cached records' }}</td>
       {% if item %}
@@ -107,17 +107,18 @@
   {% if lookupResponse.truncated %}<div class="alert alert--error" role="alert">Search stopped after 100,000 candidate segments. Results are incomplete; narrow the date, distance or vessel type.</div>{% endif %}
   {% if lookupResponse.results %}
   <div class="table-wrap"><table>
-    <thead><tr><th>Vessel / MMSI</th><th>AIS type</th><th>Length</th><th>Closest recorded time</th><th>Storm distance</th><th>Port distance</th><th>Movement response</th><th></th></tr></thead>
-    <tbody>{% for item in lookupResponse.results %}
+    <thead><tr><th>Vessel / MMSI</th>{% if autoDemoCrew %}<th>Crew</th>{% endif %}<th>AIS type</th><th>Length</th><th>Closest recorded time</th><th>Storm distance</th><th>Port distance</th><th>Movement response</th><th></th></tr></thead>
+    <tbody>{% for item in lookupResponse.results %}{% set demoRoster = lookupCrew.get(item.mmsi) %}{% set crewQuery = '&crewScenario=' ~ demoRoster.reference if demoRoster else '' %}
       <tr>
-        <td><a class="table-link" href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}">{{ item.name }}</a><br><span class="muted">MMSI {{ item.mmsi }}</span></td>
+        <td><a class="table-link" href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}{{ crewQuery }}">{{ item.name }}</a><br><span class="muted">MMSI {{ item.mmsi }}</span></td>
+        {% if autoDemoCrew %}<td>{% if demoRoster %}{% for member in demoRoster.assignments %}<strong>{{ member.name }}</strong><small>{{ member.role }}</small>{% endfor %}{% endif %}</td>{% endif %}
         <td>{{ item.vessel_group }}{% if item.vessel_type_code is not none %} · {{ item.vessel_type_code }}{% endif %}</td>
         <td>{% if item.length_m is not none %}{{ '%.1f' | format(item.length_m) }} m{% else %}Unknown{% endif %}</td>
         <td>{{ item.timestamp.strftime('%d %b %Y %H:%M') }} UTC</td>
         <td>{% if item.storm_distance_nm is not none %}{{ '%.1f' | format(item.storm_distance_nm) }} nm{% else %}—{% endif %}</td>
         <td>{% if item.port_distance_nm is not none %}{{ '%.1f' | format(item.port_distance_nm) }} nm{% else %}—{% endif %}</td>
-        <td>{% set movement = lookupMovement.get(item.mmsi) %}{% if movement and movement.windows %}{% for w in movement.windows %}<small>{{ {'MOVED_AWAY':'Moved away from the storm','STATIONARY_APPROACH':'Stationary as storm approached','CONTINUED_APPROACH':'Underway as storm approached'}.get(w.kind,w.kind) }} · {{ w.start_distance_nm }} → {{ w.end_distance_nm }} nm</small>{% endfor %}{% else %}{{ 'No qualifying pattern in cached broadcasts' if movement and movement.observation_count else 'Unknown — original broadcasts unavailable' }}{% endif %}</td>
-        <td><a href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}">Analyse →</a></td>
+        <td>{% set movement = lookupMovement.get(item.mmsi) %}{% if movement and movement.windows %}{% for w in movement.windows %}<small>{{ responseLabels.get(w.kind,w.kind) }} · {{ w.start_distance_nm }} → {{ w.end_distance_nm }} nm</small>{% endfor %}{% else %}{{ 'No qualifying pattern in cached broadcasts' if movement and movement.observation_count else 'Unknown — original broadcasts unavailable' }}{% endif %}</td>
+        <td><a href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ item.timestamp.date().isoformat() }}&amp;toDate={{ item.timestamp.date().isoformat() }}{{ crewQuery }}">Analyse →</a></td>
       </tr>
     {% endfor %}</tbody>
   </table></div>

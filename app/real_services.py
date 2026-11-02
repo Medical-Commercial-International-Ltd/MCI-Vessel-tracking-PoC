@@ -35,9 +35,10 @@ from app.models import (
 from app.repositories import AnalysisRepository
 from app.scoring import EncounterInputs, aggregate_risk, score_encounter
 from app.exposure import movement_statistics, sampled_intervals, track_intervals, union_hours
-from app.storm_behaviour import assess_behaviour
-from app.storm_response import BroadcastStore, assess_response, overlay_segments
+from app.storm_response import BroadcastStore, assess_response, overlay_segments, RESPONSE_LABELS
 from app.models import StormBehaviour
+from app.models import HistoricalCaseEvidence
+from app.vessel_identity import storm_demo_case
 
 
 class RealAnalysisService:
@@ -72,13 +73,17 @@ class RealAnalysisService:
             analysis_input.period.to_date,
         )
         metadata_segment = max(segments, key=lambda s:(s.end-s.start).total_seconds()) if segments else None
-        rows, source_dates = BroadcastStore(self.repository.root.parent / 'broadcasts').load(vessel_record.mmsi, analysis_input.period) if hasattr(self.repository, 'root') else ([], [])
+        observation_store = BroadcastStore(self.repository.root.parent / 'broadcasts') if hasattr(self.repository, 'root') else None
+        rows, source_dates = observation_store.load(vessel_record.mmsi, analysis_input.period) if observation_store else ([], [])
+        observation_metadata = observation_store.metadata(vessel_record.mmsi) if observation_store else {}
+        case = storm_demo_case('MMSI', vessel_record.mmsi)
         segments = overlay_segments(segments, rows, source_dates)
         if not segments:
             years = ", ".join(str(year) for year in self.tracks.available_years) or "none"
+            case_hint = f" The cached case for {case['name']} covers {case['from']} to {case['to']}." if case else ''
             raise ValueError(
                 f"No MarineCadastre AIS tracks were found for MMSI {vessel_record.mmsi} "
-                f"in the selected period. Cached track years: {years}."
+                f"in the selected period. Cached track years: {years}." + case_hint
             )
 
         positions = _unique_positions(
@@ -112,15 +117,16 @@ class RealAnalysisService:
         response = assess_response(rows, storms, source_dates, analysis_input.storm_proximity_nm)
         for event in encounters:
             windows = [w for w in response.windows if w.storm_id == event.storm.id]
-            still = [w for w in windows if w.kind == 'STATIONARY_APPROACH']
-            away = [w for w in windows if w.kind == 'MOVED_AWAY']
+            still = [w for w in windows if w.score_adjustment > 0]
+            away = [w for w in windows if w.score_adjustment < 0]
             hours = max(((w.end-w.start).total_seconds()/3600 for w in still), default=0)
-            adjustment = min(20, round(hours*5)) - (5 if away else 0)
+            adjustment = sum(w.score_adjustment for w in windows)
             event.risk.behaviour = StormBehaviour(model_version=response.model_version,
-                status=response.status, proximity_nm=analysis_input.storm_proximity_nm,
+                status='ASSESSED_PARTIAL' if event.storm.id in response.assessed_storm_ids else 'INSUFFICIENT',
+                proximity_nm=analysis_input.storm_proximity_nm,
                 stationary_hours=hours, stationary_worsening_hours=hours,
                 avoidance_manoeuvres=len(away), adjustment=adjustment,
-                findings=[f'{w.kind.replace("_", " ").title()}: {w.start_distance_nm:g} to {w.end_distance_nm:g} nm; staying put would give {w.fixed_distance_nm:g} nm.' for w in windows] + response.findings)
+                findings=[f'{RESPONSE_LABELS[w.kind]}: {w.start_distance_nm:g} to {w.end_distance_nm:g} nm; staying put would give {w.fixed_distance_nm:g} nm.' for w in windows] + response.findings)
             base = event.risk.proximity_points + event.risk.intensity_points + event.risk.wind_field_points + event.risk.duration_points
             event.risk.event_score = max(0, min(100, base+adjustment))
         event_scores = [encounter.risk.event_score for encounter in encounters]
@@ -128,7 +134,7 @@ class RealAnalysisService:
         requested_years = set(
             range(analysis_input.period.from_date.year, analysis_input.period.to_date.year + 1)
         )
-        available_years = set(self.tracks.available_years)
+        available_years = set(self.tracks.available_years) | {d.year for d in source_dates}
         unavailable_years = sorted(requested_years - available_years)
         unobserved_years = sorted((requested_years & available_years) - set(coverage_years))
         observed_days = len({position.timestamp.date() for position in positions})
@@ -147,6 +153,8 @@ class RealAnalysisService:
             "The coastal-limit parameter is not applied: this cache has no coastline-distance filter. Results use all available vessel tracks in the selected dates.",
             "Wind-field results use reported radii and are not measured wind at the vessel. Missing radii cannot establish an absence of wind exposure.",
         ]
+        if metadata_segment is None:
+            warnings[0] = 'This assessment uses original timestamped tracking observations; it does not require an annual AIS track file. Source coverage is limited to the imported observations.'
         if unavailable_years:
             warnings.insert(
                 0,
@@ -176,17 +184,18 @@ class RealAnalysisService:
             "input": analysis_input.model_dump(mode="json", by_alias=True),
             "mmsi": vessel_record.mmsi,
             "encounters": [encounter.model_dump(mode="json", by_alias=True) for encounter in encounters],
-            "model": "TC-EXPOSURE-v0.4-real",
+            "model": "TC-EXPOSURE-v0.5-real",
             "stormResponse": response.model_dump(mode='json'),
             "broadcastEvidence": rows,
+            "observationSources": observation_metadata.get('sourceReferences', []),
             "confidence": quality,
             "statistics": [len(positions), observed_days, distance_nm, average_speed, maximum_speed, hours_total, hours_wind],
         }
         calculation_hash = hashlib.sha256(
             json.dumps(calculation_payload, sort_keys=True, default=str).encode()
         ).hexdigest()
-        risk = aggregate_risk(event_scores, confidence)
-        risk.model_version = "TC-EXPOSURE-v0.4"
+        risk = aggregate_risk(event_scores, confidence, preserve_worst=True)
+        risk.model_version = "TC-EXPOSURE-v0.5"
         analysis = AnalysisDocument(
             id=analysis_id,
             analysis_id=analysis_id,
@@ -200,7 +209,7 @@ class RealAnalysisService:
                 name=vessel_record.name,
                 imo=vessel_record.imo,
                 mmsi=[vessel_record.mmsi],
-                vessel_type=_friendly_vessel_type(primary_segment.vessel_group),
+                vessel_type=case.get('vesselType') if case and case.get('vesselType') else _friendly_vessel_type(primary_segment.vessel_group),
                 flag=None,
                 length_m=vessel_record.length_m or primary_segment.length_m,
                 width_m=vessel_record.width_m or primary_segment.width_m,
@@ -230,12 +239,12 @@ class RealAnalysisService:
                 warnings=warnings,
             ),
             sources=[
-                SourceReference(
+                *([SourceReference(
                     provider="NOAA / BOEM / U.S. Coast Guard",
                     dataset="MarineCadastre AIS Vessel Tracks",
                     retrieved_at=max(datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
                                      for path in self.tracks.track_dir.glob("AISVesselTracks*.gpkg")),
-                ),
+                )] if metadata_segment is not None else []),
                 SourceReference(
                     provider="NOAA National Hurricane Center",
                     dataset="HURDAT2 Atlantic and NE/NC Pacific best tracks",
@@ -251,9 +260,16 @@ class RealAnalysisService:
             ),
         )
         if source_dates:
-            analysis.sources.append(SourceReference(provider='NOAA MarineCadastre',
-                dataset='Original daily AIS broadcasts: ' + ', '.join(str(d) for d in source_dates), retrieved_at=completed))
-            analysis.data_quality.warnings.append('On cached original-broadcast dates, actual observations replace derived track timing. Movement checks use only original broadcasts and reject gaps over 30 minutes. Other dates remain unassessed for behaviour.')
+            references = observation_metadata.get('sourceReferences', [])
+            if references:
+                analysis.sources.extend(SourceReference.model_validate(reference) for reference in references)
+            else:
+                analysis.sources.append(SourceReference(provider='NOAA MarineCadastre',
+                    dataset='Original daily AIS broadcasts: ' + ', '.join(str(d) for d in source_dates), retrieved_at=completed))
+            analysis.data_quality.warnings.append('On cached observation dates, original tracking observations replace derived track timing. Movement checks reject gaps over 30 minutes. Other dates remain unassessed for behaviour.')
+        if case and case.get('historicalCase') and analysis_input.period.from_date.isoformat() <= case['to'] <= analysis_input.period.to_date.isoformat():
+            analysis.historical_case = HistoricalCaseEvidence.model_validate(case['historicalCase'])
+            analysis.data_quality.warnings.append(analysis.historical_case.tracking_note)
         self.repository.save_analysis(analysis)
         for encounter in encounters:
             self.repository.save_encounter(encounter)
@@ -343,8 +359,8 @@ class RealAnalysisService:
                     duration_hours=raw_duration,
                 )
             )
-            event_risk.behaviour = assess_behaviour(intervals, storm, proximity_nm)
-            event_risk.event_score = max(0, min(100, event_risk.event_score + event_risk.behaviour.adjustment))
+            # Derived vertex timing supports exposure estimates only. Behaviour
+            # adjustments are applied by analyse() from original broadcasts.
             matches.append(
                 (storm, closest, maximum_wind, strongest_field, duration, wind_duration, event_risk,
                  max((hit[1] for hit in hits), key=lambda point: point.wind_kt).status)

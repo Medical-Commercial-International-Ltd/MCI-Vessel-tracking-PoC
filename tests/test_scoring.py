@@ -37,3 +37,18 @@ def test_risk_band_boundaries():
     assert risk_band(60) == "HIGH"
     assert risk_band(80) == "SEVERE"
 
+
+def test_current_aggregation_cannot_dilute_an_event_or_remove_its_referral():
+    for events in ([70], [70, 1], [70, 1, 1], [70, 40, 20, 1]):
+        result = aggregate_risk(events, 'HIGH', preserve_worst=True)
+        assert result.score >= 70
+        assert result.underwriter_referral
+
+
+def test_current_aggregation_is_monotonic_when_adding_any_event():
+    for events in ([], [30], [100], [40, 20], [70, 10, 5], [20] * 15):
+        previous = aggregate_risk(events, preserve_worst=True).score
+        for extra in range(101):
+            result = aggregate_risk([*events, extra], preserve_worst=True)
+            assert max(previous, extra) <= result.score <= 100
+

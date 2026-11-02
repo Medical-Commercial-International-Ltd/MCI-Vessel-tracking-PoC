@@ -126,7 +126,7 @@
       const playback = playbackVessel(Date.parse(frame.timestamp));
       if (playback) frame = { ...frame, ...playback };
       if (valid(frame.vessel)) mark(frame.vessel, frame.vesselGapInterpolated ? 'Estimated vessel position (data gap)' : 'Vessel position',
-        'vessel', utc(frame.timestamp) + (frame.vesselGapInterpolated ? ' · Gap interpolation for playback only' : ' · Estimated AIS track position'));
+        'vessel', utc(frame.timestamp) + (frame.vesselGapInterpolated ? ' · Gap interpolation for playback only' : ' · Position from available tracking evidence'));
       else if (markerCache.vessel) markerCache.vessel.remove();
       if (valid(frame.storm)) mark(frame.storm, selected.name, 'storm', utc(frame.timestamp) + (Number.isFinite(frame.windKt) ? ` · ${frame.status} · ${frame.windKt} kt` : ''));
       else if (markerCache.storm) markerCache.storm.remove();
@@ -268,6 +268,24 @@
       samples.forEach((point) => visible('samples') ? point.addTo(map) : point.remove());
       drawFrame(frame);
     }));
+    document.querySelectorAll('[data-response-map]').forEach((button) => {
+      const index = events.findIndex((event) => event.stormId === button.dataset.stormId);
+      const target = Date.parse(button.dataset.time);
+      const frames = index >= 0 ? events[index].frames : [];
+      if (!frames.length || !Number.isFinite(target) || target < Date.parse(frames[0].timestamp)
+          || target > Date.parse(frames[frames.length - 1].timestamp)) {
+        button.disabled = true;
+        button.title = 'This response time is outside the available encounter map window.';
+        return;
+      }
+      button.disabled = false;
+      button.addEventListener('click', () => {
+        selector.value = String(index); choose();
+        drawFrame(frameAt(target)); fit();
+        container.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        playButton.focus({ preventScroll: true });
+      });
+    });
     document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
     window.addEventListener('pagehide', pause);
     window.addEventListener('pagehide', () => { if (satellitePlayer) satellitePlayer.destroy(); });

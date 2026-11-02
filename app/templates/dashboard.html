@@ -1,31 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · MCI Marine Risk{% endblock %}
 {% block content %}
-{% if provider == 'real' %}
-<div class="demo-banner"><strong>Real-data mode</strong><span>MarineCadastre AIS vessel tracks and NOAA NHC HURDAT2 best tracks</span></div>
-{% else %}
-<div class="demo-banner"><strong>Demonstration data</strong><span>Synthetic portfolio — not for underwriting use</span></div>
-{% endif %}
-
 <section class="page-heading page-heading--action">
   <div>
     <span class="eyebrow">Portfolio overview</span>
     <h1>Marine exposure dashboard</h1>
-    <p>{% if provider == 'real' %}Historical tropical cyclone exposure; 2021–2025 AIS source data is available for new assessments.{% else %}Tropical cyclone exposure across the assessed portfolio.{% endif %}</p>
+    <p>{% if provider == 'real' %}Historical tropical cyclone exposure. Cached AIS years: {{ cachedYears | join(', ') or 'none available' }}. Coverage varies by vessel.{% else %}Tropical cyclone exposure across the assessed portfolio.{% endif %}</p>
   </div>
   <a class="button button--primary" href="/analysis">Run vessel analysis <span aria-hidden="true">→</span></a>
 </section>
 
 <section class="metric-grid" aria-label="Portfolio metrics">
   <article class="metric-card">
-    <span class="metric-card__label">Vessels assessed</span>
+    <span class="metric-card__label">Assessments saved</span>
     <strong>{{ summary.total }}</strong>
     <span class="metric-card__context">{{ 'Real-data assessments' if provider == 'real' else 'Synthetic portfolio' }}</span>
   </article>
   <article class="metric-card">
     <span class="metric-card__label">Average exposure</span>
     <strong>{{ summary.averageScore }}<small>/100</small></strong>
-    <span class="metric-card__context">Across all assessments</span>
+    <span class="metric-card__context">Assessment average · repeat vessels included</span>
   </article>
   <article class="metric-card metric-card--attention">
     <span class="metric-card__label">High or severe</span>
@@ -40,7 +34,7 @@
   <article class="metric-card">
     <span class="metric-card__label">High confidence</span>
     <strong>{{ headlineMetrics.highConfidencePercent }}<small>%</small></strong>
-    <span class="metric-card__context">{% if headlineMetrics.isIllustrative %}Illustrative sample · {% endif %}Identity and AIS quality</span>
+    <span class="metric-card__context">Historical tracking evidence quality</span>
   </article>
 </section>
 
@@ -110,7 +104,7 @@
           <td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td>
           <td>{{ item.vessel.vessel_type }}</td>
           <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }} · {{ item.risk.band | title }}</span></td>
-          <td>{% if item.underwriting %}{% if item.underwriting.score is not none %}<span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }} ? {{ item.underwriting.band | title }}</span>{% else %}Incomplete{% endif %}<small>{{ 'Test scenario · ' if item.underwriting.is_test_data else '' }}{{ 'Review required' if item.underwriting.underwriter_referral else 'No automatic referral' }}</small>{% else %}—{% endif %}</td>
+          <td>{% if item.underwriting %}{% if item.underwriting.score is not none %}<span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }} · {{ item.underwriting.band | title }}</span>{% else %}Incomplete{% endif %}<small>{{ 'Review required' if item.underwriting.underwriter_referral else 'No automatic referral' }}</small>{% else %}—{% endif %}</td>
           <td><span class="confidence">{{ item.risk.confidence | title }}</span></td>
           <td>{{ item.created_at.strftime('%d %b %Y') }}<small>{{ item.created_at.strftime('%H:%M UTC') }}</small></td>
           <td><a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">View</a></td>

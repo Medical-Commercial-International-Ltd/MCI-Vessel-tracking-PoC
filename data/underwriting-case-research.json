@@ -1,0 +1,700 @@
+[
+  {
+    "name": "AZULITA",
+    "mmsi": "368001090",
+    "date": "2023-10-03",
+    "analysis_id": "analysis_f56134a017524f7eb7db7817f172eac1",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 29,
+      "band": "MODERATE",
+      "confidence": "INSUFFICIENT",
+      "components": {
+        "worst_encounter": 29,
+        "top_three_average": 29,
+        "recurrence": 7
+      },
+      "underwriter_referral": true,
+      "actuarially_calibrated": false
+    },
+    "windows": [
+      {
+        "kind": "MOVED_AWAY",
+        "storm_id": "AL172023",
+        "storm_name": "Philippe",
+        "start": "2023-10-03T13:20:53Z",
+        "end": "2023-10-03T19:21:53Z",
+        "start_distance_nm": 65.01,
+        "end_distance_nm": 77.62,
+        "fixed_distance_nm": 54.17,
+        "improvement_nm": 23.45,
+        "start_position": [
+          -64.86213,
+          18.30942
+        ],
+        "end_position": [
+          -65.63381,
+          18.28563
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": -5
+      }
+    ],
+    "encounters": [
+      {
+        "id": "encounter_001",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_f56134a017524f7eb7db7817f172eac1",
+        "storm": {
+          "id": "AL172023",
+          "name": "Philippe",
+          "classification": "TS",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-10-03T13:22:23Z",
+          "distance_nm": 64.8,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -64.85914,
+              18.30731
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -63.805958333333336,
+              18.714421296296297
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 2.2,
+          "duration_within_34_kt_wind_field_hours": 0.0,
+          "strongest_wind_field": "OUTSIDE 34KT",
+          "maximum_storm_wind_kt": 40
+        },
+        "risk": {
+          "event_score": 29,
+          "proximity_points": 15,
+          "intensity_points": 7,
+          "wind_field_points": 5,
+          "duration_points": 7,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "ASSESSED_PARTIAL",
+            "proximity_nm": 70.0,
+            "stationary_hours": 0.0,
+            "stationary_worsening_hours": 0.0,
+            "avoidance_manoeuvres": 1,
+            "adjustment": -5,
+            "findings": [
+              "Vessel movement increased separation: 65.01 to 77.62 nm; staying put would give 54.17 nm.",
+              "Checks run against cached original broadcasts only. Unobserved dates and gaps remain unknown.",
+              "Stationary proximity does not establish failure to act: harbour protection, anchorage, navigation restrictions and intent require review.",
+              "Direction describes net movement relative to the storm end position, not continuous heading, intent or forecast awareness. Only qualifying 50\u201370 nm starts affect the provisional score; other patterns are descriptive."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "A1A",
+    "mmsi": "368281860",
+    "date": "2023-10-03",
+    "analysis_id": "analysis_4f0951e8614c4b89a3e731636a7b4830",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 54,
+      "band": "ELEVATED",
+      "confidence": "INSUFFICIENT",
+      "components": {
+        "worst_encounter": 54,
+        "top_three_average": 54,
+        "recurrence": 14
+      },
+      "underwriter_referral": true,
+      "actuarially_calibrated": false
+    },
+    "windows": [
+      {
+        "kind": "MOVED_AWAY",
+        "storm_id": "AL172023",
+        "storm_name": "Philippe",
+        "start": "2023-10-03T11:15:50Z",
+        "end": "2023-10-03T12:15:50Z",
+        "start_distance_nm": 61.18,
+        "end_distance_nm": 65.37,
+        "fixed_distance_nm": 52.82,
+        "improvement_nm": 12.55,
+        "start_position": [
+          -64.56437,
+          18.54636
+        ],
+        "end_position": [
+          -64.77835,
+          18.7704
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": -5
+      },
+      {
+        "kind": "MOVED_AWAY_CLOSING",
+        "storm_id": "AL172023",
+        "storm_name": "Philippe",
+        "start": "2023-10-03T11:15:50Z",
+        "end": "2023-10-03T13:13:20Z",
+        "start_distance_nm": 61.18,
+        "end_distance_nm": 54.1,
+        "fixed_distance_nm": 45.41,
+        "improvement_nm": 8.69,
+        "start_position": [
+          -64.56437,
+          18.54636
+        ],
+        "end_position": [
+          -64.72447,
+          18.83498
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": 0
+      },
+      {
+        "kind": "MOVED_TOWARDS",
+        "storm_id": "AL172023",
+        "storm_name": "Philippe",
+        "start": "2023-10-03T11:15:50Z",
+        "end": "2023-10-03T17:14:50Z",
+        "start_distance_nm": 61.18,
+        "end_distance_nm": 21.07,
+        "fixed_distance_nm": 31.15,
+        "improvement_nm": -10.08,
+        "start_position": [
+          -64.56437,
+          18.54636
+        ],
+        "end_position": [
+          -64.71461,
+          18.8725
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": 0
+      },
+      {
+        "kind": "UNDERWAY_CLOSING",
+        "storm_id": "AL172023",
+        "storm_name": "Philippe",
+        "start": "2023-10-03T12:06:25Z",
+        "end": "2023-10-03T15:09:23Z",
+        "start_distance_nm": 66.67,
+        "end_distance_nm": 35.16,
+        "fixed_distance_nm": 40.15,
+        "improvement_nm": -4.99,
+        "start_position": [
+          -64.77442,
+          18.77976
+        ],
+        "end_position": [
+          -64.69228,
+          18.86964
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": 0
+      }
+    ],
+    "encounters": [
+      {
+        "id": "encounter_001",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_4f0951e8614c4b89a3e731636a7b4830",
+        "storm": {
+          "id": "AL172023",
+          "name": "Philippe",
+          "classification": "TS",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-10-03T18:27:51Z",
+          "distance_nm": 17.5,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -64.68771,
+              18.86735
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -64.55415277777777,
+              19.130944444444445
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 10.4,
+          "duration_within_34_kt_wind_field_hours": 1.7,
+          "strongest_wind_field": "34KT",
+          "maximum_storm_wind_kt": 41
+        },
+        "risk": {
+          "event_score": 54,
+          "proximity_points": 25,
+          "intensity_points": 7,
+          "wind_field_points": 15,
+          "duration_points": 12,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "ASSESSED_PARTIAL",
+            "proximity_nm": 70.0,
+            "stationary_hours": 0.0,
+            "stationary_worsening_hours": 0.0,
+            "avoidance_manoeuvres": 1,
+            "adjustment": -5,
+            "findings": [
+              "Vessel movement increased separation: 61.18 to 65.37 nm; staying put would give 52.82 nm.",
+              "Vessel moved away; storm still closed in: 61.18 to 54.1 nm; staying put would give 45.41 nm.",
+              "Vessel movement reduced separation: 61.18 to 21.07 nm; staying put would give 31.15 nm.",
+              "Separation fell; vessel contribution below threshold: 66.67 to 35.16 nm; staying put would give 40.15 nm.",
+              "Checks run against cached original broadcasts only. Unobserved dates and gaps remain unknown.",
+              "Stationary proximity does not establish failure to act: harbour protection, anchorage, navigation restrictions and intent require review.",
+              "Direction describes net movement relative to the storm end position, not continuous heading, intent or forecast awareness. Only qualifying 50\u201370 nm starts affect the provisional score; other patterns are descriptive."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "MMSI 367733210",
+    "mmsi": "367733210",
+    "date": "2023-09-23",
+    "analysis_id": "analysis_7cdc8f3ab3b445129b3bd217c3ed6625",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 91,
+      "band": "SEVERE",
+      "confidence": "INSUFFICIENT",
+      "components": {
+        "worst_encounter": 91,
+        "top_three_average": 91,
+        "recurrence": 23
+      },
+      "underwriter_referral": true,
+      "actuarially_calibrated": false
+    },
+    "windows": [
+      {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T03:35:24Z",
+        "end": "2023-09-23T09:38:19Z",
+        "start_distance_nm": 68.02,
+        "end_distance_nm": 23.22,
+        "fixed_distance_nm": 23.22,
+        "improvement_nm": 0.0,
+        "start_position": [
+          -76.66407,
+          34.71526
+        ],
+        "end_position": [
+          -76.66402,
+          34.71524
+        ],
+        "field": "50KT",
+        "score_adjustment": 20
+      },
+      {
+        "kind": "STATIONARY_RECEDING",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T11:59:28Z",
+        "end": "2023-09-23T17:59:26Z",
+        "start_distance_nm": 31.45,
+        "end_distance_nm": 103.43,
+        "fixed_distance_nm": 103.43,
+        "improvement_nm": 0.0,
+        "start_position": [
+          -76.66403,
+          34.71526
+        ],
+        "end_position": [
+          -76.66401,
+          34.71523
+        ],
+        "field": "34KT",
+        "score_adjustment": 0
+      }
+    ],
+    "encounters": [
+      {
+        "id": "encounter_001",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_7cdc8f3ab3b445129b3bd217c3ed6625",
+        "storm": {
+          "id": "AL162023",
+          "name": "Ophelia",
+          "classification": "TS",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-09-23T10:18:55.500000Z",
+          "distance_nm": 21.5,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -76.664025,
+              34.71527
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -77.1,
+              34.71495238095238
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 12.1,
+          "duration_within_34_kt_wind_field_hours": 12.1,
+          "strongest_wind_field": "50KT",
+          "maximum_storm_wind_kt": 60
+        },
+        "risk": {
+          "event_score": 91,
+          "proximity_points": 25,
+          "intensity_points": 7,
+          "wind_field_points": 23,
+          "duration_points": 16,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "ASSESSED_PARTIAL",
+            "proximity_nm": 70.0,
+            "stationary_hours": 6.048611111111111,
+            "stationary_worsening_hours": 6.048611111111111,
+            "avoidance_manoeuvres": 0,
+            "adjustment": 20,
+            "findings": [
+              "Stationary as storm approached: 68.02 to 23.22 nm; staying put would give 23.22 nm.",
+              "Stationary as storm moved away: 31.45 to 103.43 nm; staying put would give 103.43 nm.",
+              "Checks run against cached original broadcasts only. Unobserved dates and gaps remain unknown.",
+              "Stationary proximity does not establish failure to act: harbour protection, anchorage, navigation restrictions and intent require review.",
+              "Direction describes net movement relative to the storm end position, not continuous heading, intent or forecast awareness. Only qualifying 50\u201370 nm starts affect the provisional score; other patterns are descriptive."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "MMSI 319920000",
+    "mmsi": "319920000",
+    "date": "2023-09-23",
+    "analysis_id": "analysis_0ffa48ff22204526a44e2952ffd20282",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 83,
+      "band": "SEVERE",
+      "confidence": "INSUFFICIENT",
+      "components": {
+        "worst_encounter": 83,
+        "top_three_average": 83,
+        "recurrence": 21
+      },
+      "underwriter_referral": true,
+      "actuarially_calibrated": false
+    },
+    "windows": [
+      {
+        "kind": "STATIONARY_APPROACH",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T01:50:53Z",
+        "end": "2023-09-23T07:50:58Z",
+        "start_distance_nm": 69.92,
+        "end_distance_nm": 35.47,
+        "fixed_distance_nm": 35.47,
+        "improvement_nm": -0.0,
+        "start_position": [
+          -77.8137,
+          34.21647
+        ],
+        "end_position": [
+          -77.81369,
+          34.21647
+        ],
+        "field": "50KT",
+        "score_adjustment": 20
+      },
+      {
+        "kind": "STATIONARY_RECEDING",
+        "storm_id": "AL162023",
+        "storm_name": "Ophelia",
+        "start": "2023-09-23T12:00:01Z",
+        "end": "2023-09-23T18:00:02Z",
+        "start_distance_nm": 63.69,
+        "end_distance_nm": 126.04,
+        "fixed_distance_nm": 126.04,
+        "improvement_nm": 0.0,
+        "start_position": [
+          -77.81369,
+          34.21645
+        ],
+        "end_position": [
+          -77.81373,
+          34.21645
+        ],
+        "field": "OUTSIDE 34KT",
+        "score_adjustment": 0
+      }
+    ],
+    "encounters": [
+      {
+        "id": "encounter_001",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_0ffa48ff22204526a44e2952ffd20282",
+        "storm": {
+          "id": "AL162023",
+          "name": "Ophelia",
+          "classification": "TS",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-09-23T07:58:29Z",
+          "distance_nm": 35.4,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -77.813675,
+              34.21646
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -77.1,
+              34.21817647058823
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 10.9,
+          "duration_within_34_kt_wind_field_hours": 10.9,
+          "strongest_wind_field": "50KT",
+          "maximum_storm_wind_kt": 60
+        },
+        "risk": {
+          "event_score": 83,
+          "proximity_points": 21,
+          "intensity_points": 7,
+          "wind_field_points": 23,
+          "duration_points": 12,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "ASSESSED_PARTIAL",
+            "proximity_nm": 70.0,
+            "stationary_hours": 6.001388888888889,
+            "stationary_worsening_hours": 6.001388888888889,
+            "avoidance_manoeuvres": 0,
+            "adjustment": 20,
+            "findings": [
+              "Stationary as storm approached: 69.92 to 35.47 nm; staying put would give 35.47 nm.",
+              "Stationary as storm moved away: 63.69 to 126.04 nm; staying put would give 126.04 nm.",
+              "Checks run against cached original broadcasts only. Unobserved dates and gaps remain unknown.",
+              "Stationary proximity does not establish failure to act: harbour protection, anchorage, navigation restrictions and intent require review.",
+              "Direction describes net movement relative to the storm end position, not continuous heading, intent or forecast awareness. Only qualifying 50\u201370 nm starts affect the provisional score; other patterns are descriptive."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "NEXT CHAPTER",
+    "mmsi": "319076300",
+    "date": "2023-01-01 / 2025-12-31",
+    "analysis_id": "analysis_b9afb26486484b5bb42cfa26c55de2e0",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 0,
+      "band": "LOW",
+      "confidence": "LOW",
+      "components": {
+        "worst_encounter": 0,
+        "top_three_average": 0,
+        "recurrence": 0
+      },
+      "underwriter_referral": true,
+      "actuarially_calibrated": false
+    },
+    "windows": [],
+    "encounters": []
+  },
+  {
+    "name": "JODI ANN",
+    "mmsi": "339857000",
+    "date": "2023-01-01 / 2025-12-31",
+    "analysis_id": "analysis_ed13fe1baeb240dea5e835612eb8c423",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 0,
+      "band": "LOW",
+      "confidence": "MEDIUM",
+      "components": {
+        "worst_encounter": 0,
+        "top_three_average": 0,
+        "recurrence": 0
+      },
+      "underwriter_referral": false,
+      "actuarially_calibrated": false
+    },
+    "windows": [],
+    "encounters": []
+  },
+  {
+    "name": "LADY ELANE",
+    "mmsi": "339078000",
+    "date": "2023-01-01 / 2025-12-31",
+    "analysis_id": "analysis_059b0cb30c8d4155bf0ab8329a1998b6",
+    "risk": {
+      "model_version": "TC-EXPOSURE-v0.5",
+      "score": 57,
+      "band": "ELEVATED",
+      "confidence": "MEDIUM",
+      "components": {
+        "worst_encounter": 57,
+        "top_three_average": 47,
+        "recurrence": 24
+      },
+      "underwriter_referral": false,
+      "actuarially_calibrated": false
+    },
+    "windows": [],
+    "encounters": [
+      {
+        "id": "encounter_001",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_059b0cb30c8d4155bf0ab8329a1998b6",
+        "storm": {
+          "id": "AL132023",
+          "name": "Lee",
+          "classification": "EX",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-09-16T11:55:56.283156Z",
+          "distance_nm": 194.7,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -70.63793857142778,
+              42.17519785714161
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -66.29661504383333,
+              42.679690263000005
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 5.6,
+          "duration_within_34_kt_wind_field_hours": 4.5,
+          "strongest_wind_field": "34KT",
+          "maximum_storm_wind_kt": 67
+        },
+        "risk": {
+          "event_score": 37,
+          "proximity_points": 4,
+          "intensity_points": 11,
+          "wind_field_points": 15,
+          "duration_points": 7,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "INSUFFICIENT",
+            "proximity_nm": 200.0,
+            "stationary_hours": 0.0,
+            "stationary_worsening_hours": 0.0,
+            "avoidance_manoeuvres": 0,
+            "adjustment": 0,
+            "findings": [
+              "No original AIS broadcasts cached for this vessel and period. Movement response is unknown; derived track timing is not used as proof."
+            ]
+          }
+        }
+      },
+      {
+        "id": "encounter_002",
+        "document_type": "stormEncounter",
+        "schema_version": "1.0",
+        "tenant_id": "mci",
+        "analysis_id": "analysis_059b0cb30c8d4155bf0ab8329a1998b6",
+        "storm": {
+          "id": "AL162023",
+          "name": "Ophelia",
+          "classification": "TS",
+          "category": null
+        },
+        "closest_approach": {
+          "timestamp": "2023-09-24T09:37:33.100307Z",
+          "distance_nm": 91.3,
+          "vessel_position": {
+            "type": "Point",
+            "coordinates": [
+              -75.67840499999997,
+              37.11109000000005
+            ]
+          },
+          "storm_position": {
+            "type": "Point",
+            "coordinates": [
+              -77.47913796012037,
+              37.62301713957871
+            ]
+          }
+        },
+        "exposure": {
+          "duration_within_200_nm_hours": 32.2,
+          "duration_within_34_kt_wind_field_hours": 11.8,
+          "strongest_wind_field": "34KT",
+          "maximum_storm_wind_kt": 60
+        },
+        "risk": {
+          "event_score": 57,
+          "proximity_points": 15,
+          "intensity_points": 7,
+          "wind_field_points": 15,
+          "duration_points": 20,
+          "behaviour": {
+            "model_version": "BROADCAST-RESPONSE-v2",
+            "status": "INSUFFICIENT",
+            "proximity_nm": 200.0,
+            "stationary_hours": 0.0,
+            "stationary_worsening_hours": 0.0,
+            "avoidance_manoeuvres": 0,
+            "adjustment": 0,
+            "findings": [
+              "No original AIS broadcasts cached for this vessel and period. Movement response is unknown; derived track timing is not used as proof."
+            ]
+          }
+        }
+      }
+    ]
+  }
+]

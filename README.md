@@ -2,6 +2,77 @@
 
 Localhost proof of concept for assessing a vessel's historical tropical-cyclone exposure in U.S. coastal waters.
 
+## Product and risk review — 30 October 2026
+
+See the [full yacht product, UX and risk review](docs/YACHT_PRODUCT_RISK_REVIEW.md)
+for the calculation audit, implemented corrections, validation and remaining
+requirements before live underwriting.
+
+In the local development app, **Demo cases** (`/demo-cases`) provides two
+repeatable offer examples, two decline examples and a referral, alongside
+researched Bounty / El Faro references and links to seven current local
+assessments. `DEMO-APPETITE-v2` recommends an action separately from the score:
+confirmed critical crew certificate blockers or adequately supported severe
+exposure can prevent an offer; uncertain evidence and movement/shelter concerns
+trigger referral. Its proposed 60/80 appetite boundaries are not calibrated
+loss thresholds. The rules appear in assessments and broker briefings for
+development underwriters only. Normal searches retain random fictional crews.
+El Faro's recorded voyage is now imported. Enter **MMSI 368208000** in New
+analysis: the form loads **29 September–1 October 2015 / 200 nm**. It is also
+in **Find vessels → Demo yachts**, explicitly marked as a commercial cargo
+reference. It returns **93/100 Severe**, a recorded approach towards Joaquin,
+and a retrospective decline recommendation citing the NTSB investigation.
+Tracking confidence remains low because three days do not establish a long-term
+history. Bounty remains a reference only: its MMSI was absent from the October
+2012 NOAA zone 18 and 19 archives checked.
+
+Rebuild El Faro's local observation cache with:
+
+```powershell
+.venv\Scripts\python.exe -m scripts.fetch_historical_ais
+.venv\Scripts\python.exe -m scripts.import_el_faro
+```
+
+Large archives and SHA-256 manifests are stored under
+`AIS_CACHE_DIR/historical-cases`, outside the workspace. NOAA's 2015 daily AIS
+ends before the final encounter, so the import supplements it with **313 NTSB
+recorded VDR positions**. The official KML has unzoned 12-hour timestamps; the
+import uses its explicit 24-hour EDT labels, checks them against all 32 WAM
+records' UTC columns, and fails on disagreement. No speed/course is invented.
+Normalized observations and source references are saved in
+`data/broadcasts/368208000.json`; the live app needs no GIS dependency.
+
+New real assessments use `TC-EXPOSURE-v0.5` and `BROADCAST-RESPONSE-v2`.
+Cases including VDR positions use `OBSERVATION-RESPONSE-v3`: position-only
+windows require explicit VDR provenance, displacement above 2 kt, no gap over
+30 minutes and no implied jump of 50 kt or more. They describe direction but
+receive no movement score credit or penalty. The archived loss finding is
+attached only when the selected period includes the casualty date.
+The weather aggregate now has a floor at the worst event score: adding a mild
+encounter cannot dilute a more serious one. The existing weighted aggregate
+still applies if higher. Existing saved weather calculations are preserved;
+rerun an assessment to apply the new method.
+
+Movement review now covers starts throughout the selected proximity and can
+follow a vessel leaving that area. It separates the vessel's contribution from
+storm movement using simultaneous timestamps, including a vessel moving away
+while the storm still closes in. Conflicting reports and implausible jumps
+invalidate movement windows. The provisional credit/penalty policy remains
+limited to qualifying 50–70 nm starts; other patterns are descriptive. No new
+automatic penalty is assigned for movement towards the storm. Only original
+broadcasts support movement adjustments.
+
+Results now lead with weather, movement, current crew and concrete review
+actions. **Broker briefing / print** opens an authenticated discussion summary
+with aggregate crew findings, provenance and a print-visible demonstration
+notice where appropriate. It excludes individual crew names and documents.
+The full technical assessment and role-restricted JSON remain available.
+
+Dashboard statistics and activity now use actual saved assessments, and source
+years reflect the local cache. Assessment counts include repeat runs of a
+vessel. Earlier model descriptions below document historical methods and should
+be read alongside the current review.
+
 The visual theme matches the MCI Document Extraction Service and
 [MCI website](https://www.mciuw.com/): navy `#003863`, cyan `#0DB1EE`, white and
 light grey `#F2F2F2`. The official white MCI SVG is bundled locally in
@@ -24,6 +95,24 @@ For the proposed Azure platform spanning marine, cargo and specialist yachts, se
 The active `real` provider matches NOAA/BOEM/U.S. Coast Guard MarineCadastre AIS vessel tracks against NOAA National Hurricane Center HURDAT2 best tracks. It never generates substitute encounters when source data is absent.
 
 ## Crew evidence and combined vessel assessment
+
+### Automatic fictional crew for demonstrations
+
+Set `CREW_RANDOM_DEMO=true` with `APP_ENV=development` to include a random
+fictional Captain, Chief officer and Engineer in every successful vessel
+assessment, including real AIS analyses. Search results also show fictional
+crew and carry that selection into the assessment. New analyses and reruns
+receive a fresh random roster. Names, experience, verification and certificate
+dates are explicitly illustrative; the scenarios include clear, pending,
+expiring, missing and expired evidence so the existing scoring can be shown.
+
+The roster stays consistent across result, crew profile, JSON and briefing views
+during the same day. Dated examples renew on the next day. Snapshots are stored
+separately under `data/crew/random-demo/`; automatic examples do not overwrite
+the vessel assignment database or saved connected-provider assessments. Live
+provider calls and manual assignment controls are not used in this mode.
+Setting the option back to `false` restores the normal crew workflow. Production
+ignores this development-only option. The default is `false`.
 
 The vessel results page shows current assigned crew alongside historical cyclone
 exposure. Crew links persist by resolved IMO, with MMSI aliases for vessels whose
@@ -148,7 +237,7 @@ Use the following real MMSIs in **New Analysis**. Every number below has been ch
 | Real MMSI | Vessel | IMO | Track segments (2021–2025) | Observed track range |
 |---|---|---|---:|---|
 | `215938000` | PIRANHA | `9088249` | 147 | 2024-06-16 to 2025-07-12 |
-| `please copy C:\Users\PeterBurrows\OneDrive - Medical & Commercial International Ltd\Documents\CAT POC Project\Project Documents\MCI Vessel Tracking High Level Design - HLD Aligned.drawio.xml to my downloads directory` | SPUIGRACHT | `9202534` | 2,307 | 2021-02-01 to 2025-12-11 |
+| `245261000` | SPUIGRACHT | `9202534` | 2,307 | 2021-02-01 to 2025-12-11 |
 | `255806481` | INDEPENDENT QUEST | `9246700` | 2,112 | 2021-02-16 to 2025-12-21 |
 | `259023000` | DON PASQUALE | `9138513` | 1,263 | 2023-06-21 to 2025-11-30 |
 | `311001653` | DOLE WARI | `9399777` | 2,339 | 2025-02-03 to 2025-12-22 |

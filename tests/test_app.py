@@ -118,6 +118,20 @@ def test_real_analysis_form_discloses_unavailable_coastal_filter(tmp_path):
         assert 'name="coastalLimitNm"' not in page.text
         assert "coastline-distance filter is not available" in page.text
         assert 'name="stormProximityNm"' in page.text
+        dashboard = client.get('/dashboard')
+        assert dashboard.context['headlineMetrics']['highOrSevere'] == 0
+        assert dashboard.context['headlineMetrics']['highConfidencePercent'] == 0
+        assert not dashboard.context['activityIsIllustrative']
+        assert all(month['count'] == 0 for month in dashboard.context['activityMonths'])
+
+
+def test_activity_counts_actual_assessments_and_empty_calendar_months():
+    from app.main import assessment_activity_months
+    assessments = [SimpleNamespace(created_at=datetime(2026, 10, 1, tzinfo=timezone.utc)),
+                   SimpleNamespace(created_at=datetime(2026, 8, 1, tzinfo=timezone.utc)),
+                   SimpleNamespace(created_at=datetime(2025, 10, 1, tzinfo=timezone.utc))]
+    months = assessment_activity_months(assessments, datetime(2026, 10, 30, tzinfo=timezone.utc))
+    assert [month['count'] for month in months] == [0, 0, 0, 1, 0, 1]
 
 
 def test_event_lookup_lists_source_options_and_links_mmsi(tmp_path):

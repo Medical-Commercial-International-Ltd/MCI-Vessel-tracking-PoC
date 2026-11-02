@@ -17,6 +17,7 @@ from starlette.concurrency import run_in_threadpool
 from app.security import valid_csrf
 from app.crewdentials import CrewUnavailable, CrewdentialsProvider
 from app.crew_risk import assess_crew, combine_risk, parse_date
+from app.demo_crew import DemoCrewScenarios, RosterProvider
 
 
 class CrewProvider(Protocol):
@@ -198,14 +199,30 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
     store = CrewRepository(settings.data_dir / "crew" / "assignments.sqlite")
     app.state.crew_provider = provider
     app.state.crew_repository = store
+    demo_scenarios = (DemoCrewScenarios(settings.data_dir / 'crew' / 'random-demo')
+                      if settings.crew_random_demo and settings.app_env == 'development' else None)
+    app.state.demo_crew_scenarios = demo_scenarios
+
+    def roster(analysis):
+        return demo_scenarios.get(analysis.analysis_id)['assignments'] if demo_scenarios else store.list(store.key(analysis))
+
+    def profile_for(analysis, person_id):
+        if demo_scenarios:
+            return RosterProvider(demo_scenarios.get(analysis.analysis_id)).get(person_id)
+        return app.state.crew_provider.get(person_id)
 
     def enrich(analysis, *, persist=True):
-        crew = assess_crew(store.list(store.key(analysis)), app.state.crew_provider)
+        if demo_scenarios:
+            snapshot = demo_scenarios.get(analysis.analysis_id)
+            crew = assess_crew(snapshot['assignments'], RosterProvider(snapshot))
+            crew.findings.insert(0, 'Random fictional roster for this demonstration only; no real vessel assignment or provider verification is established.')
+        else:
+            crew = assess_crew(store.list(store.key(analysis)), app.state.crew_provider)
         underwriting = combine_risk(analysis, crew)
         changed = analysis.underwriting != underwriting
         analysis.underwriting = underwriting
         analysis.schema_version = "1.1"
-        if persist and changed:
+        if persist and changed and not demo_scenarios:
             analyses.save_analysis(analysis)
         return analysis
 
@@ -223,6 +240,8 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
             raise HTTPException(401, "Sign in to access crew evidence")
         if user.get("role") not in {"underwriter", "admin"}:
             raise HTTPException(403, "Crew evidence requires underwriting access")
+        if demo_scenarios and request.method == 'POST':
+            raise HTTPException(400, 'Fictional rosters are generated automatically. Run a new vessel analysis for a new selection.')
         try:
             analysis = analyses.get_analysis("mci", analysis_id)
         except ValueError:
@@ -236,18 +255,18 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
         recent = (lookup.get("analysis") == analysis.analysis_id
                   and 0 <= time() - lookup.get("at", 0) < 900
                   and person_id in lookup.get("ids", []))
-        linked = any(row["person_id"] == person_id for row in store.list(store.key(analysis)))
+        linked = any(row["person_id"] == person_id for row in roster(analysis))
         if not (recent or linked):
             raise HTTPException(403, "Search for and select this person again")
 
     def render(request, analysis, *, candidates=None, searched=False, person=None, values=None, error=None, status=200, saved=False):
         enrich(analysis)
-        assignments = store.list(store.key(analysis))
+        assignments = roster(analysis)
         assignment = next((a for a in assignments if person and a["person_id"] == person["id"]), None)
         return templates.TemplateResponse(request=request, name="crew.html", status_code=status,
-            context=page_context(request, analysis=analysis, crewDemo=settings.crew_provider == "demo",
-                crewConnected=settings.crew_provider == "crewdentials",
-                connectedProfiles=provider.directory() if isinstance(provider, CrewdentialsProvider) else [],
+            context=page_context(request, analysis=analysis, crewDemo=settings.crew_provider == "demo" and not demo_scenarios,
+                crewConnected=settings.crew_provider == "crewdentials" and not demo_scenarios,
+                connectedProfiles=provider.directory() if isinstance(provider, CrewdentialsProvider) and not demo_scenarios else [],
                 candidates=candidates or [], searched=searched, person=person, assignments=assignments,
                 assignment=assignment, findings=evidence_findings(person, assignment["end_date"] if assignment else None) if person else [],
                 values=values or {}, error=error, saved=saved, today=datetime.now(timezone.utc).date().isoformat()))
@@ -286,7 +305,7 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
     async def crew_evidence(request: Request, analysis_id: str, person_id: str):
         _, analysis = context(request, analysis_id)
         allowed(request, analysis, person_id)
-        person = app.state.crew_provider.get(person_id)
+        person = profile_for(analysis, person_id)
         if not person or not person.get("raw"):
             raise HTTPException(404, "Provider evidence not available")
         return JSONResponse(person["raw"], headers={"Cache-Control": "no-store"})
@@ -295,7 +314,7 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
     async def crew_source(request: Request, analysis_id: str, person_id: str, document_id: str):
         _, analysis = context(request, analysis_id)
         allowed(request, analysis, person_id)
-        if not isinstance(provider, CrewdentialsProvider):
+        if demo_scenarios or not isinstance(provider, CrewdentialsProvider):
             raise HTTPException(404, "Source file unavailable")
         source = provider.document_path(person_id, document_id)
         if not source:
@@ -311,7 +330,7 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
         if person:
             allowed(request, analysis, person)
             try:
-                profile = app.state.crew_provider.get(person)
+                profile = profile_for(analysis, person)
             except CrewUnavailable as exc:
                 return render(request, analysis, error=str(exc), status=503)
             if not profile:

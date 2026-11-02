@@ -270,6 +270,26 @@ def test_restricted_user_cannot_read_crew_via_analysis_or_export(connected, monk
     client.post("/login", data={"csrf": csrf(page), "email": "viewer@example.test", "password": "unused"})
     assert "Sam Jones" not in client.get(f"/analysis?analysisId={analysis.analysis_id}").text
     assert client.get(f"/analysis/{analysis.analysis_id}/json").json()["underwriting"] is None
+    assert client.get(f"/analysis/{analysis.analysis_id}/briefing").status_code == 403
+
+
+def test_broker_briefing_preserves_test_notice_without_individual_crew_data(connected):
+    client, app, analysis = connected
+    now = datetime.now(timezone.utc).date()
+    app.state.crew_repository.save(vessel_key(analysis), app.state.crew_provider.get(PROFILE_ID),
+                                   "Captain", now, now + timedelta(days=90), "reviewer")
+    response = client.get(f"/analysis/{analysis.analysis_id}/briefing")
+    assert response.status_code == 200
+    assert 'Demo application — includes fictional data for demonstration purposes.' in response.text
+    assert 'Sam Jones' not in response.text
+    assert PROFILE_ID not in response.text
+    assert 'VERIFIED_MANUAL' not in response.text
+    assert '1 current crew assignment assessed' in response.text
+    assert 'CV experience is not scored' in response.text
+    assert 'certificate limits and flag recognition' in response.text
+    assert client.get('/analysis/nonexistent/briefing').status_code == 404
+    client.cookies.clear()
+    assert client.get(f"/analysis/{analysis.analysis_id}/briefing", follow_redirects=False).status_code == 303
 
 
 def test_mmsi_assignment_is_promoted_to_imo_and_not_shared_with_another_imo(connected):

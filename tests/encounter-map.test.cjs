@@ -7,6 +7,7 @@ const source = fs.readFileSync('app/static/encounter-map.js', 'utf8');
 function setup(leafletAvailable = true, options = {}) {
   const created = { maps: [], lines: [], polygons: [], markers: [], requests: [] };
   const element = () => ({ children: [], listeners: {}, checked: true, value: '0', style: {},
+    scrollIntoView() {}, focus() {},
     classList: { add() {} }, append(...items) { this.children.push(...items); },
     replaceChildren(...items) { this.children = items; },
     addEventListener(name, handler) { this.listeners[name] = handler; },
@@ -24,6 +25,9 @@ function setup(leafletAvailable = true, options = {}) {
   const nodes = Object.fromEntries(['encounter-map', 'map-data', 'controls', 'timeline', 'time', 'event',
     'status', 'closest', 'fit', 'all', 'basemap', 'play', 'speed', 'imagery', 'imagery-note', 'details'].map((key) => [key, element()]));
   nodes.speed.value = '30'; nodes.imagery.value = 'street';
+  const responseButtons = (options.responseTimes || []).map(time => Object.assign(element(), {
+    disabled: true, dataset: { stormId: event.stormId, time }
+  }));
   if (options.contiguous) {
     event.frames[0].vesselPathId = 'one';
     event.frames[1].vesselPathId = 'one';
@@ -58,7 +62,7 @@ function setup(leafletAvailable = true, options = {}) {
   };
   const document = { hidden: false, addEventListener() {}, getElementById: (id) => nodes[id], createElement: element,
     head: { append: (script) => created.requests.push(script) },
-    querySelectorAll: () => Object.values(layers),
+    querySelectorAll: (selector) => selector === '[data-map-layer]' ? Object.values(layers) : responseButtons,
     querySelector: (selector) => {
       const layer = selector.match(/data-map-layer="([^"]+)"/);
       if (layer) return layers[layer[1]];
@@ -68,9 +72,10 @@ function setup(leafletAvailable = true, options = {}) {
   let pending = null;
   const window = { L: leafletAvailable ? L : null, addEventListener() {},
     requestAnimationFrame: (callback) => { pending = callback; return 1; }, cancelAnimationFrame: () => { pending = null; } };
-  vm.runInNewContext(source, { document, window, L, Date, Number, Math, URLSearchParams });
+  vm.runInNewContext(source, { document, window, L, Date, Number, Math, URLSearchParams,
+    getComputedStyle: () => ({ getPropertyValue: () => '#003863' }) });
   const tick = (timestamp) => { const callback = pending; pending = null; if (callback) callback(timestamp); };
-  return { nodes, layers, created, tick };
+  return { nodes, layers, created, tick, responseButtons };
 }
 
 test('Missing local Leaflet assets show a clear failure without requesting tiles', () => {
@@ -79,6 +84,18 @@ test('Missing local Leaflet assets show a clear failure without requesting tiles
   assert.equal(nodes.controls.disabled, true);
   assert.equal(created.maps.length, 0);
   assert.equal(created.requests.length, 0);
+});
+
+test('Response links select the observed time and do not silently clamp missing windows', () => {
+  const { nodes, created, responseButtons } = setup(true, { contiguous: true,
+    responseTimes: ['2025-07-01T00:02:00Z', '2025-07-02T00:00:00Z'] });
+  assert.equal(responseButtons[0].disabled, false);
+  assert.equal(responseButtons[1].disabled, true);
+  nodes.play.listeners.click();
+  responseButtons[0].listeners.click();
+  assert.equal(nodes.play.textContent, 'Play');
+  const vessel = created.markers.filter(marker => marker.map !== null)[0];
+  assert.ok(vessel.position[1] > -80 && vessel.position[1] < -79);
 });
 
 test('Playback moves both markers and stops when the user scrubs', () => {

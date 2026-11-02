@@ -208,9 +208,8 @@ def assess_crew(assignments, provider, today=None):
             result.band = risk_band(result.score)
     result.underwriter_referral = result.score is None or critical or captain_missing or result.score >= 60
     # Signed file URLs rotate independently of certificate evidence and are excluded.
-    for person in inputs["evidence"]:
-        if person:
-            person.pop("raw", None)
+    inputs["evidence"] = [{key: value for key, value in person.items() if key != "raw"}
+                          if person else None for person in inputs["evidence"]]
     result.evidence_hash = hashlib.sha256(json.dumps(inputs, sort_keys=True, default=str).encode()).hexdigest()
     return result
 

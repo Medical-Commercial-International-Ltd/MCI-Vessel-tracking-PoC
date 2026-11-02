@@ -1,6 +1,47 @@
 {
   "vessels": [
     {
+      "name": "EL FARO",
+      "mmsi": "368208000",
+      "imo": "7395351",
+      "identitySource": "NOAA AIS / NTSB investigation",
+      "vesselType": "Cargo",
+      "lengthM": 240.78,
+      "widthM": 28.05,
+      "label": "Historical loss: sailed towards Joaquin",
+      "note": "Commercial cargo reference, not a yacht. NOAA coastal AIS plus NTSB recorded offshore positions; 29 September–1 October 2015.",
+      "from": "2015-09-29",
+      "to": "2015-10-01",
+      "proximityNm": 200,
+      "historicalCase": {
+        "title": "El Faro / Hurricane Joaquin — historical loss case",
+        "eventDate": "2015-10-01",
+        "sourceUrl": "https://www.ntsb.gov/investigations/pages/dca16mm001.aspx",
+        "finding": "The NTSB identified insufficient action to avoid Joaquin, failure to use current weather information and ineffective bridge teamwork. The vessel was lost on 1 October 2015. These are post-event findings, not a prediction made before the loss.",
+        "trackingNote": "NOAA coastal AIS ends before the final encounter. Recorded VDR positions from NTSB attachment 12 supply the offshore track. Explicit EDT labels were converted to UTC and checked against 32 independent WAM UTC records. VDR speed and course are not supplied; direction uses recorded position displacement."
+      }
+    },
+    {
+      "name": "SERENITY",
+      "mmsi": "367733210",
+      "imo": "9806809",
+      "identitySource": "NOAA original AIS broadcasts",
+      "label": "Severe exposure; harbour context",
+      "note": "Ophelia, 23 September 2023. Stationary in the Morehead City / Beaufort harbour area; shelter requires review.",
+      "from": "2023-09-23",
+      "to": "2023-09-23"
+    },
+    {
+      "name": "LEGACY",
+      "mmsi": "319920000",
+      "imo": "9583586",
+      "identitySource": "NOAA original AIS broadcasts",
+      "label": "Severe exposure; anchorage context",
+      "note": "Ophelia, 23 September 2023. Stationary near Wrightsville Beach; shelter requires review.",
+      "from": "2023-09-23",
+      "to": "2023-09-23"
+    },
+    {
       "name": "AZULITA",
       "mmsi": "368001090",
       "imo": null,
@@ -13,8 +54,8 @@
       "name": "A1A",
       "mmsi": "368281860",
       "imo": null,
-      "label": "Moved away from the storm",
-      "note": "Philippe, 3 October 2023. Mixed behaviour: also underway while the storm approached later that day.",
+      "label": "Mixed response: away and towards",
+      "note": "Philippe, 3 October 2023. Original broadcasts show both increased separation and movement reducing separation; passage and shelter context require review.",
       "from": "2023-10-03",
       "to": "2023-10-03"
     }

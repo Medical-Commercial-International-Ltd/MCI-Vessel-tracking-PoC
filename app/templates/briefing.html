@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Broker briefing · {{ analysis.vessel.name }} · MCI{% endblock %}
+{% block body_class %}broker-briefing{% endblock %}
+{% block content %}
+<div class="briefing-actions"><a href="/analysis?analysisId={{ analysis.analysis_id }}">← Full assessment</a><button class="button button--primary" type="button" onclick="window.print()">Print / save PDF</button></div>
+<header class="briefing-heading">
+  <span class="eyebrow">MCI Marine Risk Intelligence · Broker discussion briefing</span>
+  <h1>{{ analysis.vessel.name }}</h1>
+  <p>{% if analysis.vessel.imo %}IMO {{ analysis.vessel.imo }} · {% endif %}MMSI {{ analysis.vessel.mmsi | join(', ') }} · {{ analysis.vessel.vessel_type }}</p>
+  <p>Historical exposure: <strong>{{ analysis.input.period.from_date }} to {{ analysis.input.period.to_date }}</strong> · Search proximity: {{ analysis.input.storm_proximity_nm }} nautical miles.</p>
+  <p>Weather calculated {{ analysis.created_at.strftime('%d %b %Y %H:%M UTC') }}. {% if analysis.underwriting %}Current crew assessed {{ analysis.underwriting.crew.assessed_on }}.{% endif %} Briefing generated {{ generatedAt.strftime('%d %b %Y %H:%M UTC') }}.</p>
+</header>
+{% if analysis.historical_case %}{% include 'historical_case.html' %}{% endif %}
+{% set combined = analysis.underwriting %}
+<section class="briefing-scores" aria-label="Evidence indicators">
+  <div><span>Combined indicator</span><strong>{{ combined.score if combined and combined.score is not none else 'Incomplete' }}{% if combined and combined.score is not none %}<small>/100</small>{% endif %}</strong></div>
+  <div><span>Historical exposure</span><strong>{{ analysis.risk.score }}<small>/100</small></strong></div>
+  <div><span>Crew evidence gaps</span><strong>{{ combined.crew.score if combined and combined.crew.score is not none else 'Unknown' }}{% if combined and combined.crew.score is not none %}<small>/100</small>{% endif %}</strong></div>
+  <div><span>Tracking confidence</span><strong>{{ analysis.risk.confidence | title }}</strong></div>
+</section>
+<p>Higher indicator scores mean more concern. Scores are provisional, not actuarially calibrated, and do not represent loss probability, premium, acceptance or declinature.</p>
+{% include 'assessment_summary.html' %}
+<section class="panel">
+  <h2>Movement evidence for discussion</h2>
+  {% for item in briefing.movement %}{% set w = item.window %}
+  <article class="briefing-window"><h3>{{ w.storm_name }} · {{ item.label }}</h3>
+    <p>{{ w.start.strftime('%d %b %Y %H:%M UTC') }} to {{ w.end.strftime('%d %b %Y %H:%M UTC') }}.</p>
+    <p>Centre separation changed from {{ '%.2f'|format(w.start_distance_nm) }} to {{ '%.2f'|format(w.end_distance_nm) }} nm. Remaining at the starting position would have left {{ '%.2f'|format(w.fixed_distance_nm) }} nm at the end. Vessel movement contributed {{ '%+.2f'|format(w.improvement_nm) }} nm of separation.</p>
+  </article>{% else %}<p>{{ briefing.movement_summary }}</p>{% endfor %}
+  <p>Positive contribution means the vessel ended further from the storm than if it had stayed put; negative means closer. This does not establish safe navigation, shelter, forecast awareness or intent.</p>
+</section>
+<section class="panel">
+  <h2>Scope and evidence</h2>
+  <p>This assessment covers historical cyclone proximity and current crew document evidence. It does not assess all yacht perils, vessel condition, insured value, claims, machinery, fire, liability or future weather. Missing AIS or wind radii remain unknown.</p>
+  <p>Weather uses NOAA post-analysis best tracks and the tracking sources listed below. Derived track timing supports estimated exposure; only original tracking observations support the current movement method.</p>
+  <p>Crew scoring uses the most concerning assigned member, with critical gaps triggering review. The combined score retains the higher component and adds a bounded uplift from the other. Good crew evidence does not erase historical exposure.</p>
+  <ul>{% for source in analysis.sources %}<li>{{ source.provider }} — {% if source.url %}<a href="{{ source.url }}">{{ source.dataset }}</a>{% else %}{{ source.dataset }}{% endif %}</li>{% endfor %}</ul>
+  <p>Original observation dates: {{ analysis.storm_response.source_dates | join(', ') or 'None available' }}.</p>
+  <p class="briefing-reference">Assessment {{ analysis.analysis_id }}<br>Models: {{ analysis.risk.model_version }} · {{ analysis.storm_response.model_version }}{% if combined %} · {{ combined.crew.model_version }} · {{ combined.model_version }}{% endif %}<br>Weather evidence hash: {{ analysis.audit.calculation_hash }}{% if combined %}<br>Combined evidence hash: {{ combined.calculation_hash }}{% endif %}</p>
+</section>
+{% endblock %}
