@@ -8,12 +8,15 @@ __pycache__/
 .pytest_cache/
 .pytest-tmp-*/
 .test-tmp/
+data/test-runs/
 pytest-cache-files-*/
 pytest-temp-*/
 .coverage
 htmlcov/
 .env
 data/analyses/
+data/demo/
+data/presentation-analyses/
 data/jobs/
 data/users/
 data/crew/

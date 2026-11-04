@@ -10,6 +10,8 @@
   <a class="button button--primary" href="/analysis">Run vessel analysis <span aria-hidden="true">→</span></a>
 </section>
 
+{% if demoAppetiteEnabled and provider == 'real' %}<section class="panel presentation-start"><div><span class="eyebrow">Yacht risk demonstration</span><h2>From 5 to 98. See why risk changes.</h2><p>Compare two fictional yachts: storm avoidance with complete crew evidence, and storm entry with serious document discrepancies. Recorded NOAA references are also available.</p></div><a class="button button--primary" href="/event-lookup#demo-yachts">Open Demo yachts →</a></section>{% endif %}
+
 <section class="metric-grid" aria-label="Portfolio metrics">
   <article class="metric-card">
     <span class="metric-card__label">Assessments saved</span>

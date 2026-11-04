@@ -1,4 +1,14 @@
 (() => {
+  const revealEvidence = (hash) => {
+    if (!hash || hash === '#') return;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target instanceof HTMLDetailsElement) target.open = true;
+  };
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', () => revealEvidence(link.hash));
+  });
+  revealEvidence(location.hash);
+  window.addEventListener('hashchange', () => revealEvidence(location.hash));
   const form = document.querySelector("[data-analysis-form]");
   const panel = document.querySelector("[data-processing-panel]");
   const message = document.querySelector("[data-processing-message]");

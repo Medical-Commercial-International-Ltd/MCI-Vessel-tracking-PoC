@@ -203,16 +203,32 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
                       if settings.crew_random_demo and settings.app_env == 'development' else None)
     app.state.demo_crew_scenarios = demo_scenarios
 
+    def presentation_snapshot(analysis):
+        if analysis.presentation_case and settings.app_env == 'development':
+            from app.presentation_cases import case_roster
+            return case_roster(analysis.presentation_case)
+        return None
+
     def roster(analysis):
+        snapshot = presentation_snapshot(analysis)
+        if snapshot:
+            return snapshot['assignments']
         return demo_scenarios.get(analysis.analysis_id)['assignments'] if demo_scenarios else store.list(store.key(analysis))
 
     def profile_for(analysis, person_id):
+        snapshot = presentation_snapshot(analysis)
+        if snapshot:
+            return RosterProvider(snapshot).get(person_id)
         if demo_scenarios:
             return RosterProvider(demo_scenarios.get(analysis.analysis_id)).get(person_id)
         return app.state.crew_provider.get(person_id)
 
     def enrich(analysis, *, persist=True):
-        if demo_scenarios:
+        snapshot = presentation_snapshot(analysis)
+        if snapshot:
+            crew = assess_crew(snapshot['assignments'], RosterProvider(snapshot))
+            crew.findings.insert(0, analysis.synthetic_notice if analysis.is_synthetic else 'Fictional crew overlay only. NOAA vessel and weather records are real; these CVs and certificates do not describe the actual crew.')
+        elif demo_scenarios:
             snapshot = demo_scenarios.get(analysis.analysis_id)
             crew = assess_crew(snapshot['assignments'], RosterProvider(snapshot))
             crew.findings.insert(0, 'Random fictional roster for this demonstration only; no real vessel assignment or provider verification is established.')
@@ -222,7 +238,7 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
         changed = analysis.underwriting != underwriting
         analysis.underwriting = underwriting
         analysis.schema_version = "1.1"
-        if persist and changed and not demo_scenarios:
+        if persist and changed and not demo_scenarios and not analysis.presentation_case:
             analyses.save_analysis(analysis)
         return analysis
 
@@ -248,6 +264,8 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
             analysis = None
         if not analysis:
             raise HTTPException(404, "Vessel assessment not found")
+        if analysis.presentation_case and request.method == 'POST':
+            raise HTTPException(400, 'The sample crew overlay is fixed for this presentation case.')
         return user, analysis
 
     def allowed(request, analysis, person_id):
@@ -261,15 +279,19 @@ def install_crew_routes(app, settings, analyses, templates, page_context):
 
     def render(request, analysis, *, candidates=None, searched=False, person=None, values=None, error=None, status=200, saved=False):
         enrich(analysis)
+        from app.demo_appetite import assess_appetite
         assignments = roster(analysis)
         assignment = next((a for a in assignments if person and a["person_id"] == person["id"]), None)
         return templates.TemplateResponse(request=request, name="crew.html", status_code=status,
-            context=page_context(request, analysis=analysis, crewDemo=settings.crew_provider == "demo" and not demo_scenarios,
-                crewConnected=settings.crew_provider == "crewdentials" and not demo_scenarios,
-                connectedProfiles=provider.directory() if isinstance(provider, CrewdentialsProvider) and not demo_scenarios else [],
+            context=page_context(request, analysis=analysis, crewDemo=settings.crew_provider == "demo" and not demo_scenarios and not analysis.presentation_case,
+                crewConnected=settings.crew_provider == "crewdentials" and not demo_scenarios and not analysis.presentation_case,
+                connectedProfiles=provider.directory() if isinstance(provider, CrewdentialsProvider) and not demo_scenarios and not analysis.presentation_case else [],
                 candidates=candidates or [], searched=searched, person=person, assignments=assignments,
                 assignment=assignment, findings=evidence_findings(person, assignment["end_date"] if assignment else None) if person else [],
-                values=values or {}, error=error, saved=saved, today=datetime.now(timezone.utc).date().isoformat()))
+                values=values or {}, error=error, saved=saved,
+                autoDemoCrew=bool(demo_scenarios or analysis.presentation_case),
+                crewAppetite=assess_appetite(analysis) if settings.app_env == 'development' else None,
+                today=datetime.now(timezone.utc).date().isoformat()))
 
     @app.post("/crew/{analysis_id}/select")
     async def crew_select(request: Request, analysis_id: str, csrf: str = Form(""), person_id: str = Form("")):

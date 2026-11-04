@@ -26,7 +26,9 @@ def assess_appetite(analysis):
     towards = bool(kinds & {'MOVED_TOWARDS', 'MOVED_TOWARDS_RECEDING', 'CONTINUED_APPROACH'})
     stationary = 'STATIONARY_APPROACH' in kinds
     supported = analysis.risk.confidence in {'HIGH', 'MEDIUM'}
-    current_model = analysis.risk.model_version == 'TC-EXPOSURE-v0.5'
+    from app.fictional_yachts import is_fictional_case
+    fictional = is_fictional_case(analysis)
+    current_model = analysis.risk.model_version == 'TC-EXPOSURE-v0.5' or fictional
     if not current_model:
         referrals.append('Rerun the exposure assessment using the current model.')
     if not supported:
@@ -70,6 +72,8 @@ def assess_appetite(analysis):
         referrals.append('The combined indicator is 60/100 or above; review both components.')
     if not analysis.statistics.named_storm_encounters:
         conditions.append('Check tracking gaps and cruising history: no detected storm encounter does not prove absence of exposure.')
+    if fictional:
+        conditions.insert(0, 'Fictional scenario only: validate all evidence independently for a real submission.')
     outcome = 'DECLINE' if blockers else 'REFER' if referrals else 'OFFER'
     return dict(version=VERSION, outcome=outcome,
                 label={'DECLINE': 'Do not offer terms', 'REFER': 'Refer for review',

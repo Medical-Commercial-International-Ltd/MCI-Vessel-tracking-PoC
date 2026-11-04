@@ -7,13 +7,17 @@
   <p>Review crew evidence and confirm who is assigned to this vessel.</p>
 </section>
 <nav class="vessel-tabs" aria-label="Vessel assessment sections">
-  <a href="/analysis?analysisId={{ analysis.analysis_id }}">Exposure</a>
+  <a href="/analysis?analysisId={{ analysis.analysis_id }}">Risk overview</a>
   <a href="/crew/{{ analysis.analysis_id }}" aria-current="page">Crew</a>
 </nav>
 {% if error %}<div class="alert alert--error" role="alert">{{ error }}</div>{% endif %}
 {% if saved %}<div class="crew-success" role="status">Assignment saved. The combined assessment has been updated. This confirms the vessel link, not qualifications or suitability.</div>{% endif %}
+{% if analysis.presentation_case and analysis.is_synthetic %}<p class="fixture-notice"><strong>Fictional yacht demonstration.</strong> {{ analysis.synthetic_notice }} Scores illustrate the scenario; high tracking confidence is assumed for this demonstration.</p>{% endif %}
+{% if analysis.presentation_case and not analysis.is_synthetic %}<p class="fixture-notice"><strong>Fictional crew overlay on a NOAA-backed case.</strong> These CV and certificate examples are not evidence about {{ analysis.vessel.name }}'s actual or historical crew. <a href="/analysis?analysisId={{ analysis.analysis_id }}">Return to the risk decision →</a></p>{% endif %}
 
+{% if person %}<details class="workspace-details"><summary>All crew evidence and combined risk</summary>{% endif %}
 {% include 'crew_risk_summary.html' %}
+{% if person %}</details>{% endif %}
 
 {% if not autoDemoCrew %}
 <section class="panel crew-section">
@@ -74,21 +78,27 @@
 {% if person %}
 <section class="crew-profile crew-section">
   <article class="panel">
-    <div class="panel__heading"><div><span class="eyebrow">Crew profile</span><h2>{{ person.first_name }} {{ person.last_name }}</h2></div></div>
+    <div class="panel__heading"><div class="crew-person-heading">
+      {% set portrait = crewPortraits.get(person.id) if crewPortraits is defined else none %}
+      {% if portrait %}<img class="crew-headshot crew-headshot--profile" src="{{ portrait }}" alt="Portrait of {{ person.first_name }} {{ person.last_name }}" width="112" height="112">{% endif %}
+      <div><span class="eyebrow">Crew profile</span><h2>{{ person.first_name }} {{ person.last_name }}</h2></div>
+    </div></div>
     <p>{{ person.email or 'Email address not supplied by the document API.' }}</p>
     {% if crewConnected %}<p class="panel__note">Crew profile ID: {{ person.id }}<br>Evidence retrieved: {{ person.retrieved_at }}</p>
     {% if person.stale or person.refresh_error %}<p class="crew-caution">Evidence is stale or the last refresh failed. Refresh before relying on the combined score.</p>{% endif %}{% endif %}
     <h3>CV and experience</h3>
+    {% if analysis.presentation_case %}<p><strong>{{ 'Sample CV updated ' ~ person.cv_updated_on if person.cv_updated_on else 'Current CV not supplied' }}</strong></p>{% endif %}
     {% if not autoDemoCrew %}<p>{{ person.summary or 'No CV summary supplied.' }}</p>{% endif %}
     {% if person.experience %}<ul>{% for item in person.experience %}<li>{{ item | replace('Fictional example: ', '') if autoDemoCrew else item }}</li>{% endfor %}</ul>{% else %}<p class="empty-inline">No experience evidence supplied.</p>{% endif %}
     <p class="panel__note">{% if crewConnected %}The document API has not supplied a CV or employment history. Certificate evidence is available below.{% elif autoDemoCrew %}Experience has not been independently verified.{% else %}Self-declared sample CV statements. Experience has not been independently verified. No source files are available in this demonstration.{% endif %}</p>
+    {% if person.evidence_notes %}<h3>{{ 'Simulated verification complete' if analysis.presentation_case == 'aurora' else 'Declared information vs verification evidence' }}</h3><ul class="crew-findings">{% for note in person.evidence_notes %}<li>{{ note }}</li>{% endfor %}</ul>{% endif %}
     <h3>Qualifications and document evidence</h3>
     {% for certificate in person.certificates %}
     <article class="crew-certificate">
       <h3>{{ certificate.name | replace(' — fictional example', '') if autoDemoCrew else certificate.name }}</h3>
       <dl class="crew-facts">
         <div><dt>Reference</dt><dd>{{ certificate.reference or 'Not supplied' }}</dd></div>
-        {% if crewConnected %}<div><dt>Issue date</dt><dd>{{ certificate.issue or 'Not supplied' }}</dd></div>{% endif %}
+        {% if crewConnected or analysis.presentation_case %}<div><dt>Issue date</dt><dd>{{ certificate.issue or 'Not supplied' }}</dd></div>{% endif %}
         <div><dt>Expiry</dt><dd>{{ certificate.expiry or 'Unknown' }}</dd></div>
         <div><dt>Verification</dt><dd>{{ certificate.verification or 'Not verified' }}</dd></div>
         <div><dt>Document review</dt><dd>{{ 'Details reviewed' if certificate.completed else 'Awaiting review' }}</dd></div>
@@ -103,14 +113,14 @@
     <a class="button button--ghost button--small" href="/crew/{{ analysis.analysis_id }}/evidence/{{ person.id }}">View full provider JSON</a>
     <form method="post" action="/crew/{{ analysis.analysis_id }}/refresh"><input type="hidden" name="csrf" value="{{ csrfToken }}"><input type="hidden" name="person_id" value="{{ person.id }}"><button class="button button--secondary button--small" type="submit">Refresh from Crewdentials</button></form>
     {% else %}
-    <p class="panel__note">Source: MCI sample directory.</p>
+    <p class="panel__note">{{ 'Source: fictional crew overlay. Verification statuses are simulated, not NOAA or actual crew evidence.' if analysis.presentation_case else 'Source: MCI sample directory.' }}</p>
     <a class="button button--ghost button--small" href="/crew/{{ analysis.analysis_id }}?person={{ person.id }}">Refresh profile</a>
     {% endif %}
   </article>
   <aside>
     <section class="panel crew-section">
       <span class="eyebrow">Evidence review</span><h2>Review prompts</h2>
-      <p>Evidence is incomplete. Role suitability requires underwriting review.</p>
+      <p>{{ 'All required sample documents are present, verified and in date. Final role suitability remains subject to underwriting checks.' if analysis.presentation_case == 'aurora' else 'Evidence requires review. Resolve discrepancies and confirm role suitability.' }}</p>
       <ul class="crew-findings">{% for finding in findings %}<li>{{ finding }}</li>{% endfor %}</ul>
       <p class="panel__note">Crew evidence contributes to the combined assessment above. The original cyclone score remains visible separately.</p>
     </section>
@@ -130,6 +140,7 @@
 </section>
 {% endif %}
 
+<details class="workspace-details"><summary>Roster roles and assignment dates</summary>
 <section class="panel crew-section">
   <div class="panel__heading"><div><span class="eyebrow">This vessel</span><h2>Crew assignments</h2></div><span class="panel__note">{{ assignments | length }} recorded</span></div>
   {% if assignments %}
@@ -142,7 +153,8 @@
     </article>
   {% endfor %}</div>
   {% else %}<p class="empty-inline">No crew assignments recorded. Find a crew member and review their profile to add one.</p>{% endif %}
-  <p class="panel__note">{% if autoDemoCrew %}This roster stays consistent across this assessment today. A new analysis generates another selection; dated examples renew on the next day.{% else %}Assignments are shared across assessments with the same vessel identifier. They do not confirm insured cover or credential validity.{% endif %}</p>
+  <p class="panel__note">{% if autoDemoCrew %}{% if analysis.presentation_case %}Crew identities and scenarios stay fixed for this presentation. Sample document dates renew daily.{% else %}This roster stays consistent across this assessment today. A new analysis generates another selection; dated examples renew on the next day.{% endif %}{% else %}Assignments are shared across assessments with the same vessel identifier. They do not confirm insured cover or credential validity.{% endif %}</p>
 </section>
+</details>
 {% endblock %}
 {% block scripts %}<script src="{{ url_for('static', path='/crew.js') }}" defer></script>{% endblock %}

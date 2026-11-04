@@ -74,7 +74,8 @@
       const overlay = L.polyline(path, { color: colors[layer], weight: layer === 'gaps' ? 2 : layer === 'vessel' ? 3 : 4,
         dashArray: layer === 'gaps' ? '6 7' : null, opacity: 0.85 });
       if (visible(layer)) overlay.addTo(map);
-      overlay.bindTooltip(layer === 'gaps' ? 'Estimated route across missing track data (playback only)'
+      overlay.bindTooltip(selected.synthetic ? (layer === 'vessel' ? 'Fictional vessel track' : 'Fictional storm track')
+        : layer === 'gaps' ? 'Estimated route across missing track data (playback only)'
         : layer === 'vessel' ? 'Cached vessel track' : selected.name + ' NOAA storm track');
       routes.push({ overlay, layer });
     };
@@ -174,7 +175,7 @@
       selected = events[Number(selector.value)];
       (selected.vesselSamples || []).forEach((point) => {
         const marker = L.circleMarker(latLng(point.coordinates), { radius: 3, color: colors.vessel, weight: 1, fillOpacity: 0.6 })
-          .bindPopup(content('Derived track sample', utc(point.timestamp) + ' · ' + positionText(point.coordinates)));
+          .bindPopup(content(selected.synthetic ? 'Fictional track sample' : 'Derived track sample', utc(point.timestamp) + ' · ' + positionText(point.coordinates)));
         if (visible('samples')) marker.addTo(map);
         samples.push(marker);
       });
@@ -189,7 +190,7 @@
       });
       route(part, 'storm');
       closestIndex = Math.max(0, selected.frames.findIndex((item) => item.timestamp === selected.timestamp));
-      slider.max = Math.max(0, selected.frames.length - 1); slider.value = closestIndex;
+      slider.max = Math.max(0, selected.frames.length - 1); slider.value = selected.initialFrameIndex ?? closestIndex;
       timeline.hidden = selected.frames.length < 2;
       drawFrame(); fit();
     };
@@ -289,6 +290,11 @@
     document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
     window.addEventListener('pagehide', pause);
     window.addEventListener('pagehide', () => { if (satellitePlayer) satellitePlayer.destroy(); });
+    const evidenceSection = container.closest('details');
+    if (evidenceSection) evidenceSection.addEventListener('toggle', () => {
+      if (evidenceSection.open) requestAnimationFrame(() => { map.invalidateSize(); fit(); });
+      else pause();
+    });
     controls.disabled = false; choose();
   }
   try { start(); } catch (_) { fail('The encounter map could not be displayed. Refresh the page to try again.'); }

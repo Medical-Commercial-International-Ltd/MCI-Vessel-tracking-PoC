@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.crew_portraits import CREW_PORTRAITS
+
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -35,9 +37,11 @@ from app.satellite import GoesArchiveProvider, ImageryUnavailable, SatelliteServ
 from app.vessel_catalog import cached_vessels
 from app.vessel_identity import demo_yachts, storm_demo_vessels, storm_demo_case
 from app.briefing import build_briefing
-from app.demo_appetite import worked_examples
+from app.demo_appetite import assess_appetite
 from app.demo_cases import local_cases
 from app.storm_response import RESPONSE_LABELS
+from app.presentation_cases import (ALL_CASES as PRESENTATION_CASES, PresentationAnalysisRepository,
+                                    ensure_cases)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -60,7 +64,8 @@ def assessment_activity_months(analyses, reference: datetime | None = None) -> l
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     configuration = settings or get_settings()
-    repository = FileAnalysisRepository(configuration.analyses_dir)
+    repository = (PresentationAnalysisRepository(configuration.analyses_dir)
+                  if configuration.app_env == 'development' else FileAnalysisRepository(configuration.analyses_dir))
     photo_dir = configuration.data_dir / "vessel_photos"
     photo_catalog = VesselPhotoCatalog(photo_dir)
     users = LocalUserStore(configuration.users_file)
@@ -72,6 +77,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         users.ensure_admin(configuration.admin_email, configuration.admin_password)
         if configuration.analysis_provider == "demo":
             seed_demo_portfolio(repository, configuration.demo_seed_count)
+        if configuration.app_env == 'development' and configuration.analysis_provider == 'real':
+            app.state.noaa_demo_errors = ensure_cases(repository.presentations, configuration.ais_cache_dir)
         yield
 
     app = FastAPI(
@@ -146,6 +153,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "demoAppetiteEnabled": configuration.app_env == 'development' and request.session.get('user', {}).get('role') in {'admin', 'underwriter'},
             "crewExample": crew_example,
             "responseLabels": RESPONSE_LABELS,
+            "crewPortraits": CREW_PORTRAITS if configuration.app_env == 'development' else {},
+            "noaaCase": PRESENTATION_CASES.get(values['analysis'].presentation_case) if values.get('analysis') else None,
             "autoDemoCrew": bool(configuration.crew_random_demo and configuration.app_env == 'development'
                                   and request.session.get('user', {}).get('role') in {'admin', 'underwriter'}),
             **values,
@@ -330,11 +339,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             if analysis and configuration.analysis_provider == "real" and not analysis.is_synthetic
             else vessel_image(analysis.vessel) if analysis else None
         )
+        if analysis and analysis.presentation_case in {'aurora', 'tempest'}:
+            from app.fictional_yachts import image_for
+            vessel_photo = image_for(analysis.presentation_case)
         encounters = repository.list_encounters("mci", analysisId) if analysis else []
         map_data = await run_in_threadpool(build_map_data, analysis, encounters, configuration.ais_cache_dir, configuration.data_dir / 'broadcasts') if analysis and encounters else []
         case_preset = storm_demo_case('MMSI', mmsi) if configuration.analysis_provider == 'real' else None
         for event in map_data:
-            event["satelliteManifestUrl"] = f"/api/satellite/{analysis.analysis_id}/{event['id']}/manifest"
+            if not analysis.is_synthetic:
+                event["satelliteManifestUrl"] = f"/api/satellite/{analysis.analysis_id}/{event['id']}/manifest"
         return templates.TemplateResponse(
             request=request,
             name="analysis.html",
@@ -395,6 +408,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                "crew": [row for row in crew if row["start_date"] <= current_day <= row["end_date"]]})
         movement_results = {}
         lookup_crew = {}
+        presentation_rows = []
+        if configuration.app_env == 'development' and configuration.analysis_provider == 'real' and crew_visible:
+            for key, case in PRESENTATION_CASES.items():
+                current = with_crew(request, repository.get_analysis('mci', 'analysis_presentation_' + key))
+                window = next((w for w in current.storm_response.windows if w.kind == case['movement_kind']), None) if current else None
+                presentation_rows.append(dict(key=key, **case, analysis=current, window=window,
+                    policy=assess_appetite(current) if current else None,
+                    error=getattr(app.state, 'noaa_demo_errors', {}).get(key, 'Recorded NOAA inputs are unavailable.')))
         if response:
             from app.storm_response import BroadcastStore, assess_response
             chosen = next((s for s in storms if values and s.storm_id == values.get('stormId')), None)
@@ -424,6 +445,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             lookupMovement=movement_results,
             lookupCrew=lookup_crew,
             demoYachts=yacht_rows,
+            presentationCases=presentation_rows,
             stationaryCases=stationary_cases,
             error=error,
         )
@@ -467,6 +489,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         previous = await run_in_threadpool(repository.get_analysis, "mci", analysis_id)
         if previous is None or previous.is_synthetic != (configuration.analysis_provider == "demo"):
             raise HTTPException(status_code=404, detail="Analysis not found")
+        if previous.presentation_case:
+            errors = await run_in_threadpool(ensure_cases, repository.presentations, configuration.ais_cache_dir, force=True)
+            app.state.noaa_demo_errors = errors
+            if previous.presentation_case in errors:
+                raise HTTPException(422, errors[previous.presentation_case])
+            return RedirectResponse(f"/analysis?analysisId={quote(analysis_id)}", status_code=303)
         try:
             result = await run_in_threadpool(app.state.analysis_service.analyse, previous.input, user["email"])
         except ValueError as exc:
@@ -486,7 +514,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(403, 'Underwriting access required')
         analyses = await run_in_threadpool(repository.list_analyses, 'mci')
         return templates.TemplateResponse(request=request, name='demo_cases.html',
-            context=page_context(request, cases=local_cases(analyses), examples=worked_examples(), showDemoNotice=True))
+            context=page_context(request, cases=local_cases(analyses), showDemoNotice=True))
 
     @app.get("/event-lookup", response_class=HTMLResponse)
     async def event_lookup_page(request: Request):

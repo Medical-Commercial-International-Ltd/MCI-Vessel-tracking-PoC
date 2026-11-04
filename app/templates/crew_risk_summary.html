@@ -2,6 +2,7 @@
 {% from 'evidence_indicator.html' import evidence_indicator %}
 {% set combined = analysis.underwriting %}
 {% set crewRisk = combined.crew %}
+{% set decisionPolicy = crewAppetite if crewAppetite is defined else briefing.appetite if briefing is defined and briefing else none %}
 <section class="panel crew-section combined-assessment" aria-label="Vessel and crew assessment">
   <div class="panel__heading">
     <div><span class="eyebrow">Vessel + crew</span><h2>Combined risk assessment</h2></div>
@@ -11,7 +12,7 @@
     <div><span>Cyclone exposure</span><strong>{{ combined.exposure_score }}<small>/100</small></strong></div>
     <div><span>Crew evidence gaps</span><strong>{{ crewRisk.score if crewRisk.score is not none else 'Unknown' }}{% if crewRisk.score is not none %}<small>/100</small>{% endif %}</strong></div>
     <div><span>Combined score</span><strong>{{ combined.score if combined.score is not none else 'Incomplete' }}{% if combined.score is not none %}<small>/100</small>{% endif %}</strong></div>
-    <div><span>Review decision</span><strong class="combined-decision">{{ 'Refer for review' if combined.underwriter_referral else 'No automatic referral' }}</strong></div>
+    <div><span>Recommendation</span><strong class="combined-decision">{{ decisionPolicy.label if decisionPolicy else 'Refer for review' if combined.underwriter_referral else 'No automatic referral' }}</strong></div>
   </div>
   <p class="panel__note">Crew assessed {{ crewRisk.assessed_on }} · {{ crewRisk.members | length }} current assignments · {{ combined.model_version }} · Uncalibrated POC metric</p>
   {% if crewRisk.members %}
@@ -25,8 +26,12 @@
     {% for member in crewRisk.members %}
     <article class="crew-candidate crew-evidence-card">
       <div class="crew-evidence-card__heading">
-        <div><h3><a href="/crew/{{ analysis.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a></h3>
+        <div class="crew-person-heading">
+          {% set portrait = crewPortraits.get(member.person_id) if crewPortraits is defined else none %}
+          {% if portrait %}<img class="crew-headshot" src="{{ portrait }}" alt="Portrait of {{ member.name }}" width="64" height="64" loading="lazy">{% endif %}
+          <div><h3><a href="/crew/{{ analysis.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a></h3>
           <p>{{ member.role }} · {{ member.start_date.strftime('%d %b %Y') }} – {{ member.end_date.strftime('%d %b %Y') }}</p></div>
+        </div>
         <div class="crew-gap-score"><span>Evidence gap</span><strong>{{ member.score if member.score is not none else 'Unknown' }}{% if member.score is not none %}<small>/100</small>{% endif %}</strong></div>
       </div>
       {% if member.score is none %}<p class="crew-evidence-unavailable">Evidence unavailable or out of date. Refresh the profile to assess these checks.</p>{% endif %}

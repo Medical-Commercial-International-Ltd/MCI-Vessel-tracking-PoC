@@ -72,6 +72,9 @@ def playback_path(timed_lines, edges, anchor, start, end):
 
 
 def build_map_data(analysis, encounters, cache_dir, broadcast_root=None):
+    if getattr(analysis, 'presentation_case', None) in {'aurora', 'tempest'} and analysis.is_synthetic:
+        from app.fictional_yachts import map_event
+        return [map_event(analysis.presentation_case, event) for event in encounters]
     events = []
     storms = {}
     if not analysis.is_synthetic:

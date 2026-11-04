@@ -1,0 +1,16 @@
+{% if analysis.is_synthetic %}
+<details class="workspace-details" id="noaa-sources" {% if request.url.path.endswith('/briefing') %}open{% endif %}><summary>Demonstration assumptions and score calculation</summary><section class="panel"><p>{{ analysis.synthetic_notice }}</p><p>The six-hour route contains 73 simulated positions at five-minute intervals. Wind fields and distances use the same coordinates shown in the replay. Weather {{ analysis.risk.score }}/100 is a fixed scenario input, not a calculated NOAA exposure assessment. Tracking confidence is assumed high for the scenario.</p><p>Crew evidence is evaluated by the existing certificate checks. The overall score retains the stronger component, then adds the existing bounded interaction uplift: max(weather, crew) + round((100 - max(weather, crew)) &times; 0.25 &times; min(weather, crew) / 100).</p><p>Current crew documents and assignment dates renew daily. CV discrepancies are shown for review; CV experience is not numerically scored. Rejected, missing and expired certificates contribute to the crew score.</p></section></details>
+{% else %}
+<details class="workspace-details" id="noaa-sources" {% if request.url.path.endswith('/briefing') %}open{% endif %}>
+  <summary>NOAA data sources and assessment limits</summary>
+  <section class="panel">
+    <p><strong>Recorded movement:</strong> original NOAA MarineCadastre AIS observations on {{ analysis.storm_response.source_dates | join(', ') }}. Intermediate storm positions come from NOAA NHC HURDAT2 interpolation. Other track dates may use derived vessel timing, as described in the assessment.</p>
+    <p><strong>Crew:</strong> all people, CV statements and certificate statuses in this presentation are fictional overlays. They are not NOAA data and do not identify the actual or historical crew.</p>
+    {% if noaaCase %}<p>{{ noaaCase.context }} {{ noaaCase.caveat }}</p>{% endif %}
+    <p><strong>Tracking confidence: {{ analysis.risk.confidence | title }}.</strong> {{ analysis.statistics.observed_days }} days with positions in the selected {{ analysis.input.period.from_date }} to {{ analysis.input.period.to_date }} period{% if analysis.data_quality.supported_time_coverage_percent is not none %}; {{ analysis.data_quality.supported_time_coverage_percent }}% supported tracking time{% endif %}. Unknown coverage remains unknown.</p>
+    <ul class="source-list">{% for source in analysis.sources if source.url or source.sha256 %}<li>{% if source.url %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.provider }} — {{ source.dataset }}</a>{% else %}{{ source.provider }} — {{ source.dataset }}{% endif %}{% if source.sha256 %}<small>SHA-256: <code>{{ source.sha256 }}</code></small>{% endif %}</li>{% endfor %}</ul>
+    <p>HURDAT2 is NOAA's post-storm best track. It cannot establish the forecast the Captain saw, the passage plan, shelter protection or intent. AIS-reported name, type and dimensions need independent identity checks.</p>
+  </section>
+</details>
+
+{% endif %}

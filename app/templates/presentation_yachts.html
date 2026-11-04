@@ -1,0 +1,32 @@
+{% if presentationCases %}
+<section class="panel presentation-yachts" aria-labelledby="demo-yachts-title" id="demo-yachts">
+  <div class="panel__heading"><div><span class="eyebrow">Broker presentation · start here</span><h2 id="demo-yachts-title">Demo yachts</h2></div><a href="#vessel-search">Search recorded vessels →</a></div>
+  <p class="panel__note">Fictional demonstration yachts. Select a name to open the full assessment.</p>
+  <div class="table-wrap"><table class="demo-yacht-list" aria-label="Fictional demo yachts">
+    <thead><tr><th scope="col">Yacht name</th><th scope="col">MMSI</th><th scope="col">Overall score</th></tr></thead>
+    <tbody>{% for case in presentationCases if case.synthetic %}{% set item = case.analysis %}
+      <tr>
+        <td>{% if item %}<a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">{{ case.name }}</a>{% else %}{{ case.name }}{% endif %}</td>
+        <td>{{ case.mmsi }}</td>
+        <td>{% if item and item.underwriting and item.underwriting.score is not none %}<span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }}/100</span>{% else %}Unavailable{% endif %}</td>
+      </tr>
+    {% endfor %}</tbody>
+  </table></div>
+  <details class="workspace-details"><summary>Recorded NOAA comparison cases &middot; AZULITA and A1A</summary>
+  <p class="fixture-notice"><strong>Real NOAA vessel observations and storm data.</strong> Only the crew profiles, CVs and certificates are fictional presentation overlays. The recommendation uses the calculated tracking confidence; favourable movement alone cannot establish an insurable risk.</p>
+  <div class="table-wrap"><table class="presentation-table">
+    <thead><tr><th>Recommendation / overall risk</th><th>Demo yacht</th><th>Storm response</th><th>Crew evidence</th><th>Review</th></tr></thead>
+    <tbody>{% for case in presentationCases if not case.synthetic %}{% set item = case.analysis %}{% if item %}
+      <tr class="presentation-row presentation-row--{{ case.key }}">
+        <td data-label="Recommendation"><strong class="decision-label decision-label--{{ case.policy.outcome | lower }}">{{ case.policy.label }}</strong><span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }}/100 · {{ item.underwriting.band | title }}</span><small>NOAA weather {{ item.risk.score }} · Sample crew gaps {{ item.underwriting.crew.score }}</small><small>Tracking confidence: {{ item.risk.confidence | title }}</small></td>
+        <td data-label="Demo yacht"><a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">{{ item.vessel.name }}</a><small>MMSI {{ case.mmsi }}</small><small>{{ case.context }}</small></td>
+        <td data-label="Storm response"><strong>{{ case.movement }}</strong>{% set w = case.window %}{% if w %}<small>{{ w.start_distance_nm }} → {{ w.end_distance_nm }} nm</small><small>{{ case.storm }} · {{ w.start.strftime('%d %b %Y %H:%M') }}–{{ w.end.strftime('%H:%M') }} UTC</small>{% endif %}<small>{{ case.caveat }}</small></td>
+        <td data-label="Crew evidence">{{ case.crew }}<small><a href="/crew/{{ item.analysis_id }}">Review three crew profiles →</a></small></td>
+        <td data-label="Review"><a class="button button--primary button--small" href="/analysis?analysisId={{ item.analysis_id }}">Open assessment</a><small><a href="/analysis/{{ item.analysis_id }}/briefing">Broker briefing / print</a></small><small><a href="/analysis?analysisId={{ item.analysis_id }}#noaa-sources">NOAA sources and limits</a></small></td>
+      </tr>
+    {% else %}<tr><td>NOAA case unavailable</td><td>{{ case.name }}<small>MMSI {{ case.mmsi }}</small></td><td colspan="3">{{ case.error }} No generated track or weather is substituted.</td></tr>{% endif %}{% endfor %}</tbody>
+  </table></div>
+  <p class="panel__note">Weather assessments cover 2023–2025; original movement observations cover 3 October 2023. NOAA HURDAT2 is a historical best track, not the forecast available to the Captain. These small-craft references do not establish a clean pair of superyacht acceptance and decline decisions.</p>
+  </details>
+</section>
+{% endif %}

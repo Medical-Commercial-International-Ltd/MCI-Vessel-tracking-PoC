@@ -6,10 +6,12 @@
 <header class="briefing-heading">
   <span class="eyebrow">MCI Marine Risk Intelligence · Broker discussion briefing</span>
   <h1>{{ analysis.vessel.name }}</h1>
-  <p>{% if analysis.vessel.imo %}IMO {{ analysis.vessel.imo }} · {% endif %}MMSI {{ analysis.vessel.mmsi | join(', ') }} · {{ analysis.vessel.vessel_type }}</p>
+  <p>{% if analysis.vessel.imo %}IMO {{ analysis.vessel.imo }} · {% endif %}{% if analysis.vessel.mmsi %}MMSI {{ analysis.vessel.mmsi | join(', ') }} · {% endif %}{{ analysis.vessel.vessel_type }}</p>
   <p>Historical exposure: <strong>{{ analysis.input.period.from_date }} to {{ analysis.input.period.to_date }}</strong> · Search proximity: {{ analysis.input.storm_proximity_nm }} nautical miles.</p>
   <p>Weather calculated {{ analysis.created_at.strftime('%d %b %Y %H:%M UTC') }}. {% if analysis.underwriting %}Current crew assessed {{ analysis.underwriting.crew.assessed_on }}.{% endif %} Briefing generated {{ generatedAt.strftime('%d %b %Y %H:%M UTC') }}.</p>
 </header>
+{% if analysis.presentation_case and analysis.is_synthetic %}<p class="fixture-notice"><strong>Fictional yacht demonstration.</strong> {{ analysis.synthetic_notice }} Scores illustrate the scenario; high tracking confidence is assumed for this demonstration.</p>{% endif %}
+{% if analysis.presentation_case and not analysis.is_synthetic %}<p class="fixture-notice"><strong>NOAA-backed assessment with fictional crew overlay.</strong> Vessel observations and storm data are real NOAA records. CVs and certificates are sample scenarios, not evidence about the vessel's actual or historical crew. Tracking confidence and its limits are preserved.</p>{% endif %}
 {% if analysis.historical_case %}{% include 'historical_case.html' %}{% endif %}
 {% set combined = analysis.underwriting %}
 <section class="briefing-scores" aria-label="Evidence indicators">
@@ -20,6 +22,7 @@
 </section>
 <p>Higher indicator scores mean more concern. Scores are provisional, not actuarially calibrated, and do not represent loss probability, premium, acceptance or declinature.</p>
 {% include 'assessment_summary.html' %}
+{% if analysis.presentation_case %}{% include 'noaa_sources.html' %}{% endif %}
 <section class="panel">
   <h2>Movement evidence for discussion</h2>
   {% for item in briefing.movement %}{% set w = item.window %}
@@ -32,7 +35,7 @@
 <section class="panel">
   <h2>Scope and evidence</h2>
   <p>This assessment covers historical cyclone proximity and current crew document evidence. It does not assess all yacht perils, vessel condition, insured value, claims, machinery, fire, liability or future weather. Missing AIS or wind radii remain unknown.</p>
-  <p>Weather uses NOAA post-analysis best tracks and the tracking sources listed below. Derived track timing supports estimated exposure; only original tracking observations support the current movement method.</p>
+  <p>{% if analysis.is_synthetic %}Weather scores, route coordinates and storm wind fields are authored demonstration inputs, not NOAA observations. Crew gaps and the combined indicator are calculated with the existing evidence rules.{% else %}Weather uses NOAA post-analysis best tracks and the tracking sources listed below. Derived track timing supports estimated exposure; only original tracking observations support the current movement method. These historical best tracks do not establish which forecasts were available on board.{% endif %}</p>
   <p>Crew scoring uses the most concerning assigned member, with critical gaps triggering review. The combined score retains the higher component and adds a bounded uplift from the other. Good crew evidence does not erase historical exposure.</p>
   <ul>{% for source in analysis.sources %}<li>{{ source.provider }} — {% if source.url %}<a href="{{ source.url }}">{{ source.dataset }}</a>{% else %}{{ source.dataset }}{% endif %}</li>{% endfor %}</ul>
   <p>Original observation dates: {{ analysis.storm_response.source_dates | join(', ') or 'None available' }}.</p>

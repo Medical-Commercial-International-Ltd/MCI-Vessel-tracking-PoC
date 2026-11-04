@@ -4,16 +4,16 @@
   <div class="appetite-recommendation">
     <span class="eyebrow">Demonstration appetite · {{ policy.version }}</span>
     <h3>Why this recommendation</h3>
-    <ul>{% for reason in policy.reasons %}<li>{{ reason }}</li>{% endfor %}</ul>
+    <ul>{% for reason in briefing.headline_reasons %}<li>{{ reason }}</li>{% endfor %}</ul>
+    {% if policy.reasons | length > 3 %}<details><summary>All decision reasons ({{ policy.reasons | length }})</summary><ul>{% for reason in policy.reasons %}<li>{{ reason }}</li>{% endfor %}</ul></details>{% endif %}
     <p>{% if policy.uses_fictional_crew %}This recommendation includes the fictional crew assigned to this demo, not the vessel's actual or historical crew. {% endif %}<a href="/demo-cases#appetite-rules">View decision rules</a>.</p>
-    <details><summary>Conditions before offering or reconsidering terms</summary><ul>{% for condition in policy.conditions %}<li>{{ condition }}</li>{% endfor %}</ul></details>
+    <details {% if request.url.path.endswith('/briefing') %}open{% endif %}><summary>Conditions before offering or reconsidering terms</summary><ul>{% for condition in policy.conditions %}<li>{{ condition }}</li>{% endfor %}</ul></details>
   </div>
   {% endif %}
   <div class="summary-columns">
-    <div><h3>Weather evidence</h3><p>{{ briefing.weather }}</p><p>Tracking confidence: <strong>{{ analysis.risk.confidence | title }}</strong>{% if analysis.data_quality.supported_time_coverage_percent is not none %} · {{ analysis.data_quality.supported_time_coverage_percent }}% of the selected time supported{% endif %}.</p></div>
-    <div><h3>Vessel response</h3><p>{{ briefing.movement_summary }}</p><p>Storm movement and vessel movement are compared separately. Historical geometry does not establish the Captain's intent.</p></div>
-    <div><h3>Current crew evidence</h3><p>{{ briefing.crew }}</p><p>Current assignments do not identify who was aboard during historical storms.</p></div>
+    <div><h3>Weather risk score · {{ analysis.risk.score }}/100</h3><p>{{ briefing.weather }}</p><p>Tracking confidence: <strong>{{ analysis.risk.confidence | title }}</strong>{% if analysis.data_quality.supported_time_coverage_percent is not none %} · {{ analysis.data_quality.supported_time_coverage_percent }}% of the selected time supported{% endif %}.</p>{% if not request.url.path.endswith('/briefing') %}<a href="#weather-evidence">Explore weather and map →</a>{% endif %}</div>
+    <div><h3>Vessel response</h3><p>{{ briefing.movement_summary }}</p><p>Movement is evidence of direction; intent and forecast awareness require a passage plan.</p>{% if not request.url.path.endswith('/briefing') %}<a href="#weather-evidence">Review movement windows →</a>{% endif %}</div>
+    <div><h3>{{ 'Sample crew overlay' if analysis.presentation_case else 'Crew evidence' }}{% if analysis.underwriting %} · {{ analysis.underwriting.crew.score if analysis.underwriting.crew.score is not none else 'Unknown' }}/100 gaps{% endif %}</h3><p>{{ briefing.crew }}</p>{% if analysis.presentation_case and analysis.is_synthetic %}<p>{{ noaaCase.crew }}</p><p>All crew evidence and verification outcomes are simulated.</p>{% elif analysis.presentation_case %}<p>{{ 'Three current sample CVs; all sample certificate checks clear.' if analysis.presentation_case == 'shelter' else 'The sample crew has no current CVs and expired medical and competency evidence for all three roles.' }}</p><p>This does not describe the vessel's actual or historical crew.</p>{% else %}<p>Current assignments do not identify who was aboard during historical storms.</p>{% endif %}{% if user.role in ['admin', 'underwriter'] %}<a href="/crew/{{ analysis.analysis_id }}">Review CVs and certificates →</a>{% endif %}</div>
   </div>
-  <h3>Next steps before offering terms</h3>
-  <ul class="review-actions">{% for action in briefing.actions %}<li>{{ action }}</li>{% endfor %}</ul>
+  <details {% if request.url.path.endswith('/briefing') %}open{% endif %}><summary>Underwriting checks and next steps</summary><ul class="review-actions">{% for action in briefing.actions %}<li>{{ action }}</li>{% endfor %}</ul></details>
 </section>

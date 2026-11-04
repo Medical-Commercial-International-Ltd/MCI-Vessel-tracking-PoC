@@ -7,7 +7,7 @@ const source = fs.readFileSync('app/static/encounter-map.js', 'utf8');
 function setup(leafletAvailable = true, options = {}) {
   const created = { maps: [], lines: [], polygons: [], markers: [], requests: [] };
   const element = () => ({ children: [], listeners: {}, checked: true, value: '0', style: {},
-    scrollIntoView() {}, focus() {},
+    scrollIntoView() {}, focus() {}, closest() { return null; },
     classList: { add() {} }, append(...items) { this.children.push(...items); },
     replaceChildren(...items) { this.children = items; },
     addEventListener(name, handler) { this.listeners[name] = handler; },
@@ -40,6 +40,7 @@ function setup(leafletAvailable = true, options = {}) {
       { timestamp: event.frames[1].timestamp, coordinates: [-79,31], gapToNext: false } ];
     event.vesselGapTracks = [[[-80,30],[-79,31]]];
   }
+  if (options.demoStart) { event.timestamp = event.frames[1].timestamp; event.initialFrameIndex = 0; }
   nodes['map-data'].textContent = JSON.stringify({ events: [event], tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'OpenStreetMap contributors' });
   const layers = Object.fromEntries(['vessel', 'gaps', 'storm', 'samples', '34', '50', '64'].map((name) => [name, element()]));
   class Overlay { constructor(options = {}) { Object.assign(this, options); this.listeners = {}; }
@@ -170,4 +171,11 @@ test('No-key Leaflet view draws tracks and wind areas; timeline does not invent 
   assert.equal(created.markers.filter((marker) => marker.map !== null).length, 2);
   assert.match(created.requests[0].url, /^https:\/\/tile.openstreetmap.org\//);
   assert.match(created.requests[0].attribution, /OpenStreetMap/);
+});
+
+ test('Demo replay starts at passage start and closest approach remains available', () => {
+  const { nodes } = setup(true, { demoStart: true, contiguous: true });
+  assert.equal(Number(nodes.time.value), 0);
+  nodes.closest.listeners.click();
+  assert.equal(Number(nodes.time.value), 1);
 });

@@ -214,6 +214,7 @@ class AnalysisDocument(DocumentModel):
     status: Literal["queued", "processing", "completed", "failed"]
     is_synthetic: bool = True
     synthetic_notice: str | None = "Demonstration data — not for underwriting use"
+    presentation_case: Literal["shelter", "approach", "aurora", "tempest"] | None = None
     created_at: datetime
     created_by: str
     input: AnalysisInput

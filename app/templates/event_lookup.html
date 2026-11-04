@@ -4,9 +4,12 @@
 <section class="page-heading">
   <span class="eyebrow">AIS discovery</span>
   <h1>Find vessels</h1>
-  <p>Find vessels recorded near a named storm, a U.S. principal port, or both.</p>
+  <p>Start with two underwriting examples, or search recorded vessels by storm and port.</p>
 </section>
 
+{% include 'presentation_yachts.html' %}
+
+<details class="workspace-details" id="vessel-search" {% if lookupResponse or error %}open{% endif %}><summary>Search recorded vessels</summary>
 <section class="panel lookup-card">
   <form method="post" action="/event-lookup" class="lookup-form" data-lookup-form>
     <input type="hidden" name="csrf" value="{{ csrfToken }}">
@@ -66,39 +69,33 @@
   {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
   <p class="lookup-note">Select a storm, port, or both. With both selected, a vessel must be within the stated distance of each at the same recorded time. Date is optional with a storm and required for a port-only search. Length and type are AIS-reported; this does not verify vessel identity, yacht status or market value. Port distance uses the published port polygon's reference point. AIS gaps can hide vessels.</p>
 </section>
+</details>
 
-<section class="panel lookup-results" aria-labelledby="demo-yachts-title">
-  <div class="lookup-results__heading"><div><span class="eyebrow">Selected yacht portfolio and historical references</span><h2 id="demo-yachts-title">Demo yachts</h2></div><span class="muted">{{ demoYachts | length }} vessels</span></div>
-  <p class="lookup-note">Includes yacht examples and El Faro, a commercial cargo loss reference. Weather uses NOAA storm data and the tracking sources identified in each assessment; El Faro also uses NTSB recorded offshore positions. Select a vessel to rerun its displayed settings and open a fresh result.</p>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Yacht</th><th>IMO</th><th>MMSI</th><th>Crew</th><th>AIS years</th><th>Length / beam / draft</th><th>Risk factor</th><th>Confidence</th><th>Storm encounters</th><th>Assessment period</th><th>Proximity</th></tr></thead>
-    <tbody>{% for yacht in demoYachts %}{% set item = yacht.analysis %}
-      <tr><td><form method="post" action="{% if item %}/event-lookup/rerun/{{ item.analysis_id }}{% else %}/event-lookup/analyse/{{ yacht.mmsi }}{% endif %}" data-vessel-rerun>
-        <input type="hidden" name="csrf" value="{{ csrfToken }}"><button type="submit" class="vessel-rerun-link">{{ yacht.name }}</button>
-      </form>{% if yacht.label %}<small><strong>{{ yacht.label }}</strong><br>{{ yacht.note }}</small>{% endif %}</td><td>{{ yacht.imo or 'Not reported' }}</td><td>{{ yacht.mmsi }}</td>
-      <td>{% if user.role in ['admin', 'underwriter'] %}
-        {% for member in yacht.crew %}<div>{% if item %}<a href="/crew/{{ item.analysis_id }}?person={{ member.person_id }}">{{ member.name }}</a>{% else %}{{ member.name }}{% endif %}<small>{{ member.role }}</small></div>{% else %}Not assigned{% endfor %}
-      {% else %}Underwriting access required{% endif %}</td>
-      <td>{{ yacht.years | join(', ') or 'No cached records' }}</td>
-      {% if item %}
-      <td>{% for dimension in [item.vessel.length_m, item.vessel.width_m, item.vessel.draft_m] %}{{ ('%g' | format(dimension)) ~ ' m' if dimension is not none else 'Unknown' }}{% if not loop.last %} / {% endif %}{% endfor %}</td>
-      <td><span class="score-pill score-pill--{{ item.risk.band | lower }}">{{ item.risk.score }}/100 - {{ item.risk.band | title }}</span></td>
-      <td>{{ item.risk.confidence | title }}{% if item.data_quality.confidence_score is not none %}<small>{{ item.data_quality.confidence_score }}/100 evidence</small>{% endif %}</td>
-      <td>{{ item.statistics.named_storm_encounters }}</td><td>{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small></td><td>{{ '%g' | format(item.input.storm_proximity_nm) }} nm</td>
-      {% else %}<td>Unknown</td><td>Not assessed</td><td>Pending analysis</td><td>Unknown</td><td>Latest cached years</td><td>200 nm</td>{% endif %}</tr>
-    {% endfor %}</tbody>
-  </table></div>
+<details class="workspace-details" id="recorded-yachts"><summary>Recorded yachts and historical references · {{ demoYachts | length }} vessels</summary>
+<section class="panel lookup-results" aria-labelledby="recorded-yachts-title">
+  <div class="panel__heading"><div><span class="eyebrow">Recorded evidence</span><h2 id="recorded-yachts-title">Recorded yacht portfolio</h2></div></div>
+  <p class="lookup-note">Real tracking and NOAA weather, with fictional current crew where indicated. El Faro is a commercial cargo reference. Tracking gaps, mixed responses and shelter context remain visible in each assessment. Select a name to open a saved assessment; rerun it from the review controls.</p>
+  <div class="table-wrap"><table><thead><tr><th>Overall risk</th><th>Vessel</th><th>Weather</th><th>Tracking confidence</th><th>Crew / evidence</th><th>Period</th></tr></thead><tbody>
+  {% for yacht in demoYachts %}{% set item = yacht.analysis %}
+  <tr><td>{% if item and item.underwriting and item.underwriting.score is not none %}<span class="score-pill score-pill--{{ item.underwriting.band | lower }}">{{ item.underwriting.score }}/100 · {{ item.underwriting.band | title }}</span><small>{{ 'Review required' if item.underwriting.underwriter_referral else 'Standard review' }}</small>{% else %}Incomplete{% endif %}</td>
+  <td>{% if item %}<a class="table-link" href="/analysis?analysisId={{ item.analysis_id }}">{{ yacht.name }}</a>{% else %}<form method="post" action="/event-lookup/analyse/{{ yacht.mmsi }}" data-vessel-rerun><input type="hidden" name="csrf" value="{{ csrfToken }}"><button type="submit" class="vessel-rerun-link">{{ yacht.name }}</button></form>{% endif %}<small>MMSI {{ yacht.mmsi }}{% if yacht.imo %} · IMO {{ yacht.imo }}{% endif %}</small>{% if yacht.label %}<small>{{ yacht.label }}</small>{% endif %}</td>
+  <td>{% if item %}{{ item.risk.score }}/100 · {{ item.risk.band | title }}{% else %}Not assessed{% endif %}</td>
+  <td>{% if item %}{{ item.risk.confidence | title }}{% else %}Unknown{% endif %}</td>
+  <td>{% if item and user.role in ['admin', 'underwriter'] %}<a href="/crew/{{ item.analysis_id }}">{{ yacht.crew | length }} crew profiles</a><small>{{ 'Fictional crew' if item.underwriting and item.underwriting.is_test_data else 'Current evidence' }}</small>{% else %}Not assessed{% endif %}<details><summary>Vessel details</summary><p>AIS years: {{ yacht.years | join(', ') or 'No cached records' }}.</p>{% if item %}<p>Length / beam / draft: {% for dimension in [item.vessel.length_m, item.vessel.width_m, item.vessel.draft_m] %}{{ ('%g' | format(dimension)) ~ ' m' if dimension is not none else 'Unknown' }}{% if not loop.last %} / {% endif %}{% endfor %}. {{ item.statistics.named_storm_encounters }} storm encounters; {{ '%g' | format(item.input.storm_proximity_nm) }} nm threshold.</p>{% endif %}<p>{{ yacht.note }}</p>{% if item %}<form method="post" action="/event-lookup/rerun/{{ item.analysis_id }}" data-vessel-rerun><input type="hidden" name="csrf" value="{{ csrfToken }}"><button class="button button--secondary button--small" type="submit">Refresh assessment</button></form>{% endif %}</details></td>
+  <td>{% if item %}{{ item.input.period.from_date.strftime('%d %b %Y') }}<small>to {{ item.input.period.to_date.strftime('%d %b %Y') }}</small>{% else %}Latest cached years{% endif %}</td></tr>
+  {% endfor %}</tbody></table></div>
   <p class="lookup-note" role="status" aria-live="polite" hidden data-vessel-rerun-status>Running yacht analysis. The result will open when ready.</p>
-</section>
+</section></details>
 
 {% if stationaryCases %}
+<details class="workspace-details"><summary>Research shortlist: stationary near a storm</summary>
 <section class="panel behaviour-method" aria-label="Stationary storm examples">
   <h2>Stationary near a storm — research shortlist</h2>
   <p>{{ stationaryCases.stationary_matches }} matches among {{ stationaryCases.ships_checked }} ships checked in the original broadcasts for {{ stationaryCases.date }} during Ophelia. These observations establish stationarity and proximity; they do not establish that moving was safer.</p>
   <div class="table-wrap"><table><thead><tr><th>Vessel</th><th>MMSI</th><th>Reported IMO</th><th>Storm distance</th><th>Location context</th></tr></thead><tbody>
   {% for item in stationaryCases.cases %}<tr><td><a href="/analysis?mmsi={{ item.mmsi }}&amp;fromDate={{ stationaryCases.date }}&amp;toDate={{ stationaryCases.date }}">{{ item.name }}</a></td><td>{{ item.mmsi }}</td><td>{{ item.imo }}</td><td>{{ item.window.start_distance_nm }} → {{ item.window.end_distance_nm }} nm</td><td>{{ item.context }}</td></tr>{% endfor %}
   </tbody></table></div>
-</section>
+</section></details>
 {% endif %}
 
 {% if lookupResponse %}

@@ -1,0 +1,13 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "path": "app/static/vessels/aurora-haven.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional yacht portrait for an insurance demonstration app. A fictional elegant 48 metre white motor superyacht, navy hull stripe, three decks, viewed at a flattering aerial three-quarter angle underway in turquoise Caribbean sea in calm clear morning light. Whole yacht visible, realistic marine architecture, premium editorial photography, wide landscape image. No text, no logos, no watermark. This is the fictional yacht Aurora Haven, not a depiction of any named existing vessel."
+    },
+    {
+      "path": "app/static/vessels/tempest-vale.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional yacht portrait for an insurance demonstration app. A fictional modern 52 metre graphite-hull motor superyacht with white superstructure, three decks, viewed at aerial three-quarter angle underway on deep blue Caribbean sea under overcast skies with a distant storm front. Whole yacht visible, realistic marine architecture, premium editorial photography, wide landscape image. No damage, no text, no logos, no watermark. This is the fictional yacht Tempest Vale, not a depiction of any named existing vessel."
+    }
+  ]
+}

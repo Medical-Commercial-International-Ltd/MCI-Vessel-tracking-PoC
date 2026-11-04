@@ -8,10 +8,58 @@ See the [full yacht product, UX and risk review](docs/YACHT_PRODUCT_RISK_REVIEW.
 for the calculation audit, implemented corrections, validation and remaining
 requirements before live underwriting.
 
-In the local development app, **Demo cases** (`/demo-cases`) provides two
-repeatable offer examples, two decline examples and a referral, alongside
-researched Bounty / El Faro references and links to seven current local
-assessments. `DEMO-APPETITE-v2` recommends an action separately from the score:
+In the local development app, start at **Find vessels → Demo yachts**
+(`/event-lookup#demo-yachts`). Two **fictional superyachts** lead the presentation:
+**AURORA HAVEN (5/100)** diverts from 89.07 to 178.14 nm away from a simulated
+storm, with three current CVs and complete, verified sample certificates.
+**TEMPEST VALE (98/100)** approaches from 89.07 to 11.13 nm and enters the
+simulated hurricane-force wind field. Its crew evidence includes rejected
+qualification claims, expired medicals, missing first-aid certificates and CV gaps.
+
+Weather inputs are authored at 5 and 94. Existing crew rules calculate 0 and 97;
+the existing combined formula produces 5 and 98. CV discrepancies are explained
+but are not numerically scored. All identities, dates, verification outcomes,
+storm positions and yacht routes are explicitly fictional. The replay starts at
+the beginning of each six-hour passage, with 73 positions at five-minute steps.
+Crew dates renew daily. These examples live in the separate development demo
+repository, remain outside portfolio counts and do not require NOAA inputs.
+
+The two bundled yacht portraits were made with built-in image generation.
+Assets and exact prompts are recorded in
+[`app/static/vessels/demo-image-prompts.json`](app/static/vessels/demo-image-prompts.json).
+
+Two **recorded NOAA cases** remain in the expandable comparison section:
+**AZULITA (368001090)** increases separation from Philippe from 65.01 to 77.62 nm;
+**A1A (368281860)** has an approach window from 61.18 to 21.07 nm, alongside earlier
+movement away. All 285 AZULITA and 253 A1A cached observations were checked against
+the original NOAA 3 October 2023 AIS archive. HURDAT2 supplies the historical storm
+positions and wind radii. Source links and SHA-256 hashes appear in each assessment.
+Neither example uses an invented vessel track, storm or confidence rating.
+
+The real analysis service assesses 2023–2025 at 70 nm: current local weather scores
+are 29 and 54, both with **low tracking confidence**. Fixed fictional **crew overlays**
+demonstrate clear documents versus missing CVs and expired critical certificates.
+These are not claims about the actual crews. AZULITA remains a referral pending
+identity and tracking evidence; A1A's demonstration decline is driven by the sample
+certificate blockers. Geometry alone does not establish unsafe navigation or
+Captain intent, and HURDAT2 is a post-storm best track, not an issued forecast.
+AZULITA's length is unconfirmed here and A1A reports 18 m: these are small-craft
+movement references, not a verified pair of superyacht acceptance/decline cases.
+
+The curated assessments live under ignored `data/demo/`, excluded from portfolio
+counts and production. Startup prepares them from local NOAA inputs only; missing
+data produces an unavailable state, never a synthetic fallback. Use **Refresh
+recorded NOAA assessment** to recalculate after updating the cache. Crew identities
+are stable and sample dates renew daily.
+
+Assessments lead with the overall indicator and recommendation, followed by three
+short explanations. Crew checks, map replay, event calculations and rerun settings
+expand on demand. Broker briefings retain source links, coverage limits and the
+fictional-crew notice when printed.
+Recorded yachts, historical references and the stationary research shortlist remain
+available in expandable sections. Decision rules and the researched Bounty / El Faro
+references are available through the footer (`/demo-cases`).
+`DEMO-APPETITE-v2` recommends an action separately from the score:
 confirmed critical crew certificate blockers or adequately supported severe
 exposure can prevent an offer; uncertain evidence and movement/shelter concerns
 trigger referral. Its proposed 60/80 appetite boundaries are not calibrated

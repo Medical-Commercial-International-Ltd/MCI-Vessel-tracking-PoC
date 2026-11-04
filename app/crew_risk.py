@@ -139,6 +139,8 @@ def assess_member(assignment, person, today):
     member.is_test_snapshot = bool(person.get("is_test_snapshot"))
     if member.is_test_snapshot:
         member.findings.append("Saved fictional test snapshot; the live evidence freshness limit is disabled for this development fixture. Certificate dates are still assessed today.")
+    if person.get("is_demo"):
+        member.findings.extend(person.get("evidence_notes", []))
     member.experience_supplied = bool(person.get("experience"))
     if person.get("retrieved_at"):
         member.evidence_retrieved_at = datetime.fromisoformat(person["retrieved_at"])

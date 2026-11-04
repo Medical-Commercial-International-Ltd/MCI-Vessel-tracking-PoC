@@ -1,0 +1,17 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "path": "app/static/crew/cameron-vale.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: professional crew profile headshot for a fictional yacht demonstration app. Subject: a fictional male yacht captain in his mid-forties with short dark brown hair lightly greying at the temples, light olive skin and a neatly trimmed beard. Head and shoulders, centered, looking into the camera, calm approachable expression and slight natural smile, wearing a plain smart navy yacht crew polo shirt without branding. Neutral light blue-grey studio background, soft even daylight, realistic skin texture, consistent polished staff-directory photography. Square image, generous space around head for circular avatar crop, shoulders visible. Invented person, not a real individual. No text, captions, logos or watermark."
+    },
+    {
+      "path": "app/static/crew/emery-cole.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: professional crew profile headshot for a fictional yacht demonstration app. Subject: a fictional female yacht chief officer in her mid-thirties with medium brown skin and dark curly hair neatly tied back. Head and shoulders, centered, looking into the camera, calm approachable expression and slight natural smile, wearing a plain smart navy yacht crew polo shirt without branding. Neutral light blue-grey studio background, soft even daylight, realistic skin texture, consistent polished staff-directory photography. Square image, generous space around head for circular avatar crop, shoulders visible. Invented person, not a real individual. No text, captions, logos or watermark."
+    },
+    {
+      "path": "app/static/crew/elliot-hart.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: professional crew profile headshot for a fictional yacht demonstration app. Subject: a fictional male yacht engineer in his late-thirties with fair skin, short auburn hair and clean-shaven face. Head and shoulders, centered, looking into the camera, calm approachable expression and slight natural smile, wearing a plain smart navy yacht crew polo shirt without branding. Neutral light blue-grey studio background, soft even daylight, realistic skin texture, consistent polished staff-directory photography. Square image, generous space around head for circular avatar crop, shoulders visible. Invented person, not a real individual. No text, captions, logos or watermark."
+    }
+  ]
+}

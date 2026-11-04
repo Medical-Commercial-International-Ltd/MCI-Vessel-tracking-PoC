@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Demo cases · MCI Marine Risk{% endblock %}
 {% block content %}
-<section class="page-heading"><span class="eyebrow">Underwriter demonstration</span><h1>Demo cases</h1><p>Explain the evidence, the risk score and the reason for offering, referring or declining terms.</p></section>
+<section class="page-heading"><span class="eyebrow">Underwriter demonstration</span><h1>Decision rules and research</h1><p>Explain the evidence, the risk score and the reason for offering, referring or declining terms.</p></section>
 
 <section class="panel behaviour-method" id="appetite-rules">
   <h2>Decision rules</h2>
@@ -16,13 +16,7 @@
   <p>80 marks the existing severe band; 60 marks the high band. They are proposed appetite boundaries, not validated probabilities of loss. A confirmed blocker takes precedence over missing evidence; a low score never overrides missing evidence.</p>
 </section>
 
-<section class="panel behaviour-method">
-  <h2>Five repeatable decision examples</h2>
-  <p>These fictional scenarios use the application's crew and combined-score calculations. They stay consistent for presentations; ordinary searches continue to receive random fictional crews. Exposure inputs and adequate tracking / identity evidence are assumed for these examples.</p>
-  <div class="table-wrap"><table><thead><tr><th>Scenario</th><th>Weather</th><th>Crew gaps</th><th>Combined</th><th>Recommendation</th></tr></thead><tbody>
-  {% for example in examples %}<tr><td><strong>{{ example.name }}</strong><small>{{ example.description }}</small></td><td>{{ example.weather }}/100</td><td>{{ example.crew }}/100</td><td>{{ example.combined }}/100</td><td><strong>{{ example.policy.label }}</strong><details><summary>Why this decision</summary><ul>{% for reason in example.policy.reasons %}<li>{{ reason }}</li>{% endfor %}</ul><ul>{% for condition in example.policy.conditions %}<li>{{ condition }}</li>{% endfor %}</ul></details></td></tr>{% endfor %}
-  </tbody></table></div>
-</section>
+<p><a class="button button--primary" href="/event-lookup#demo-yachts">Open Demo yachts</a></p>
 
 <section class="panel behaviour-method">
   <h2>Documented unsafe storm navigation</h2>

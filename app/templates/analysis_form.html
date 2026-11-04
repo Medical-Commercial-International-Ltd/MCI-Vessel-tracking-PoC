@@ -1,0 +1,39 @@
+<section class="analysis-form-card">
+  <form method="post" action="/analysis" class="analysis-form" data-analysis-form>
+    <input type="hidden" name="csrf" value="{{ csrfToken }}">
+    {% if autoDemoCrew %}<input type="hidden" name="crewScenario" value="{{ defaults.get('crewScenario', '') }}">{% endif %}
+    <label>
+      <span>Identifier type</span>
+      <select name="identifierType">
+        <option value="MMSI" {% if defaults.identifierType == 'MMSI' %}selected{% endif %}>MMSI</option>
+        <option value="IMO" {% if defaults.identifierType == 'IMO' %}selected{% endif %}>IMO</option>
+      </select>
+    </label>
+    <label class="analysis-form__identifier">
+      <span>Vessel identifier</span>
+      <input name="identifier" value="{{ defaults.identifier }}" inputmode="numeric" placeholder="Enter 9-digit MMSI or 7-digit IMO" required>
+    </label>
+    <label>
+      <span>From</span>
+      <input type="date" name="fromDate" value="{{ defaults.fromDate }}" required>
+    </label>
+    <label>
+      <span>To</span>
+      <input type="date" name="toDate" value="{{ defaults.toDate }}" required>
+    </label>
+    <details class="advanced-settings">
+      <summary>Analysis settings</summary>
+      <div class="advanced-settings__fields">
+        {% if provider == 'real' %}
+        <p>Coverage: cached MarineCadastre vessel tracks. A coastline-distance filter is not available.</p>
+        {% else %}
+        <label><span>Coastal limit</span><div class="unit-input"><input type="number" name="coastalLimitNm" value="{{ defaults.coastalLimitNm }}" min="1" max="200" step="1"><b>nm</b></div></label>
+        {% endif %}
+        <label><span>Storm proximity</span><div class="unit-input"><input type="number" name="stormProximityNm" value="{{ defaults.stormProximityNm }}" min="1" max="500" step="1"><b>nm</b></div></label>
+      </div>
+    </details>
+    <button class="button button--primary analysis-form__submit" type="submit">Run analysis <span aria-hidden="true">→</span></button>
+  </form>
+  {% if stormCasePresets %}<script type="application/json" id="storm-case-presets">{{ stormCasePresets | tojson }}</script><p class="lookup-note" data-case-period-note hidden></p>{% endif %}
+  {% if error %}<div class="alert alert--error analysis-error" role="alert">{{ error }}</div>{% endif %}
+</section>

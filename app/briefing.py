@@ -53,11 +53,34 @@ def build_briefing(analysis, encounters, *, demo_appetite=False):
                      separation_change=round(w.end_distance_nm - w.start_distance_nm, 2),
                      storm_closure=round(w.start_distance_nm - w.fixed_distance_nm, 2))
                 for w in analysis.storm_response.windows]
+    if movement:
+        lead = max(movement, key=lambda item: abs(item['window'].improvement_nm))
+        window = lead['window']
+        movement_summary = (f"{lead['label']}: {window.start_distance_nm:g} → {window.end_distance_nm:g} nm. "
+            f"Vessel movement contributed {window.improvement_nm:+g} nm compared with staying put.")
+        away = [item['window'] for item in movement if item['window'].kind in {'MOVED_AWAY', 'MOVED_AWAY_CLOSING'}]
+        towards = [item['window'] for item in movement if item['window'].kind in {'MOVED_TOWARDS', 'MOVED_TOWARDS_RECEDING'}]
+        if away and towards:
+            approach = min(towards, key=lambda w: w.improvement_nm)
+            retreat = max(away, key=lambda w: w.improvement_nm)
+            movement_summary = (f"Mixed response: an away window contributed {retreat.improvement_nm:+g} nm of separation; "
+                f"an approach window contributed {approach.improvement_nm:+g} nm "
+                f"({approach.start_distance_nm:g} → {approach.end_distance_nm:g} nm actual separation). Both patterns require context.")
+    else:
+        movement_summary = "Movement response is unknown or no qualifying pattern was found. No avoidance is established."
     from app.demo_appetite import assess_appetite
+    appetite = assess_appetite(analysis) if demo_appetite else None
+    headline_reasons = []
+    if appetite:
+        # Surface independent reasons before repeating the same certificate gap by role.
+        for prefix in ('Historical loss', 'Severe historical exposure', 'Tracking evidence'):
+            headline_reasons.extend(reason for reason in appetite['reasons'] if reason.startswith(prefix))
+        if crew and any(member.experience_supplied is not True for member in crew.members):
+            headline_reasons.append('Obtain current CVs and review relevant yacht and heavy-weather experience.')
+        headline_reasons = list(dict.fromkeys(headline_reasons + appetite['reasons']))[:3]
     return dict(weather=weather, crew=crew_summary, actions=actions, movement=movement,
-                appetite=assess_appetite(analysis) if demo_appetite else None,
+                appetite=appetite, headline_reasons=headline_reasons,
                 is_test_data=analysis.is_synthetic or bool(combined and combined.is_test_data),
                 decision="Evidence incomplete" if not combined or combined.score is None else
                          "Underwriter review required" if combined.underwriter_referral else "Standard underwriting review",
-                movement_summary=f"{len(movement)} representative movement windows found; these are examples, not a complete voyage history."
-                    if movement else "Movement response is unknown or no qualifying pattern was found. No avoidance is established.")
+                movement_summary=movement_summary)
